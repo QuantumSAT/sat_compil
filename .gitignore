@@ -1,32 +1,50 @@
-# Prerequisites
-*.d
-
-# Compiled Object files
-*.slo
-*.lo
+*.swp
 *.o
-*.obj
+*.swo
+*.csv
+*.dwave
+Makefile
 
-# Precompiled Headers
-*.gch
-*.pch
 
-# Compiled Dynamic libraries
-*.so
-*.dylib
-*.dll
+benchmark/run_test.py
+benchmark/collect_result.py
 
-# Fortran module files
-*.mod
-*.smod
+test/blifs/.dwave_history_cmd
+test/.dwave_history_cmd
+test.tcl
+*.tcl
+*.log
+b
 
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
+temp.blif
 
-# Executables
-*.exe
-*.out
-*.app
+log
+dwave
+dwave-debug
+
+/build/build.var
+tags
+time.cc.bak
+obj/
+release/
+lib/
+.ycm_extra_conf.py
+.ycm_extra_conf.pyc
+*.pyc
+
+*/*/Makefile
+
+src/device_model/Makefile
+src/gui/Makefile
+src/gui/moc/Makefile
+src/place/Makefile
+src/route/Makefile
+src/route/route.cc
+src/syn/Makefile
+src/syn/multilevel/Makefile
+src/syn/twolevel/Makefile
+src/syn/utility/Makefile
+src/tcl/Makefile
+src/util/Makefile
+
+*.bak
