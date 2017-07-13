@@ -17,93 +17,22 @@
  *   License along with QSat.  If not, see <http://www.gnu.org/licenses/>.  *
  ****************************************************************************/
 
-#ifndef QLOG_H
-#define QLOG_H
-
-
+#ifndef TCL_MANAGER_HH
+#define TCL_MANAGER_HH
 
 /*!
- * \file qlog.hh
+ * \file tcl_mannager.hh
  * \author Juexiao Su
  * \date 11 Jul 2017
- * \brief log utility for quantum annealer
+ * \brief tcl utility to manage all tcl commands
  */
 
 
-#include <string>
-#include <stdlib.h>
-
-
-class qLog {
-
-
-public:
-
-  /*!
-   * \brief default constructor
-   */
-  qLog();
-
-  /*!
-   * \brief constructor with logfile set
-   */
-  qLog(const char* logFileName);
-
-  /*! 
-   * \brief default destrucor
-   */
-  ~qLog();
-
-  /*!
-   * \brief change log file name
-   * \param logFileName set log output file to logFileName
-   */
-  void setLogFile(const char* logFileName);
-
-  /*!
-   * \brief log function with step name
-   * \param step step name
-   * \param format format the output
-   */
-  void speak(const char* step, const char* format, ...) __attribute__((format(printf, 3,4)));
-
-  /*!
-   * \breif basic log function
-   * \param message print out message
-   * \param cr decide the start a new line
-   */
-  void speak(const char* message, bool cr = false);
-
-
-
-  /*!
-   * \brief skip a line
-   */
-  void skipLine();
-
-
-private:
-
-  /*!
-   * \brief open log file
-   * \param logFileName name of log file
-   */
-  void openFile(const char* logFileName);
-
-  /*!
-   * \brief customized fprintf
-   * \param step step name
-   * \param message message to print
-   */
-  void qfprintf(const char* step, const char* message);
-
-  FILE* _logFile;     //!< log file handler
-  bool _quiet;        //!< set the the qlog in silent mode
+class TclManager {
 
 
 };
 
-extern qLog qlog;
 
 
 #endif

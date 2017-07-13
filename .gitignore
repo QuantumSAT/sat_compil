@@ -48,5 +48,6 @@ src/tcl/Makefile
 src/util/Makefile
 build/*
 bin
+doc/*
 
 *.bak
