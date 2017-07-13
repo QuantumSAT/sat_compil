@@ -33,15 +33,22 @@
 
 extern std::string getBanner();
 extern char* getBuildTime();
+extern char* getBuiltBy();
 
 
 
 int main(int argc, char** argv) {
 
-  std::cout << getBanner();
-  std::cout << "Build Time: " << getBuildTime() << std::endl;
-
   qlog.setLogFile("QSat.log");
+  qlog.speak(getBanner().c_str());
+  qlog.speak("Build Time: ");
+  qlog.speak(getBuildTime(), true);
+  qlog.speak("Built By: ");
+  qlog.speak(getBuiltBy(), true);
+  qlog.speak("\n\n");
+
+
+
   qlog.speak("Test", "Hello World!");
 
   return 0;

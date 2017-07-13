@@ -16,6 +16,7 @@ $(TARGET_EXE): $(DEPS) $(OBJECTS) $(ALL_LIBS) all
 	@echo "Now Update Build time"
 	@cp $(TIME_FILE).$(SUFFIX) $(TIME_FILE).cp
 	@sed -i.bak "s/MAKE_DATE_TIME/$(TIME)/" $(TIME_FILE).$(SUFFIX)
+	@sed -i.bak "s/BUILT_BY/$(BUILT_BY)/" $(TIME_FILE).$(SUFFIX)
 	@sed -i.bak "s/SVN_VERSION/$(SVNVERSION)/" $(TIME_FILE).$(SUFFIX)
 	@$(CC) $(CFLAG) $(TIME_FILE).$(SUFFIX) -o $(TARGET_OBJ_PATH)/$(TIME_FILE).o
 	@mv $(TIME_FILE).cp $(TIME_FILE).$(SUFFIX)

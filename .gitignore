@@ -46,5 +46,6 @@ src/syn/twolevel/Makefile
 src/syn/utility/Makefile
 src/tcl/Makefile
 src/util/Makefile
+bin
 
 *.bak

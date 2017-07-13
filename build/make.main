@@ -17,7 +17,7 @@ endif
 TARGET_EXE = $(BIN_DIR)/$(TARGET_NAME)
 
 #the sequence must be follow below
-LIB_SRCS = utils tcl route place syn gui device_model sat ising_mode
+LIB_SRCS = utils tcl
 
 IN_LIB_SRCS =  $(strip $(LIB_SRCS))
 

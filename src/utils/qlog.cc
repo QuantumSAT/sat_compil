@@ -27,6 +27,7 @@
 #include "utils/qlog.hh"
 
 #include <cassert>
+#include <cstdarg>
 #include <cstdio>
 
 qLog qlog;  //!< global qLog class
@@ -57,7 +58,7 @@ qLog::~qLog() {
 
 void qLog::setLogFile(const char* logFileName) {
   if (_logFile) {
-    fclose(_logFile)
+    fclose(_logFile);
     _logFile = NULL;
   }
   openFile(logFileName);
@@ -77,6 +78,16 @@ void qLog::speak(const char* step, const char* format, ...) {
 
 }
 
+void qLog::speak(const char* message, bool cr) {
+  std::fprintf(stderr, "%s%s", message, cr?"\n":"");
+  if (_logFile)
+    std::fprintf(_logFile, "%s%s", message, cr?"\n":"");
+}
+
+void qLog::skipLine() {
+  speak("============================================================================");
+}
+
 void qLog::openFile(const char* logFileName) {
 
   if (logFileName) {
@@ -90,9 +101,9 @@ void qLog::openFile(const char* logFileName) {
 
 void qLog::qfprintf(const char* step, const char* message) {
 
-  std::fprintf(stderr, " *    %s : %s", step, message);
+  std::fprintf(stderr, "*    %s : %s\n", step, message);
   if (_logFile)
-    std::fprintf(_logFile, " *    %s : %s", step, message);
+    std::fprintf(_logFile, " *    %s : %s\n", step, message);
 
 }
 

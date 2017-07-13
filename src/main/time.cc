@@ -31,10 +31,15 @@
 
 */
 
+char built_by[] = "BUILT_BY";
 
 char build_time[] = "MAKE_DATE_TIME";
 
 char* getBuildTime() {
   return build_time;
+}
+
+char* getBuiltBy() {
+  return built_by;
 }
 

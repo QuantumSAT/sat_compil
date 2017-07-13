@@ -61,11 +61,25 @@ public:
   void setLogFile(const char* logFileName);
 
   /*!
-   * \brief basic log function
+   * \brief log function with step name
    * \param step name
    * \param format the output
    */
   void speak(const char* step, const char* format, ...) __attribute__((format(printf, 3,4)));
+
+  /*!
+   * \breif basic log function
+   * \param print out message
+   * \param start a new line
+   */
+  void speak(const char* message, bool cr = false);
+
+
+
+  /*!
+   * \brief skip a line
+   */
+  void skipLine();
 
 
 private:
