@@ -68,11 +68,21 @@ public:
   void speak(const char* step, const char* format, ...) __attribute__((format(printf, 3,4)));
 
   /*!
-   * \breif basic log function
+   * \brief basic log function
    * \param message print out message
    * \param cr decide the start a new line
    */
   void speak(const char* message, bool cr = false);
+
+
+  /*!
+   * \brief customize assert function
+   * \param cond assert condition
+   * \param msg assert message
+   * \param file file name
+   * \param line line number
+   */
+  void assert(const char* msg, const char* file, const int line) __attribute__((noreturn));
 
 
 
@@ -103,7 +113,10 @@ private:
 
 };
 
+
 extern qLog qlog;
+#define QASSERT(EXPR) ((EXPR)? (void)0 : qlog.assert(#EXPR, __FILE__, __LINE__))
+
 
 
 #endif

@@ -26,15 +26,15 @@
 
 #include "utils/qlog.hh"
 
-#include <cassert>
 #include <cstdarg>
 #include <cstdio>
+#include <cstdlib>
+
 
 qLog qlog;  //!< global qLog class
 
-
-const unsigned BUFFER_SIZE = 4096; //!< specify the max buffer size
-static char message_buffer[BUFFER_SIZE];
+const unsigned BUFFER_SIZE = 4096;       //!< specify the max buffer size
+static char message_buffer[BUFFER_SIZE]; //!< message buffer
 
 
 qLog::qLog() :
@@ -107,5 +107,11 @@ void qLog::qfprintf(const char* step, const char* message) {
 
 }
 
+void qLog::assert(const char* expr, const char* file, int line) {
+  std::fprintf(stderr, "!!! Assertion '%s' failed at %s line %d\n", expr, file, line);
+  if (_logFile)
+    std::fprintf(_logFile, "!!! Assertion '%s' failed at %s line %d\n", expr, file, line);
+  abort();
+}
 
 
