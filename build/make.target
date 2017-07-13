@@ -1,0 +1,48 @@
+MODULE_NAME	:= $(strip $(MODULE_NAME))
+DIRS		:= $(strip $(DIRS))
+TARGET_LIB_PATH = $(LIB_DIR)
+TARGET_LIB = $(TARGET_LIB_PATH)/lib$(MODULE_NAME).a
+TARGET_OBJ_PATH = $(OBJ_DIR)/$(MODULE_NAME)
+DEP_DIR 	= $(TARGET_OBJ_PATH)
+SOURCES = $(wildcard *.$(SUFFIX))
+OBJECTS = $(SOURCES:%.$(SUFFIX)=$(TARGET_OBJ_PATH)/%.o)
+DEPS = $(SOURCES:%.$(SUFFIX)=$(TARGET_OBJ_PATH)/%.d)
+
+dummy_lib := $(shell [ -d $(TARGET_LIB_PATH) ] || $(MKDIR) $(TARGET_LIB_PATH))
+dummy_obj := $(shell [ -d $(TARGET_OBJ_PATH) ] || $(MKDIR) $(TARGET_OBJ_PATH))
+
+ifneq ($(TARGET_EXE),)
+$(TARGET_EXE): $(DEPS) $(OBJECTS) $(ALL_LIBS) all
+	@echo "Now Update Build time"
+	@cp $(TIME_FILE).$(SUFFIX) $(TIME_FILE).cp
+	@sed -i.bak "s/MAKE_DATE_TIME/$(TIME)/" $(TIME_FILE).$(SUFFIX)
+	@sed -i.bak "s/SVN_VERSION/$(SVNVERSION)/" $(TIME_FILE).$(SUFFIX)
+	@$(CC) $(CFLAG) $(TIME_FILE).$(SUFFIX) -o $(TARGET_OBJ_PATH)/$(TIME_FILE).o
+	@mv $(TIME_FILE).cp $(TIME_FILE).$(SUFFIX)
+	@echo "Now Linking $(TARGET_EXE)"
+	$(CC) $(OBJECTS) -o $@ $(LFLAG) 
+	@echo "Done!"
+endif
+
+IFLAG += $(QT_INC)
+
+
+
+#target library
+$(TARGET_LIB):	$(DEPS) $(OBJECTS) all
+	@echo "Now Generating lib $(TARGET_LIB)" 
+	@ar rc $(TARGET_LIB) $(OBJECTS)
+	@echo "Done!"
+
+#object files
+$(TARGET_OBJ_PATH)/%.o:	%.$(SUFFIX)
+	@echo "Now Compile $< ..."
+	@$(CC) $(IFLAG) $(CFLAG) $< -o $@
+	
+-include $(SOURCES:%.$(SUFFIX)=$(DEP_DIR)/%.d)
+
+#dependency files
+$(DEP_DIR)/%.d:	%.$(SUFFIX)
+	@echo "Now Generating dependance file $@..."
+	@$(CC) -MM $(IFLAG) $(CFLAG) $< | sed 's,\($*\)\.o[ :]*,\$(TARGET_OBJ_PATH)/\1.o $@ : ,g' > $@;
+

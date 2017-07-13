@@ -1,0 +1,351 @@
+#!/bin/sh
+# ******************************************************************************
+#* -*- Mode: Shell; tab-width: 2; indent-tabs-mode: nil  -*- */
+#/* vim: set tabstop=2 softtabstop=2 shiftwidth=2 expandtab: */
+
+# ******************************************************************************
+# Copyright (c) 2012, All Right Reserved, Nimbus Automation Technologies
+#
+# file:      sysname
+# author:    Xiaonan Li
+# purpose:   Detail Router
+# revision history:
+# 2012/10/11 initial version
+#
+# Script to print a string describing the type of operating system being run. 
+# The string can currently be one of the following:
+#   sunos_57
+#   sunos_58
+#   sunos_510_stl4
+#   sunos_510_x86
+#   sunos_510_x86_stl4
+#   hpux_10
+#   hpux_11
+#   aix_41
+#   aix_43
+#   aix_51
+#   aix_53
+#   linux_rhel40
+#   linux_rhel50
+#   linux_ubuntu10
+#   linux_suse
+#   win32
+#
+#   A user may set the variable OA_UNSUPPORTED_PLAT to force the name of an
+#   unsupported platform to work.  Specifically for Linux, if the type of
+#   Linux system is not recognized, the OA_UNSUPPORTED_PLAT variable is 
+#   examined and used if set.
+# ******************************************************************************
+
+usage() {
+  echo "Usage: sysname [ -h | -m | -b | -v ]"
+}
+
+# *****************************************************************************
+# check_sunos
+#
+# This routine sets the version, sysname, and sysnames variables for the 
+# Solaris operating system. 
+#
+#    sunos_57 : SunOS 5.7*
+#    sunos_58 : SunOS 5.8* SunOS 5.9* SunOS 5.10*
+# *****************************************************************************
+check_sunos() {
+  sysnames="sunos$compiler"
+  _rev=`/bin/uname -r`
+
+  longVersion="SunOS $_rev"
+  
+  case $_rev in
+    5.7* )
+      sysname="sunos_57$compiler"; sysnames="$sysname $sysnames"
+      version=57
+      ;;
+
+    5.8* | 5.9* )
+      sysname="sunos_58$compiler"; sysnames="$sysname sunos_57$compiler $sysnames"
+      version=58
+      ;;
+
+    5.10* )
+      cpuarch=`uname -m`
+      if [ "$cpuarch" = "i86pc" ]; then
+        sysname="sunos_510_x86$compiler"; sysnames="$sysname $sysnames"
+        version=510
+      elif [ "$cpuarch" = "sun4u" -o "$cpuarch" = "sun4v" -o "$cpuarch" = "sun4us" ]; then
+	if [ "$compiler" != "" ]; then
+	  sysname="sunos_510$compiler"; sysnames="$sysname $sysnames"
+	  version=510
+	else
+	  sysname="sunos_58$compiler"; sysnames="$sysname sunos_57$compiler $sysnames"
+	  version=58
+	fi
+      else
+        check_global
+      fi
+      ;;
+
+    * )
+      check_global
+  esac 
+}
+
+
+
+# *****************************************************************************
+# check_hpux
+#
+# This routine sets the version, sysname, and sysnames variables for the 
+# HP-UX operating system. 
+#
+#    hpux_10 : HP-UX 10.*
+#    hpux_11 : HP-UX 11.* and 32-bit
+# *****************************************************************************
+check_hpux() {
+  sysnames="hpux$compiler"
+  _rev=`/bin/uname -r`
+
+  longVersion="HP-UX $_rev"
+
+  case $_rev in 
+    *.10.* ) 
+      sysname="hpux_10$compiler"; sysnames="$sysname $sysnames"
+      version=10
+      ;;
+    *.11.* ) 
+      sysname="hpux_11$compiler"; sysnames="$sysname hpux_10$compiler $sysnames"
+      version=11
+      ;;
+    * ) 
+      check_global
+   esac
+}
+
+
+
+# *****************************************************************************
+# check_aix
+#
+# This routine sets the version, sysname, and sysnames variables for the 
+# AIX operating system. 
+#
+#    aix41 : AIX 4.1.*
+#    aix43 : AIX 4.3.*
+#    aix51 : AIX 5.1.*
+#    aix53 : AIX 5.3.*
+#    aix61 : AIX 6.1.*
+# *****************************************************************************
+check_aix() {
+  sysnames="aix$compiler"
+  mainVer=`/bin/uname -v`
+  subVer=`/bin/uname -r`
+  version="${mainVer}${subVer}"
+
+  longVersion="AIX ${mainVer}.${subVer}"
+
+  case $version in 
+    41 ) 
+      sysname="aix_41$compiler"; sysnames="$sysname $sysnames";;
+    43 )
+      sysname="aix_43$compiler"; sysnames="$sysname aix_41$compiler $sysnames";;
+    51 )
+      sysname="aix_51$compiler"; sysnames="$sysname $sysnames";;
+    53 )
+      sysname="aix_53$compiler"; sysnames="$sysname $sysnames";;
+    61 )
+      sysname="aix_53$compiler"; sysnames="$sysname $sysnames";;
+    * ) 
+      check_global
+  esac
+}
+
+
+
+# *****************************************************************************
+# check_linux
+#
+# This routine sets the version, system, and sysname variables for the Linux 
+# operating system.  If the version of Linux is unrecognized and 
+# OA_UNSUPPORTED_PLAT is set, then that is returned.  
+#
+# linux-x86
+# *****************************************************************************
+check_linux() {
+    sysnames=$sysname
+
+    version=`uname -r`
+    machine=`uname -m`
+
+    if [ -f "/etc/redhat-release" ]
+     then
+        longVersion=`cat /etc/redhat-release`
+     elif [ -f "/etc/SuSE-release" ]
+      then
+        longVersion=`cat /etc/SuSE-release`
+     else
+        longVersion="UNKNOWN Linux"
+    fi
+
+    case $machine in
+	ia64 )	sysname="linux_rhas21_ia64$compiler"; sysnames="$sysname $sysnames";;
+	*86 | *86_64 )	
+	    case $version in
+	        2.4*) compiler="_gcc411"
+		      sysname="linux_rhel30$compiler"; sysnames="$sysname linux$compiler";;
+                2.6*) if [ -f "/etc/redhat-release" ]
+                        then
+                          case $version in
+                            2.6.9*) sysname="linux_rhel40"; sysnames="$sysname linux";;
+                            *) sysname="linux_rhel50"; sysnames="$sysname linux"
+                          esac
+                        else
+                          sysname="linux_ubuntu10";
+                          sysnames="$sysname linux"
+                      fi;;
+	        *)    check_global;;
+	    esac;;
+	*)	check_global;;
+    esac
+
+}
+
+
+
+# *****************************************************************************
+# check_win
+#
+# This routine sets the version, system, and sysname variables for the Windows
+# operating system. 
+# *****************************************************************************
+check_win() {
+  _is64=`echo $basesysname | sed -e 's/cygwin_nt-5..-//'`
+
+  if [ $_is64 = "wow64" ]; then
+    sysname="x64"
+    sysnames=$sysname
+    version="x64"
+    longVersion="Windows 64bit"
+  else
+    sysname="win32"
+    sysnames=$sysname
+    version="win32"
+    longVersion="Windows 32bit"
+  fi
+}
+
+# *****************************************************************************
+# check_global
+#
+# This routine handles the sysname for an unsupported system.  If a user
+# wants to run on an unsupported system, they must set the environment
+# variable OA_UNSUPPORTED_PLAT to the sysname they wish to utilize.
+# Otherwise, the script will exit.
+# *****************************************************************************
+check_global() {
+  if [ -n "$OA_UNSUPPORTED_PLAT" ]
+   then
+       sysname=${OA_UNSUPPORTED_PLAT}
+       sysnames=$sysname
+       version="Unknown"
+       longVersion="Unknown"
+   else
+      echo "unknown"
+      exit 1
+   fi 
+}
+
+
+
+# ******************************************************************************
+# Start of the script
+# ******************************************************************************
+
+# Check for options.
+if [ $# -gt 1 ];
+then
+  usage
+  exit 1
+fi
+
+matching_sysnames=0
+base_sysname=0
+get_version=0
+get_longVersion=0
+if [ $# -eq 1 ];
+then
+  case $1 in 
+    -h )
+      usage; exit 0;;
+    -m )
+      matching_sysnames=1;;
+    -b )
+      base_sysname=1;;
+    -v )
+      get_version=1;;
+    -V )
+      get_longVersion=1;;
+    * )
+      usage; exit 1
+  esac       
+else
+    if [ -n "$OA_SYSNAME" ]; then
+	echo $OA_SYSNAME
+	exit 0
+    fi
+fi
+
+
+
+# Get the operating system name.
+sysname=`/bin/uname -s | LC_ALL=C /usr/bin/tr -s '[:upper:]' '[:lower:]'`
+basesysname="$sysname"
+
+# OA_COMPILER will be appended to all sysnames, preceded by an underscore.
+if [ "${OA_COMPILER-}" != "" ]; then
+  compiler="_${OA_COMPILER}"
+else
+  compiler=""
+fi
+
+sysname="$sysname$compiler"
+
+# Call the appropriate function to get the sysname. The sysname will embed 
+# information about the version of the operating system, processor type and 
+# architecture. It will be returned in the variable $sysname. A list of 
+# compatible sysnames will also be returned in $sysnames.
+case $basesysname in 
+  sunos ) check_sunos;;
+  hp-ux ) check_hpux;;
+  aix ) check_aix;;
+  linux ) check_linux;;
+  windows*|cygwin_nt* ) check_win;;
+  * ) check_global;;
+esac
+
+
+
+# If an error occured, this script already exited with a non-zero error code.
+
+# If the -m option was specified, output a list of matching 
+# sysnames, in order of priority. If the -b option was specified,
+# it will print out the base sysname for this system. Otherwise, 
+# print the actual sysname of the machine.
+
+if [ $get_version -eq 1 ];
+then
+  echo $version
+elif [ $get_longVersion -eq 1 ];
+then
+  echo $longVersion
+elif [ $matching_sysnames -eq 1 ];
+then
+  echo $sysnames 
+elif [ $base_sysname -eq 1 ];
+then
+  echo $sysnames | /bin/awk '{print $NF}'
+else
+  echo $sysname
+fi
+
+exit 0
+

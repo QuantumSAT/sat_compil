@@ -1,0 +1,114 @@
+#! /bin/csh
+
+if ($#argv == 3) then
+    set root = $1
+    set module = $2
+    set curdir = $3
+else
+    set root = "."
+    set module = ""
+    set curdir = ""
+endif
+
+# create makefiles 
+set makefile = "Makefile"
+
+\rm -rf $makefile
+
+# begin current level
+
+# begin create makefile
+cat $root/build/make.head > $makefile
+echo "" >> $makefile
+echo "" >> $makefile
+
+# main module Makefile
+# create root
+echo "ROOT = $root" >> $makefile
+
+# create dirs
+set subDirs = ""
+set topmain = ""
+
+# top level
+if ( "$module" == "" ) then
+    cd src
+    foreach sub (`\ls`)
+        if ( -d $sub ) then
+	        if ("$sub" == "main") then
+	            set topmain = "main"
+ 	        else
+	            set subDirs = "$subDirs src/$sub"
+	        endif
+        endif
+    end
+    cd ..
+else 
+    foreach sub (`\ls`)
+        if ( -d $sub ) then
+	    set subDirs = "$subDirs $sub"
+        endif
+    end
+endif
+
+# the last to make the main module to link the program
+if ("$topmain" == "main") then
+    set subDirs = "$subDirs src/main"
+endif
+
+echo "# the sub dirs you want to make" >> $makefile
+echo "DIRS = $subDirs" >> $makefile
+
+if( "$module" == "" ) then
+    echo "include $root/build/build.var" >> $makefile
+    cat $root/build/make.top >> $makefile
+endif
+
+if("$module" != "") then
+    echo "MODULE_NAME = $module" >> $makefile
+    echo "include $root/build/build.var" >> $makefile
+endif
+
+if ("$module" == "main") then
+# the main module, need a specific definition
+    cat $root/build/make.main >> $makefile
+endif
+
+# finish the rest part
+if ("$module" != "") then
+# the root Makefile doesn't need the target making
+    cat $root/build/make.target >> $makefile
+endif
+
+# finish the rest
+if ("$module" != "") then
+    cat $root/build/make.tail >> $makefile
+endif
+
+set subroot_next = ""
+# begin next level with sub dirs
+if ( "$module" == "" ) then
+    echo "Enter src and creating makefiles.."
+    cd src
+    set subroot_next = "/.."
+endif
+
+foreach dir (`\ls`)
+    if ( -d $dir ) then
+	cd $dir
+	if ("$root" == ".") then
+	    set module = $dir
+	endif
+
+	echo "Entering $dir and creating $makefile"
+	set subroot = "$root/..$subroot_next"
+        # recursively do sub dirs
+	$subroot/build/makes $subroot $module $dir
+	cd ..
+    endif
+end
+
+if ("$root" == ".") then
+    echo "Makefiles generated successfully"
+endif
+

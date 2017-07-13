@@ -1,0 +1,52 @@
+
+all: 		  suball 
+debug: 		thisdebug subdebug
+release:  thisrelease subrelease
+gtest:    thisgtest subgtest
+nogui:    thisnogui subnogui
+
+ifeq ($(ROOT),./..)
+clean: 		thisclean
+thisclean:
+	@echo "Now Removing ..."
+	@-rm -rf $(TARGET_OBJ_PATH)/*.d
+	@-rm -rf $(TARGET_OBJ_PATH)/*.o
+	@-rm -rf $(TARGET_LIB)
+	@-rm -rf $(TARGET_EXE)
+	@echo "Done!"
+
+else
+clean: 		thisclean subclean
+thisclean:
+	@echo "Now Removing ..."
+	@-rm -rf $(DEPS)
+	@-rm -rf $(OBJECTS)
+	@echo "Done!"
+
+endif
+
+thisdebug:
+	make OPTMODE=dbg
+
+suball:
+	+@SUBMAKE=make; \
+	$(sub_make_routine)
+
+subclean:
+	+@SUBMAKE="make clean"; \
+	$(sub_make_routine)
+
+# sub dbg op
+subdebug:
+	+@SUBMAKE="make debug"; \
+	$(sub_make_routine)
+
+ifneq ($(DEPS),)
+    ifeq ($(DEPS),$(wildcard $(DEPS)))
+         include $(DEPS)
+    endif
+endif
+
+ifeq (make.inc,$(wildcard make.inc))
+    include make.inc
+endif

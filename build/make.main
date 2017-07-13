@@ -1,0 +1,33 @@
+
+
+TARGET_NAME = $(APP_NAME)
+
+ifeq ($(OPTMODE),dbg)
+	TARGET_NAME = $(APP_DEBUG_NAME)
+endif
+
+ifneq ($(TEST), )
+	TARGET_NAME = $(APP_TEST_NAME)
+endif
+
+ifneq ($(GPROF), )
+	TARGET_NAME = $(APP_GPROF_NAME)
+endif
+
+TARGET_EXE = $(BIN_DIR)/$(TARGET_NAME)
+
+#the sequence must be follow below
+LIB_SRCS = utils tcl route place syn gui device_model sat ising_mode
+
+IN_LIB_SRCS =  $(strip $(LIB_SRCS))
+
+ifeq ($(IN_LIB_SRCS),) 
+	ALL_LIBS = 
+	#ALL_FLAGS = 
+else
+	ALL_LIBS =  $(LIB_SRCS:%=$(LIB_DIR)/lib%.a)
+	#ALL_FLAGS = $(LIB_SRCS:%=-l%)
+endif
+
+LFLAG += -ansi -pedantic -Wall -W -Wconversion -Wcast-qual -Wwrite-strings $(ALL_LIBS) $(LFLAG2)
+

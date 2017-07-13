@@ -1,0 +1,39 @@
+CC = g++        
+KERNEL = $(shell /bin/cat /proc/cpuinfo |grep -c '^processor')
+#KERNEL = 1
+CFLAGS = -j$(KERNEL) -C
+#CFLAGS = -C
+
+.PHONY: all debug clean $(DIRS)
+
+all: $(DIRS)
+debug: $(DIRS)
+test: $(DIRS)
+gprof: $(DIRS)
+nogui: $(DIRS)
+
+$(DIRS):
+ifeq ($(MAKECMDGOALS), debug)
+	$(MAKE) $(CFLAGS) $@ OPTMODE=dbg
+else
+ifeq ($(MAKECMDGOALS), test)
+	$(MAKE) $(CFLAGS) $@ TEST=TEST
+else
+ifeq ($(MAKECMDGOALS), gprof)
+	$(MAKE) $(CFLAGS) $@ GPROF=GPROF
+else
+ifeq ($(MAKECMDGOALS), nogui)
+	$(MAKE) $(CFLAGS) $@ NOGUI=NOGUI
+else
+	$(MAKE) $(CFLAGS) $@
+endif
+endif
+endif
+endif
+
+clean:
+	rm -rf src/*/*.depend*
+	rm -rf obj/$(PLATFORM)/dbg/*
+	rm -rf lib/$(PLATFORM)/dbg/*.a
+	rm -rf obj/$(PLATFORM)/opt/*
+	rm -rf lib/$(PLATFORM)/opt/*.a
