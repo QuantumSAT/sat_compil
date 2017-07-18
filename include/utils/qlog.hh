@@ -17,8 +17,8 @@
  *   License along with QSat.  If not, see <http://www.gnu.org/licenses/>.  *
  ****************************************************************************/
 
-#ifndef QLOG_H
-#define QLOG_H
+#ifndef QLOG_HH
+#define QLOG_HH
 
 
 

@@ -20,6 +20,12 @@
 #ifndef TCL_MANAGER_HH
 #define TCL_MANAGER_HH
 
+#include <vector>
+#include <map>
+#include <string>
+
+#include <tcl.h>
+
 /*!
  * \file tcl_mannager.hh
  * \author Juexiao Su
@@ -27,11 +33,83 @@
  * \brief tcl utility to manage all tcl commands
  */
 
+class QTclCommand;
 
+
+/*! \class TclManager
+ *  \brief This class manages all tcl command
+ *
+ *  TclManager offers capability to implement your own tcl command with several simple steps
+ *  Step to define a new Tcl command using this class
+ *  1) Define your tcl command by inheriting QTclCommand
+ *  2) Register your tcl command using TclManager::registerCommand()
+ *  3) Implement your excute and help function
+ */
 class TclManager {
+
+  typedef TclManager SELF;
+  typedef std::map<std::string, QTclCommand*> NameToCommand;
+public:
+
+  /*! \brief get or create a tcl manager
+   *  \return TclManager* the pointer of TclManager
+   */
+  SELF* getOrCreate();
+
+  /*! \brief set tcl interp
+   *  \param inter tcl interpreter
+   */
+  void setTclInterp(Tcl_Interp* interp) { _interp = interp; }
+
+  /*! \brief register command to tcl interp
+   *  \param cmd class QTclCommand
+   */
+  void registerCommand(QTclCommand* cmd);
+
+
+
+  friend void TclManagerCleanUp();
+
+private:
+  /*! \brief constructor
+   */
+  TclManager() : _interp(NULL) {}
+
+  Tcl_Interp* _interp;            //!< tcl interpreter
+
+  static SELF* _tcl_manager;      //!< self pointer for singleton
+  
+  NameToCommand _name_to_command; //!< a map between command and command name
+
+  std::string getCommandString(const int argc, const char** argv);
+
+
+  /*! \brief get argument index
+   * \param argc argument count
+   * \param argv argument vector
+   * \return int argument index
+   */
+  int getOptionIndex(const int argc, const char** argv);
+
+
+  /*! \brief check if certain argument exists
+   * \param argc argument count
+   * \param argv argument vector
+   * \param option_name the name of argument needs to check
+   * \return bool indicate weather the argument exists
+   */
+  bool isOptionExist(const int argc, const char** argv, const char* option_name);
+
 
 
 };
+
+/*! \brief Tcl manager clean up function
+ */
+void TclManagerCleanUp() {
+  delete TclManager::_tcl_manager;
+  TclManager::_tcl_manager = NULL;
+}
 
 
 

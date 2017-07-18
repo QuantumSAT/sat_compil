@@ -47,7 +47,7 @@ int main(int argc, char** argv) {
   qlog.speak(getBuiltBy(), true);
   qlog.speak("\n\n");
 
-
+  QASSERT(0);
 
   qlog.speak("Test", "Hello World!");
 

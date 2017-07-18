@@ -17,24 +17,38 @@
  *   License along with QSat.  If not, see <http://www.gnu.org/licenses/>.  *
  ****************************************************************************/
 
+
 /*!
- * \file tcl_mannager.cc
+ * \file tcl_command.cc
  * \author Juexiao Su
  * \date 14 Jul 2017
- * \brief tcl utility to manage all tcl commands
+ * \brief tcl command
  */
 
-#include "tcl/tcl_manager.hh"
 
-TclManager* TclManager::_tcl_manager = NULL;
+#include <boost/algorithm/string.hpp>
+#include "utils/qlog.hh"
+#include "tcl/tcl_command.hh"
 
 
-TclManager* TclManager::getOrCreate() {
-  if (_tcl_manager == NULL)
-    _tcl_manager = new TclManager;
-  return _tcl_manager;
+
+
+QTclCommand::QTclCommand(const std::string& command_name, const std::string& syntax) :
+  _command_name(command_name),
+  _syntax(syntax) {
+    parseSyntax(syntax);
 }
 
 
+bool QTclCommand::checkOptions(const int argc, const char** argv) {
 
+
+  QASSERT(0);
+  return false;
+
+}
+
+bool QTclCommand::parseSyntax(const std::string& syntax) {
+
+}
 
