@@ -26,7 +26,7 @@
  * \file qlog.hh
  * \author Juexiao Su
  * \date 11 Jul 2017
- * \brief log utility for quantum annealer
+ * \brief log utility for quantum sat compiler
  */
 
 
@@ -67,12 +67,12 @@ public:
    */
   void speak(const char* step, const char* format, ...) __attribute__((format(printf, 3,4)));
 
+
   /*!
-   * \brief basic log function
-   * \param message print out message
-   * \param cr decide the start a new line
+   * \brief log function with step name
+   * \param format format the output
    */
-  void speak(const char* message, bool cr = false);
+  void speak(const char* format, ...) __attribute__((format(printf, 2,3)));
 
 
   /*!
@@ -106,6 +106,14 @@ private:
    * \param message message to print
    */
   void qfprintf(const char* step, const char* message);
+
+  /*!
+   * \brief customized fprintf
+   * \param message message to print
+   */
+  void qfprintf(const char* message, bool cr=false);
+
+
 
   FILE* _logFile;     //!< log file handler
   bool _quiet;        //!< set the the qlog in silent mode

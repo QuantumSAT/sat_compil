@@ -27,6 +27,8 @@
 
 
 #include <boost/algorithm/string.hpp>
+#include <cstring>
+
 #include "utils/qlog.hh"
 #include "tcl/tcl_command.hh"
 
@@ -36,19 +38,80 @@
 QTclCommand::QTclCommand(const std::string& command_name, const std::string& syntax) :
   _command_name(command_name),
   _syntax(syntax) {
-    parseSyntax(syntax);
+    splitSyntax(_syntax, _options);
 }
+
+void QTclCommand::printHelp() {
+  qlog.speak("\tcmd_name : %s\t\tsyntax: %s\n", _command_name, _syntax);
+}
+
+bool QTclCommand::isSeperator(const std::string& name) const {
+  return name[0] == '-' && name.length()>1 && !isdigit(name[1]);
+}
+
+std::string QTclCommand::getCommandString(const int argc, const char** argv) {
+  std::string result;
+  for (int i = 0; i < argc; ++i) {
+    std::string cmd_name = std::string(argv[i]);
+
+    if (i != 0) cmd_name = " " + cmd_name;
+    result += cmd_name;
+  }
+
+  return result;
+}
+
+int QTclCommand::getOptionIndex(const int argc, const char** argv, const char* option_name) {
+  for (int i = 1; i < argc; ++i) {
+    if (std::strcmp(option_name, argv[i]) == 0)
+      return i;
+  }
+  return -1;
+}
+
+bool QTclCommand::isOptionExist(const int argc, const char** argv, const char* option_name) {
+  if (getOptionIndex(argc, argv, option_name) > -1)
+    return true;
+  else 
+    return false;
+}
+
+void QTclCommand::splitSyntax(const std::string& str, std::vector<CommandOption>& options, std::string sep) {
+
+  std::vector<std::string> opts;
+  boost::split(opts, str, boost::is_any_of(sep), boost::token_compress_on);
+  size_t opts_num = options.size();
+  for (size_t i = 0; i < opts_num; ++i) {
+    while (i < opts_num && !isSeperator(opts[i])) ++i;
+
+    if (i == opts_num) break;
+
+    CommandOption cmd_opt;
+    cmd_opt.argument = opts[i];
+
+    std::string flag;
+    while(++i < opts_num) {
+      if (isSeperator(opts[i])) {
+        --i;
+        break;
+      }
+      flag += " ";
+      flag += opts[i];
+    }
+    cmd_opt.flag = flag;
+    options.push_back(cmd_opt);
+  }
+}
+
+
+
 
 
 bool QTclCommand::checkOptions(const int argc, const char** argv) {
 
-
-  QASSERT(0);
   return false;
-
 }
 
-bool QTclCommand::parseSyntax(const std::string& syntax) {
 
-}
+
 

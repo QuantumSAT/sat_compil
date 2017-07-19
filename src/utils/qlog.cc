@@ -78,11 +78,6 @@ void qLog::speak(const char* step, const char* format, ...) {
 
 }
 
-void qLog::speak(const char* message, bool cr) {
-  std::fprintf(stderr, "%s%s", message, cr?"\n":"");
-  if (_logFile)
-    std::fprintf(_logFile, "%s%s", message, cr?"\n":"");
-}
 
 void qLog::skipLine() {
   speak("============================================================================");
@@ -106,6 +101,16 @@ void qLog::qfprintf(const char* step, const char* message) {
     std::fprintf(_logFile, " *    %s : %s\n", step, message);
 
 }
+
+void qLog::qfprintf(const char* message, bool cr) {
+
+  std::fprintf(stderr, "%s%s", message, cr?"\n":"");
+  if (_logFile)
+    std::fprintf(_logFile, "%s%s", message, cr?"\n":"");
+
+}
+
+
 
 void qLog::assert(const char* expr, const char* file, int line) {
   std::fprintf(stderr, "!!! Assertion '%s' failed at %s line %d\n", expr, file, line);

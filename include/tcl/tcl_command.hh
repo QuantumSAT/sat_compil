@@ -68,22 +68,72 @@ public:
    */
   virtual int execute(int argc, char** argv, std::string& result) = 0;
 
-  /*  \brief return a detailed help message
-   *  \return std::string help message
-   */
-  virtual std::string help() const = 0;
+
+  void printHelp();
 
   friend TclManager;
 
 private:
 
+  /*  \brief return a detailed help message
+   *  \return std::string help message
+   */
+  virtual std::string help() const = 0;
+
+  /*! \brief convert arguments to string
+   *  \param argc argument count
+   *  \param argv argument vector
+   *  \return string
+   */
+  std::string getCommandString(const int argc, const char** argv);
+
+
+  /*! \brief get argument index
+   *  \param argc argument count
+   *  \param argv argument vector
+   *  \return int argument index
+   */
+  int getOptionIndex(const int argc, const char** argv, const char* option_name);
+
+
+  /*! \brief check if certain argument exists
+   *  \param argc argument count
+   *  \param argv argument vector
+   *  \param option_name the name of argument needs to check
+   *  \return bool indicate weather the argument exists
+   */
+  bool isOptionExist(const int argc, const char** argv, const char* option_name);
+
+
+
+  /*! \brief check if the input command compatible with syntax
+   *  \param argc argument count
+   *  \param argv argument vector
+   *  \return bool
+   */
   bool checkOptions(const int argc, const char** argv);
 
+  /*! \brief split syntax into options
+   *  \param str string needs to parse
+   *  \param options resulted options
+   *  \param sep seperator
+   */
+  void splitSyntax(const std::string& str, std::vector<CommandOption>& options, std::string sep = " ");
+
+  /*! \brief parse syntax into internal data structure
+   *  \param syntax syntax for tcl command
+   *  \param bool success
+   */
   bool parseSyntax(const std::string& syntax);
 
-  std::string _command_name;    //!< command name 
-  std::string _syntax;          //!< command syntax
+  /*! \brief check if string start with seperator "-"
+   *  \param given command string
+   *  \return bool  
+   */
+  bool isSeperator(const std::string& name) const;
 
+  std::string _command_name;            //!< command name 
+  std::string _syntax;                  //!< command syntax
   std::vector<CommandOption> _options   //!< vector to hold all command options
 
 

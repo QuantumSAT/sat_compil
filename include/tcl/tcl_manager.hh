@@ -81,25 +81,6 @@ private:
   
   NameToCommand _name_to_command; //!< a map between command and command name
 
-  std::string getCommandString(const int argc, const char** argv);
-
-
-  /*! \brief get argument index
-   * \param argc argument count
-   * \param argv argument vector
-   * \return int argument index
-   */
-  int getOptionIndex(const int argc, const char** argv);
-
-
-  /*! \brief check if certain argument exists
-   * \param argc argument count
-   * \param argv argument vector
-   * \param option_name the name of argument needs to check
-   * \return bool indicate weather the argument exists
-   */
-  bool isOptionExist(const int argc, const char** argv, const char* option_name);
-
 
 
 };
