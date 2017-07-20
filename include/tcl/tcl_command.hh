@@ -48,19 +48,21 @@ class QTclCommand {
   struct CommandOption {
     std::string argument;
     std::string flag;
+
+    bool matchFlag(std::string str);
   };
 
 public:
-  /* \brief constructor
-   * \param command_name tcl command name
-   * \param syntax tcl command syntax
+  /*! \brief constructor
+   *  \param command_name tcl command name
+   *  \param syntax tcl command syntax
    */
   QTclCommand(const std::string& command_name, const std::string& syntax);
 
 
   virtual ~QTclCommand() {}
 
-  /*  \brief execute tcl command
+  /*! \brief execute tcl command
    *  \param argc argument count
    *  \param argv argument vector
    *  \param result returned result
@@ -69,13 +71,34 @@ public:
   virtual int execute(int argc, char** argv, std::string& result) = 0;
 
 
+  /*! \brief print tcl command help infomation
+   */
   void printHelp();
+
+  /*! \brief check if the given string can be cast to int
+   *  \param given option name
+   *  \return bool
+   */
+  static bool isValidInt(std::string opt);
+
+  /*! \brief check if the given string can be cast to int
+   *  \param given option name
+   *  \return bool
+   */
+  static bool isValidDouble(std::string opt);
+
+  /*! \brief check if the given string can be cast to int
+   *  \param given option name
+   *  \return bool
+   */
+  static bool isValidString(std::string opt);
+
 
   friend TclManager;
 
 private:
 
-  /*  \brief return a detailed help message
+  /*! \brief return a detailed help message
    *  \return std::string help message
    */
   virtual std::string help() const = 0;

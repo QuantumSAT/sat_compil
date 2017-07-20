@@ -32,6 +32,26 @@
 #include "utils/qlog.hh"
 #include "tcl/tcl_command.hh"
 
+bool CommandOption::matchFlag(std::string str) {
+  std::string cmd = boost::trim(str);
+  std::string regex = boost::trim(flag);
+
+  if (regex.length() == 0) {
+    if (cmd.length() == 0)
+      return true;
+    else
+      return false;
+  }
+
+  std::vector<std::string> str_v;
+  boost::split(str_v, str, boost::is_any_of(" "), boost::token_compress_on);
+
+
+
+
+
+}
+
 
 
 
@@ -103,13 +123,78 @@ void QTclCommand::splitSyntax(const std::string& str, std::vector<CommandOption>
   }
 }
 
+bool QTclCommand::isValidInt(std::string opt) {
+  size_t len = opt.length();
+  if (!len) return false;
 
+  if (opt[0] == "-") ++i;
+  for (; i < len; ++i) {
+    if (!std::isdigit(opt[i]))  
+      return false;
+  }
+  return true;
+}
 
+bool QTclCommand::isValidDouble(std::string opt) {
+  size_t len = opt.length();
+  if (!len) return false;
+
+  if (opt[0] == "-") ++i;
+  for (; i < len; ++i) {
+    if (!std::isdigit(opt[i]) && (opt[i] != '.'))  
+      return false;
+  }
+  return true;
+}
+
+bool QTclCommand::isValidString(std::string opt) {
+  size_t len = opt.length();
+  if (!len) return false;
+
+  for (size_t i = 0; i < len; ++i) {
+    if (opt[i] == '<' || opt[i] == '>')
+      return false;
+  }
+  return true;
+}
 
 
 bool QTclCommand::checkOptions(const int argc, const char** argv) {
+  std::string cmd_name = std::string(argv[0]);
+  
+  for (int i = 1; i < argc; ++i) {
+    std::string opt_name = std::string(argv[i]);
+    if (!isSeperator(opt_name)) continue;
 
-  return false;
+    std::string argu = "";
+    while (++i < objc) {
+      std::string para_name(argv[i]);
+      if (isSeperator(para_name)) {
+        --i;
+        break;
+      }
+      argu += " ";
+      argu += para_name;
+    }
+
+    
+    std::vector<CommandOption>::iterator o_iter = _options.begin();
+    for (; o_iter != _options.end(); ++o_iter) {
+      if (o_iter->argument == opt_name) {
+        if (o_iter->matchFlag(argu))
+          break;
+      } else {
+        qlog.speak("Tcl", "Invalid option arguments %s", argu.c_str());
+        printHelp();
+        return false;
+      }
+    }
+    if (o_iter == _options.end()) {
+      qlog.speak("Tcl", "Invalid option name: %s", opt_name.c_str());
+      return false;
+    }
+  }
+  return true;
 }
 
 
