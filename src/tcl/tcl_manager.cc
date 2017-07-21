@@ -25,8 +25,12 @@
  */
 
 #include "tcl/tcl_manager.hh"
+#include "tcl/tcl_command.hh"
+#include "utils/qlog.hh"
 
-inline int execute_cmd(ClientData* clientData, Tcl_Interp* interp, int argc, char** argv) {
+#include <cstring>
+
+inline int execute_cmd(ClientData* clientData, Tcl_Interp* interp, int argc, const char** argv) {
   std::string cmd_name = std::string(argv[0]);
   return TclManager::getOrCreate()->execute_cmd_main(cmd_name, clientData, interp, argc, argv);
 
@@ -41,11 +45,28 @@ TclManager* TclManager::getOrCreate() {
   return _tcl_manager;
 }
 
-int TclManager::execute_cmd_main(std::string cmd, ClientData* clientData, Tcl_Interp*, int argc, char** argv) {
-  if (!_name_to_command.count(cmd))
-    qlog.speak("TCL","Cannot find tcl command %s");
-  
+int TclManager::execute_cmd_main(std::string cmd, ClientData* clientData, Tcl_Interp*, const int argc, const char** argv) {
 
+  QTclCommand* command = _tcl_manager->getCommand(cmd);
+  if (!command) {
+    qlog.speak("TCL","Cannot find tcl command %s", cmd.c_str());
+    return TCL_OK;
+  }
+
+  if (!command->checkOptions(argc, argv)) {
+    return TCL_OK;
+  }
+
+  std::string tcl_result;
+
+  int status = TCL_OK;
+  status = command->execute(argc, argv, tcl_result, clientData);
+  char* res = strdup(tcl_result.c_str());
+  Tcl_SetResult(_tcl_manager->_interp, res, TCL_VOLATILE);
+  free(res);
+
+  return status;
+  
 
 }
 

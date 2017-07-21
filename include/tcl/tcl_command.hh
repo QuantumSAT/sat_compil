@@ -31,6 +31,8 @@
 #include <string>
 #include <vector>
 
+#include <tcl.h>
+
 class TclManager;
 
 
@@ -68,7 +70,7 @@ public:
    *  \param result returned result
    *  \return int
    */
-  virtual int execute(int argc, char** argv, std::string& result) = 0;
+  virtual int execute(int argc, const char** argv, std::string& result, ClientData* clientData) = 0;
 
 
   /*! \brief print tcl command help infomation
@@ -170,7 +172,7 @@ private:
   protected:                                      \
     virtual ~CMD() {}                             \
   public:                                         \
-    virtual int execute(int argc, char** argv, std::string& result);  \
+    virtual int execute(int argc, char** argv, std::string& result, ClientData* clientData);  \
     virtual std::string  help() const;                    \
   };            
 

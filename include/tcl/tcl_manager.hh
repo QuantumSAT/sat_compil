@@ -74,7 +74,7 @@ public:
    *  \param argv argument vector
    *  \return int TCL status
    */
-  static int execute_cmd_main(std::string cmd, ClientData* clientData, Tcl_Interp* interp, int argc, char** argv);
+  static int execute_cmd_main(std::string cmd, ClientData* clientData, Tcl_Interp* interp, int argc, const char** argv);
 
 
 
@@ -85,9 +85,22 @@ private:
    */
   TclManager() : _interp(NULL) {}
 
+  /*! \brief get tcl command
+   *  \param cmd_name command name
+   *  \return QTclCommand* a pointer for tcl command
+   */
+  QTclCommand* getCommand(std::string cmd_name) const {
+    if (!_name_to_command.count(cmd_name))
+      return NULL;
+    else
+      return _name_to_command[cmd_name];
+  }
+
+
   Tcl_Interp* _interp;            //!< tcl interpreter
 
   static SELF* _tcl_manager;      //!< self pointer for singleton
+
   
   NameToCommand _name_to_command; //!< a map between command and command name
 
