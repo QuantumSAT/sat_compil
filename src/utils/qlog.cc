@@ -82,8 +82,6 @@ void qLog::speak(const char* step, const char* format, ...) {
 void qLog::speakError(const char* format, ...) {
 
   std::string error = "Error";
-  if( _quiet)
-    return;
 
   va_list ap;
   va_start(ap, format);
@@ -94,6 +92,21 @@ void qLog::speakError(const char* format, ...) {
   abort();
 
 }
+
+void qLog::speak(const char* format, ...) {
+
+  va_list ap;
+  va_start(ap, format);
+  vsnprintf(message_buffer, BUFFER_SIZE, format, ap);
+  va_end(ap);
+
+
+  std::fprintf(stderr, "%s", message_buffer);
+  if (_logFile)
+    std::fprintf(_logFile, "%s", message_buffer);
+}
+
+
 
 
 
@@ -130,7 +143,7 @@ void qLog::qfprintf(const char* message, bool cr) {
 
 
 
-void qLog::assert(const char* expr, const char* file, int line) {
+void qLog::qassert(const char* expr, const char* file, int line) {
   std::fprintf(stderr, "!!! Assertion '%s' failed at %s line %d\n", expr, file, line);
   if (_logFile)
     std::fprintf(_logFile, "!!! Assertion '%s' failed at %s line %d\n", expr, file, line);

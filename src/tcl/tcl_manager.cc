@@ -29,10 +29,47 @@
 #include "utils/qlog.hh"
 
 #include <cstring>
+#include <cassert>
 
-inline int execute_cmd(ClientData* clientData, Tcl_Interp* interp, int argc, const char** argv) {
+inline int execute_cmd(ClientData clientData, Tcl_Interp* interp, int argc, const char** argv) {
   std::string cmd_name = std::string(argv[0]);
   return TclManager::getOrCreate()->execute_cmd_main(cmd_name, clientData, interp, argc, argv);
+
+}
+
+/*! \brief Tcl manager clean up function
+ */
+void TclManagerCleanUp() {
+  delete TclManager::_tcl_manager;
+  TclManager::_tcl_manager = NULL;
+}
+
+
+extern int TclInitProc(Tcl_Interp* interp);
+extern void registerAllCommands();
+
+
+void TclManager::init(int argc, char** argv) {
+  //1) create tcl manager;
+  assert(getOrCreate());
+
+  //2) create tcl interp
+  Tcl_Interp* interp = Tcl_CreateInterp();
+  getOrCreate()->setTclInterp(interp);
+
+  //3) register all commands
+  registerAllCommands();
+
+  if (argc == 2) {
+    if (Tcl_EvalFile(interp, argv[1]) == TCL_ERROR) {
+      const char* error_msg = Tcl_GetVar(interp, "errorInfo", 0);
+      qlog.speakError("%s",error_msg);
+    }
+  }
+  else {
+    qlog.speak("Usage", "interactive mode is not supported!");
+    qlog.speak("Usage", "qsat <tcl>");
+  }
 
 }
 
@@ -45,7 +82,19 @@ TclManager* TclManager::getOrCreate() {
   return _tcl_manager;
 }
 
-int TclManager::execute_cmd_main(std::string cmd, ClientData* clientData, Tcl_Interp*, const int argc, const char** argv) {
+void TclManager::registerCommand(QTclCommand* cmd) {
+  assert(cmd);
+
+  if (_name_to_command.count(cmd->_command_name)) {
+    qlog.speakError("Redefine of Tcl command %s", cmd->_command_name.c_str());
+  }
+
+  _name_to_command[cmd->_command_name] = cmd;
+
+  Tcl_CreateCommand(_interp, cmd->_command_name.c_str(), execute_cmd, this, NULL);
+}
+
+int TclManager::execute_cmd_main(std::string cmd, ClientData clientData, Tcl_Interp*, const int argc, const char** argv) {
 
   QTclCommand* command = _tcl_manager->getCommand(cmd);
   if (!command) {

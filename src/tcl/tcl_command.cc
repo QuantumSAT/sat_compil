@@ -60,23 +60,23 @@ bool QTclCommand::CommandOption::matchFlag(std::string cmd) {
       boost::trim_left_if(tmp, boost::is_any_of("<"));
       boost::trim_right_if(tmp, boost::is_any_of(">"));
       if (tmp == "int") {
-        if (!isValidInt(str_v[i])) {
+        if (!isValidInt(cmd_v[i])) {
           return false;
         }
       } else if (tmp == "double") {
-        if (!isValidDouble(str_v[i])) {
+        if (!isValidDouble(cmd_v[i])) {
           return false;
         }
       } else if (tmp == "string") {
-        if (!isValidString(str_v[i])) {
+        if (!isValidString(cmd_v[i])) {
           return false;
         }
       } else {
-        qlog.speak("TCL", "unsupported syntax %s", flag);
+        qlog.speak("TCL", "unsupported syntax %s", flag.c_str());
         return false;
       }
     } else { 
-      qlog.speak("TCL", "unsupported syntax %s", flag);
+      qlog.speak("TCL", "unsupported syntax %s", flag.c_str());
       return false;
     }
   }
@@ -95,7 +95,7 @@ QTclCommand::QTclCommand(const std::string& command_name, const std::string& syn
 }
 
 void QTclCommand::printHelp() {
-  qlog.speak("\tcmd_name : %s\t\tsyntax: %s\n", _command_name, _syntax);
+  qlog.speak("\tcmd_name : %s\t\tsyntax: %s\n", _command_name.c_str(), _syntax.c_str());
 }
 
 bool QTclCommand::isSeperator(const std::string& name) const {
@@ -159,8 +159,9 @@ void QTclCommand::splitSyntax(const std::string& str, std::vector<CommandOption>
 bool QTclCommand::isValidInt(std::string opt) {
   size_t len = opt.length();
   if (!len) return false;
+  size_t i = 0;
 
-  if (opt[0] == "-") ++i;
+  if (opt[0] == '-') ++i;
   for (; i < len; ++i) {
     if (!std::isdigit(opt[i]))  
       return false;
@@ -171,8 +172,9 @@ bool QTclCommand::isValidInt(std::string opt) {
 bool QTclCommand::isValidDouble(std::string opt) {
   size_t len = opt.length();
   if (!len) return false;
+  size_t i = 0;
 
-  if (opt[0] == "-") ++i;
+  if (opt[0] == '-') ++i;
   for (; i < len; ++i) {
     if (!std::isdigit(opt[i]) && (opt[i] != '.'))  
       return false;
@@ -200,7 +202,7 @@ bool QTclCommand::checkOptions(const int argc, const char** argv) {
     if (!isSeperator(opt_name)) continue;
 
     std::string argu = "";
-    while (++i < objc) {
+    while (++i < argc) {
       std::string para_name(argv[i]);
       if (isSeperator(para_name)) {
         --i;
@@ -217,7 +219,7 @@ bool QTclCommand::checkOptions(const int argc, const char** argv) {
         if (o_iter->matchFlag(argu))
           break;
       } else {
-        qlog.speak("TCL", "Invalid option arguments %s for syntax %s", argu.c_str(), o_iter->flag);
+        qlog.speak("TCL", "Invalid option arguments %s for syntax %s", argu.c_str(), o_iter->flag.c_str());
         printHelp();
         return false;
       }

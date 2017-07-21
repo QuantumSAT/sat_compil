@@ -17,55 +17,26 @@
  *   License along with QSat.  If not, see <http://www.gnu.org/licenses/>.  *
  ****************************************************************************/
 
-
 /*!
- * \file main.cc
+ * \file tcl_register_commands.cc
  * \author Juexiao Su
- * \date 11 Jul 2017
- * \brief main function entry point
+ * \date 21 Jul 2017
+ * \brief register all tcl commands
  */
 
-
-#include "utils/qlog.hh"
-
 #include "tcl/tcl_manager.hh"
-
-#include <string>
-#include <iostream>
-
-extern std::string getBanner();
-extern char* getBuildTime();
-extern char* getBuiltBy();
+#include "tcl/tcl_command.hh"
+#include "tcl/tcl_basic_command.hh"
 
 
-extern void TclManagerCleanUp();
+void registerAllCommands() {
 
+  TclManager* tcl_manager = TclManager::getOrCreate();
 
+  tcl_manager->registerCommand(new QCOMMAND_source("source", "<string>"));
+  tcl_manager->registerCommand(new QCOMMAND_hello("hello",""));
+  
 
-int main(int argc, char** argv) {
-
-  qlog.setLogFile("QSat.log");
-  qlog.speak(getBanner().c_str());
-  qlog.speak("Build Time: ");
-  qlog.speak(getBuildTime());
-  qlog.speak("\n");
-  qlog.speak("Built By: ");
-  qlog.speak(getBuiltBy());
-  qlog.speak("\n");
-
-  qlog.skipLine();
-  qlog.speak("\n\n");
-
-
-  //init tcl manager
-  TclManager::init(argc, argv);
-
-  //clean up
-  TclManagerCleanUp();
-  return 0;
 
 }
-
-
-
 

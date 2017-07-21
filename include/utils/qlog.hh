@@ -90,7 +90,7 @@ public:
    * \param file file name
    * \param line line number
    */
-  void assert(const char* msg, const char* file, const int line) __attribute__((noreturn));
+  void qassert(const char* msg, const char* file, const int line) __attribute__((noreturn));
 
 
 
@@ -131,7 +131,7 @@ private:
 
 
 extern qLog qlog;
-#define QASSERT(EXPR) ((EXPR)? (void)0 : qlog.assert(#EXPR, __FILE__, __LINE__))
+#define QASSERT(EXPR) ((EXPR)? (void)0 : qlog.qassert(#EXPR, __FILE__, __LINE__))
 
 
 

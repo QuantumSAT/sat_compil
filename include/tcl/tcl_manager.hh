@@ -35,6 +35,8 @@
 
 class QTclCommand;
 
+extern void TclManagerCleanUp();
+
 
 /*! \class TclManager
  *  \brief This class manages all tcl command
@@ -74,8 +76,19 @@ public:
    *  \param argv argument vector
    *  \return int TCL status
    */
-  static int execute_cmd_main(std::string cmd, ClientData* clientData, Tcl_Interp* interp, int argc, const char** argv);
+  static int execute_cmd_main(std::string cmd, ClientData clientData, Tcl_Interp* interp, int argc, const char** argv);
 
+  /*! \brief get interp pointer
+   *  \return Tcl_Interp* a pointer for tcl interp
+   */
+  Tcl_Interp* getInterp() const { return _interp; }
+
+
+  /*! \brief initialization 
+   *  \param argc argument count
+   *  \param argv argument vector
+   */
+  static void init(int argc, char** argv);
 
 
   friend void TclManagerCleanUp();
@@ -93,27 +106,19 @@ private:
     if (!_name_to_command.count(cmd_name))
       return NULL;
     else
-      return _name_to_command[cmd_name];
+      return _name_to_command.at(cmd_name);
   }
 
 
+
+
   Tcl_Interp* _interp;            //!< tcl interpreter
-
   static SELF* _tcl_manager;      //!< self pointer for singleton
-
-  
   NameToCommand _name_to_command; //!< a map between command and command name
-
 
 
 };
 
-/*! \brief Tcl manager clean up function
- */
-void TclManagerCleanUp() {
-  delete TclManager::_tcl_manager;
-  TclManager::_tcl_manager = NULL;
-}
 
 
 

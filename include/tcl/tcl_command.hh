@@ -70,7 +70,7 @@ public:
    *  \param result returned result
    *  \return int
    */
-  virtual int execute(int argc, const char** argv, std::string& result, ClientData* clientData) = 0;
+  virtual int execute(int argc, const char** argv, std::string& result, ClientData clientData) = 0;
 
 
   /*! \brief print tcl command help infomation
@@ -159,7 +159,7 @@ private:
 
   std::string _command_name;            //!< command name 
   std::string _syntax;                  //!< command syntax
-  std::vector<CommandOption> _options   //!< vector to hold all command options
+  std::vector<CommandOption> _options;  //!< vector to hold all command options
 
 
 };
@@ -172,7 +172,7 @@ private:
   protected:                                      \
     virtual ~CMD() {}                             \
   public:                                         \
-    virtual int execute(int argc, char** argv, std::string& result, ClientData* clientData);  \
+    virtual int execute(int argc, const char** argv, std::string& result, ClientData clientData);  \
     virtual std::string  help() const;                    \
   };            
 
