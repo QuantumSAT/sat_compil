@@ -79,6 +79,24 @@ void qLog::speak(const char* step, const char* format, ...) {
 }
 
 
+void qLog::speakError(const char* format, ...) {
+
+  std::string error = "Error";
+  if( _quiet)
+    return;
+
+  va_list ap;
+  va_start(ap, format);
+  vsnprintf(message_buffer, BUFFER_SIZE, format, ap);
+  va_end(ap);
+
+  qfprintf(error.c_str(), message_buffer);
+  abort();
+
+}
+
+
+
 void qLog::skipLine() {
   speak("============================================================================");
 }

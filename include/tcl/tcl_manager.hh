@@ -54,7 +54,7 @@ public:
   /*! \brief get or create a tcl manager
    *  \return TclManager* the pointer of TclManager
    */
-  SELF* getOrCreate();
+  static SELF* getOrCreate();
 
   /*! \brief set tcl interp
    *  \param inter tcl interpreter
@@ -65,6 +65,16 @@ public:
    *  \param cmd class QTclCommand
    */
   void registerCommand(QTclCommand* cmd);
+
+  /*! \brief execute tcl command
+   *  \param cmd command name
+   *  \param ClientData client data
+   *  \param Tcl_Interp* a pointer for tcl interpreter
+   *  \param argc argument count
+   *  \param argv argument vector
+   *  \return int TCL status
+   */
+  static int execute_cmd_main(std::string cmd, ClientData* clientData, Tcl_Interp* interp, int argc, char** argv);
 
 
 

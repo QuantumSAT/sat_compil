@@ -26,6 +26,12 @@
 
 #include "tcl/tcl_manager.hh"
 
+inline int execute_cmd(ClientData* clientData, Tcl_Interp* interp, int argc, char** argv) {
+  std::string cmd_name = std::string(argv[0]);
+  return TclManager::getOrCreate()->execute_cmd_main(cmd_name, clientData, interp, argc, argv);
+
+}
+
 TclManager* TclManager::_tcl_manager = NULL;
 
 
@@ -33,6 +39,14 @@ TclManager* TclManager::getOrCreate() {
   if (_tcl_manager == NULL)
     _tcl_manager = new TclManager;
   return _tcl_manager;
+}
+
+int TclManager::execute_cmd_main(std::string cmd, ClientData* clientData, Tcl_Interp*, int argc, char** argv) {
+  if (!_name_to_command.count(cmd))
+    qlog.speak("TCL","Cannot find tcl command %s");
+  
+
+
 }
 
 
