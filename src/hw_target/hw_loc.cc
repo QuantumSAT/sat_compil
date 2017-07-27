@@ -40,7 +40,6 @@ HW_Loc::HW_Loc(COORD cell_x, COORD cell_y, COORD local_index) :
 
 HW_Loc::HW_Loc(COORD qubit_a, COORD qubit_b)
 {
-
   assert(qubit_a != qubit_b);
   COORD min_index = std::min(qubit_a, qubit_b);
   _cell_x = globalIndexToX(min_index);
@@ -53,6 +52,16 @@ HW_Loc::HW_Loc(COORD qubit_a, COORD qubit_b)
       std::max(qubit_a, qubit_b));
 }
 
+std::ostream& operator << (std::ostream& stream, const HW_Loc& loc) {
+  stream << "X: " << loc._cell_x;
+  stream << " Y: " << loc._cell_y;
+  stream << " Local: " << loc._local_index;
+  stream << " Pair: " << loc._interaction_index.first << " " << loc._interaction_index.second;;
+  stream << " Type: " << (loc.isQubit() ? 
+                  "Qubit":loc.isCell() ? 
+                  "Cell" :loc.isInteraction() ? "Interaction" : "Unknown");
+  return stream;
+}
 
 bool HW_Loc::isQubit() const { 
   return (_global_index > -1) &&
@@ -83,10 +92,9 @@ bool HW_Loc::isCell() const {
 
 
 COORD HW_Loc::toGlobalIndex(COORD x, COORD y, COORD local) {
-  HW_Param* hw_param = HW_Param::getOrCreate();
-  COORD max_x = hw_param->getMaxRangeX();
-  COORD max_y = hw_param->getMaxRangeY();
-  COORD max_local_index = hw_param->getMaxRangeLocal();
+  COORD max_x = _hw_param->getMaxRangeX();
+  COORD max_y = _hw_param->getMaxRangeY();
+  COORD max_local_index = _hw_param->getMaxRangeLocal();
 
   //sanity check
   assert(max_x != -1);
@@ -99,23 +107,20 @@ COORD HW_Loc::toGlobalIndex(COORD x, COORD y, COORD local) {
   return global_index;
 }
 
-COORD globalIndexToX(COORD global_index) {
-  HW_Param* hw_param = HW_Param::getOrCreate();
-  COORD max_local_index = hw_param->getMaxRangeLocal();
-  COORD max_x = hw_param->getMaxRangeX();
+COORD HW_Loc::globalIndexToX(COORD global_index) {
+  COORD max_local_index = _hw_param->getMaxRangeLocal();
+  COORD max_x = _hw_param->getMaxRangeX();
   return (global_index / max_local_index) % max_x;
 }
 
-COORD globalIndexToY(COORD global_index) {
-  HW_Param* hw_param = HW_Param::getOrCreate();
-  COORD max_local_index = hw_param->getMaxRangeLocal();
-  COORD max_x = hw_param->getMaxRangeX();
+COORD HW_Loc::globalIndexToY(COORD global_index) {
+  COORD max_local_index = _hw_param->getMaxRangeLocal();
+  COORD max_x = _hw_param->getMaxRangeX();
   return (global_index / max_local_index) / max_x;
 }
 
-COORD globalIndexToLocalIndex(COORD global_index) {
-  HW_Param* hw_param = HW_Param::getOrCreate();
-  COORD max_local_index = hw_param->getMaxRangeLocal();
+COORD HW_Loc::globalIndexToLocalIndex(COORD global_index) {
+  COORD max_local_index = _hw_param->getMaxRangeLocal();
   return (global_index % max_local_index);
 }
  

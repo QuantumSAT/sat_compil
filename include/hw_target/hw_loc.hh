@@ -36,7 +36,7 @@
  * location of each cell, qubit, interaction
  *
  *        X   X   X.... \
- *                      |
+ *      (0,0)           |
  *        X   X   X.... | M rows (Y axis)
  *                      |
  *        X   X   X.... /
@@ -60,7 +60,7 @@
 
 typedef int64_t COORD;
 
-
+class HW_Param;
 class HW_Loc {
 
 public:
@@ -133,13 +133,17 @@ public:
    */
   static COORD globalIndexToLocalIndex(COORD global_index);
 
+  friend std::ostream& operator<< (std::ostream& stream, const HW_Loc& loc);
+
 private:
 
   COORD                     _cell_x;                //!< cell x that indicates column number
   COORD                     _cell_y;                //!< cell y that inidcates row number
   COORD                     _local_index;           //!< indicates local qubit index
   COORD                     _global_index;          //!< global index which is the same with index defined by D-Wave
-  std::pair<COORD, COORD>   _interaction_index;   //!< global index pair for interaction
+  std::pair<COORD, COORD>   _interaction_index;     //!< global index pair for interaction
+
+  static HW_Param*          _hw_param;              //!< hardware parameter
 
 
 

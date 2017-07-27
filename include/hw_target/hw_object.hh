@@ -17,80 +17,25 @@
  *   License along with QSat.  If not, see <http://www.gnu.org/licenses/>.  *
  ****************************************************************************/
 
-#ifndef HW_PARAM_HH
-#define HW_PARAM_HH
+#ifndef HW_OBJECT_HH
+#define HW_OBJECT_HH
 
-#include "hw_target/hw_loc.hh"
-
-#include <utility>
-#include <cassert>
-
-
-class HW_Param {
-
-typedef HW_Param SELF;
-
-public:
-
-  /*! \brief constructor
-   */
-  HW_Param() : 
-    _max_cell_x(-1),
-    _max_cell_y(-1),
-    _max_local_index(-1)
-  {}
-
-  /*! \brief destructor
-   */
-  ~HW_Param() {}
-
-  /*! \brief get max x axis 
-   */
-  COORD getMaxRangeX() const {
-    assert(_max_cell_x != -1);
-    return _max_cell_x;
-  }
+/*!
+ *
+ * \file hw_object.hh
+ * \author Juexiao Su
+ * \date 27 Jul 2017
+ * \brief annealer object: cell, qubit, interaction
+ *
+ */
 
 
-  /*! \brief get max y axis 
-   */
-  COORD getMaxRangeY() const {
-    assert(_max_cell_y != -1);
-    return _max_cell_y;
-  }
-
-  /*! \brief get max local index
-   */
-  COORD getMaxRangeLocal() const {
-    assert(_max_local_index != -1);
-    return _max_local_index;
-  }
-
-  /*! \brief set coordinate max range
-   */
-  void setMaxRangeX(const COORD& x_max) {
-    _max_cell_x = x_max;
-  }
-
-  /*! \brief set coordinate max range
-   */
-  void setMaxRangeY(const COORD& y_max) {
-    _max_cell_y = y_max;
-  }
-
-  /*! \brief set coordinate max range
-   */
-  void setMaxRangeLocal(const COORD& local) {
-    _max_local_index = local;
-  }
+class HW_Cell;
+class HW_Qubit;
+class HW_Interaction;
 
 
-private:
-
-  // hardware related parameter
-  COORD         _max_cell_x;          //!< max x 
-  COORD         _max_cell_y;          //!< max y 
-  COORD         _max_local_index;     //!< max local index
+class HW_Qubit {
 
 
 };

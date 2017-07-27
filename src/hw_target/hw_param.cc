@@ -21,14 +21,3 @@
 
 
 
-HW_Param* HW_Param::_self = NULL;
-
-HW_Param* HW_Param::getOrCreate() {
-
-  if (_self == NULL)
-    _self = new HW_Param();
-
-  return _self;
-}
-
-
