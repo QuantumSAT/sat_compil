@@ -17,26 +17,18 @@
  *   License along with QSat.  If not, see <http://www.gnu.org/licenses/>.  *
  ****************************************************************************/
 
-#ifndef TCL_BASIC_COMMAND_HH
-#define TCL_BASIC_COMMAND_HH
-
-
-#include "tcl/tcl_command.hh"
-
-/*!
- * \file tcl_basic_command.cc
- * \author Juexiao Su
- * \date 21 Jul 2017
- * \brief basic tcl command served as example
- */
-
-
-TCL_COMMAND_DEFINE(QCOMMAND_source)
-TCL_COMMAND_DEFINE(QCOMMAND_hello)
+#include "hw_target/hw_param.hh"
 
 
 
+HW_Param* HW_Param::_self = NULL;
 
-#endif
+HW_Param* HW_Param::getOrCreate() {
+
+  if (_self == NULL)
+    _self = new HW_Param();
+
+  return _self;
+}
 
 
