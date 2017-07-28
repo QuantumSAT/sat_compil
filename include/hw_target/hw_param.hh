@@ -32,13 +32,6 @@ typedef HW_Param SELF;
 
 public:
 
-  /*! \brief constructor
-   */
-  HW_Param() : 
-    _max_cell_x(-1),
-    _max_cell_y(-1),
-    _max_local_index(-1)
-  {}
 
   /*! \brief destructor
    */
@@ -84,8 +77,29 @@ public:
     _max_local_index = local;
   }
 
+  /*! \brief get or create a hw paramter class
+   */
+  static SELF* getOrCreate() {
+    if (_self == NULL)
+      _self = new HW_Param();
+    return _self;
+  }
+
 
 private:
+
+  /*! \brief constructor
+   */
+  HW_Param() : 
+    _max_cell_x(-1),
+    _max_cell_y(-1),
+    _max_local_index(-1)
+  {}
+
+
+  /*
+   */
+  static SELF* _self;
 
   // hardware related parameter
   COORD         _max_cell_x;          //!< max x 

@@ -94,6 +94,10 @@ public:
       _interaction_index = std::make_pair(-1, -1);
   }
 
+  /*! \brief copy constructor
+   */
+  HW_Loc(const HW_Loc&); 
+
   /*! \brief destructor
    */
   ~HW_Loc() {}
@@ -132,6 +136,10 @@ public:
   /*  \brief convert global index to cell local index
    */
   static COORD globalIndexToLocalIndex(COORD global_index);
+
+  /* \brief set hw parameter
+   */
+  static void setHWParam(HW_Param* param) { _hw_param = param; }
 
   friend std::ostream& operator<< (std::ostream& stream, const HW_Loc& loc);
 

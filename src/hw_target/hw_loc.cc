@@ -24,6 +24,8 @@
 #include <cassert>
 #include <cmath>
 
+HW_Param* HW_Loc::_hw_param = NULL;
+
 HW_Loc::HW_Loc(COORD cell_x, COORD cell_y, COORD local_index) :
   _cell_x(cell_x),
   _cell_y(cell_y),
@@ -50,6 +52,14 @@ HW_Loc::HW_Loc(COORD qubit_a, COORD qubit_b)
   _interaction_index = std::make_pair(
       std::min(qubit_a, qubit_b),
       std::max(qubit_a, qubit_b));
+}
+
+HW_Loc::HW_Loc(const HW_Loc& loc) {
+  _cell_x = loc._cell_x;
+  _cell_y = loc._cell_y;
+  _local_index = loc._local_index;
+  _interaction_index = loc._interaction_index;
+  _global_index = loc._global_index;
 }
 
 std::ostream& operator << (std::ostream& stream, const HW_Loc& loc) {
