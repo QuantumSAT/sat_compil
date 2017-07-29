@@ -117,6 +117,22 @@ public:
    */
   bool isInteraction() const;
 
+  /*! \brief get X coordinate
+   */
+  COORD getLocX() const { return _cell_x; }
+
+  /*! \brief get Y coordinate
+   */
+  COORD getLocY() const { return _cell_y; }
+
+  /*! \brief get local index
+   */
+  COORD getLocalIndex() const { return _local_index; }
+
+  /*! \brief get global index
+   */
+  COORD getGlobalIndex() const { return _global_index; }
+
 
   /*  \brief convert local index to global index
    *  \param x 
