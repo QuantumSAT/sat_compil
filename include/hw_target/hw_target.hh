@@ -38,13 +38,23 @@ class HW_Target_abstract {
 
 public:
 
+  typedef std::unordered_map<COORD, HW_Qubit*> LocToQubit;
+  typedef std::unordered_map<std::pair<COORD,COORD>, HW_Interaction*, 
+          boost::hash<std::pair<COORD,COORD> > > LocToCellInteraction;
+
+
+  typedef std::unordered_map<COORD, HW_Qubit*>::iterator Q_ITER;
+  typedef std::unordered_map<std::pair<COORD,COORD>, HW_Interaction*, 
+          boost::hash<std::pair<COORD,COORD> > >::iterator I_ITER;
+  
+
   /*! \brief default constructor
    */
   HW_Target_abstract() {}
 
   /*! \brief default destructor
    */
-  virtual ~HW_Target_abstract() {}
+  virtual ~HW_Target_abstract();
 
   /*! \brief get qubit by its location
    *  \return a pointer of HW_Qubit
@@ -55,16 +65,21 @@ public:
   /*! \brief get interaction by its location
    *  \return a pointer of HW_Interaction
    */
-  virtual HW_Interaction* getInteraction(const HW_Loc& loc) const = 0;
+  virtual HW_Interaction* getInteraction(const HW_Loc& loc1, const HW_Loc& loc2) const = 0;
+
+
+
+
+private:
+
+  LocToQubit            _loc_to_qubit;         //!< a map between location and qubit
+  LocToCellInteraction  _loc_to_interaction;   //!< a map between location and interaction
   
 };
 
 
 class HW_Target_Dwave : public HW_Target_abstract {
 
-  typedef std::unordered_map<COORD, HW_Qubit*> LocToQubit;
-  typedef std::unordered_map<std::pair<COORD,COORD>, HW_Interaction*, 
-          boost::hash<std::pair<COORD,COORD> > > LocToCellInteraction;
 public:
   /*! \brief default constructor
    *  \param hw_param hardware related paramter
@@ -79,7 +94,7 @@ public:
   /*! \brief get the interaction by its location
    *  \param loc the interaction location
    */
-  virtual HW_Interaction* getInteraction(const HW_Loc& loc) const;
+  virtual HW_Interaction* getInteraction(const HW_Loc& loc1, const HW_Loc& loc2) const;
 
   /*! \brief get the cell by its location
    *  \param loc the cell location
@@ -98,9 +113,7 @@ private:
 
   HW_Param* _hw_param;              //!< a paramter class which holds all hw info
 
-  LocToQubit            _loc_to_qubit;         //!< a map between location and qubit
   LocToCellInteraction  _loc_to_cell;          //!< a map between location and cell
-  LocToCellInteraction  _loc_to_interaction;   //!< a map between location and interaction
 
 
 };

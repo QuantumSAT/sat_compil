@@ -17,42 +17,22 @@
  *   License along with QSat.  If not, see <http://www.gnu.org/licenses/>.  *
  ****************************************************************************/
 
+#include "hw_target/hw_target.hh"
 #include "hw_target/hw_object.hh"
 
 
-HW_Cell::HW_Cell(COORD x, COORD y, HW_Target_abstract* hw_target) :
-  HW_Object(x, y, -1),
- _hw_target(hw_target) {
-  buildQubitsAndInteractions(); 
-}
-
-void HW_Cell::buildQubitsAndInteractions() {
-
-  //1) create all local qubits
-  for (COORD i = 0; i < 8; ++i) {
-    HW_Qubit* qubit = new HW_Qubit(_loc.getLocX(), _loc.getLocY(), i, this);
-    _qubits.insert(std::make_pair(i, qubit));
+HW_Target_abstract::~HW_Target_abstract() {
+  for (Q_ITER qiter = _loc_to_qubit.begin(); 
+        qiter != _loc_to_qubit.end(); ++qiter) {
+    delete qiter->second;
   }
 
+  _loc_to_qubit.clear();
 
-  //2) create all local interactions
-  for (COORD i = 0; i < 4; ++i) {
-    for (COORD j = 4; j < 8; ++j) {
-      HW_Interaction* interaction = new HW_Interaction(
-          _qubits[i], _qubits[j], this);
-      _interactions.insert(std::make_pair(std::make_pair(
-              _qubits[i]->getLoc().getGlobalIndex(),
-              _qubits[j]->getLoc().getGlobalIndex()), interaction));
-    }
-  }
+  for (I_ITER iter = _loc_to_interaction.begin();
+        iter != _loc_to_interaction.end(); ++iter)
+    delete iter->second;
+
+  _loc_to_interaction.clear();
+
 }
-
-HW_Qubit::HW_Qubit(const COORD x, const COORD y, const COORD local, HW_Cell* cell, double max_weight, double min_weight) :
-  HW_Object(x, y, local),
-  _cell(cell),
-  _max_weight(max_weight),
-  _min_weight(min_weight),
-  _enable(true) {}
-
-
-

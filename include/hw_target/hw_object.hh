@@ -61,6 +61,10 @@ public:
    */
   virtual ~HW_Object() {}
 
+  /*! \breif get object location
+   */
+  HW_Loc getLoc() { return _loc; }
+
 protected:
   HW_Loc _loc; //!< location of the object
 
@@ -139,7 +143,7 @@ public:
   /*! \brief add interaction to this qubit
    *  \param interaction a pointer of interaction
    */
-  void addInteraction(HW_Interaction* interaction) { _interactions.push_back(interactio); }
+  void addInteraction(HW_Interaction* interaction) { _interactions.push_back(interaction); }
 
   /*! \brief find interaction by given the other qubit
    *  \param to_qubit pointer of the other qubit
@@ -192,7 +196,7 @@ public:
 private:
   HW_Interaction(const HW_Interaction&); //!< non-copyable
 
-  HW_Cell* _cell //!< the cell that owns this interaction
+  HW_Cell*  _cell; //!< the cell that owns this interaction
   HW_Qubit* _from_qubit; //!< from qubit is the qubit with smaller global id
   HW_Qubit* _to_qubit;   //!< to qubit is the qubit with larger global id
 
