@@ -39,8 +39,10 @@ class HW_Target_abstract {
 public:
 
   typedef std::unordered_map<COORD, HW_Qubit*> LocToQubit;
-  typedef std::unordered_map<std::pair<COORD,COORD>, HW_Interaction*, 
+  typedef std::unordered_map<std::pair<COORD,COORD>, HW_Interaction*,
           boost::hash<std::pair<COORD,COORD> > > LocToCellInteraction;
+  typedef std::unordered_map<std::pair<COORD, COORD>, HW_Cell*,
+          boost::hash<std::pair<COORD,COORD> > > LocToCell;
 
 
   typedef std::unordered_map<COORD, HW_Qubit*>::iterator Q_ITER;
@@ -91,10 +93,22 @@ public:
    */
   virtual HW_Qubit* getQubit(const HW_Loc& loc) const;
 
+  /*! \brief add qubit into dwave
+   *  \param x coordinate x
+   *  \param y coordinate y
+   */
+  void addQubit(COORD x, HW_Qubit* qubit);
+
   /*! \brief get the interaction by its location
    *  \param loc the interaction location
    */
   virtual HW_Interaction* getInteraction(const HW_Loc& loc1, const HW_Loc& loc2) const;
+
+  /*! \brief add new interation into hw target
+   *  \param x coordinate x
+   *  \param y coordinate y
+   */
+  void addInteraction(COORD x, COORD y, HW_Interaction* interac);
 
   /*! \brief get the cell by its location
    *  \param loc the cell location
@@ -111,9 +125,17 @@ private:
    */
   void initializeTarget();
 
+  /*! \brief build adjacent cell interactions
+   *  \param x1 coordinate x for cell1
+   *  \param y1 coordinate y for cell1
+   *  \param x2 coordinate x for cell2
+   *  \param y2 coordinate y for cell2
+   */
+  void buildInterCellInteractions(COORD x1, COORD y1, COORD x2, COORD y2, bool vertical);
+
   HW_Param* _hw_param;              //!< a paramter class which holds all hw info
 
-  LocToCellInteraction  _loc_to_cell;          //!< a map between location and cell
+  LocToCell  _loc_to_cell;          //!< a map between location and cell
 
 
 };

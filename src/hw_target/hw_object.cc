@@ -19,11 +19,28 @@
 
 #include "hw_target/hw_object.hh"
 
+#include <cassert>
 
-HW_Cell::HW_Cell(COORD x, COORD y, HW_Target_abstract* hw_target) :
+HW_Cell::HW_Cell(COORD x, COORD y, HW_Target_Dwave* hw_target) :
   HW_Object(x, y, -1),
  _hw_target(hw_target) {
   buildQubitsAndInteractions(); 
+
+  INTERACTIONS::iterator interac_iter = _interactions.begin();
+  for (; interac_iter != _interactions.end(); ++interac_iter) {
+    COORD x = interac_iter->first.first;
+    COORD y = interac_iter->first.second;
+    HW_Interaction* interac = interac_iter->second;
+    hw_target->addInteraction(x, y, interac);
+  }
+
+  QUBITS::iterator qubit_iter = _qubits.begin();
+  for (; qubit_iter != _qubits.end(); ++qubit_iter) {
+    COORD coord = qubit_iter->first;
+    HW_Qubit* qubit = qubit_iter->second;
+    hw_target->addQubit(coord, qubit);
+  }
+
 }
 
 void HW_Cell::buildQubitsAndInteractions() {
@@ -53,6 +70,28 @@ HW_Qubit::HW_Qubit(const COORD x, const COORD y, const COORD local, HW_Cell* cel
   _max_weight(max_weight),
   _min_weight(min_weight),
   _enable(true) {}
+
+
+HW_Interaction(HW_Qubit* qubit1, HW_Qubit* qubit2, HW_Cell* cell, double max_weight, double min_weight) : 
+ HW_Object(qubit1->getLoc().getGlobalIndex(), qubit2->getLoc().getGlobalIndex()),
+ _cell(cell),
+ _max_weight(max_weight),
+ _min_weight(min_weight),
+ _enable(true) {
+
+   if (qubit1->getLoc().getGlobalIndex() > qubit2->getGlobalIndex()) {
+     _from_qubit = qubit2;
+     _to_qubit = qubit1;
+   } else if (qubit1->getGlobalIndex() < qubit2->getGlobalIndex()) {
+     _from_qubit = qubit1;
+     _to_qubit = qubit2;
+   } else {
+     assert(0);
+   }
+
+   qubit1->addInteraction(this);
+   qubit2->addInteraction(this);
+}
 
 
 

@@ -38,6 +38,7 @@ class HW_Cell;
 class HW_Qubit;
 class HW_Interaction;
 class HW_Target_abstract;
+class HW_Target_Dwave;
 
 /*! \brief this is the abstract class for all annealer component
  *  \class HW_Object
@@ -82,7 +83,7 @@ typedef std::map<COORD, HW_Qubit*> QUBITS;
 public:
   /*! \brief default constructor with coodinate
    */
-  HW_Cell(COORD x, COORD y, HW_Target_abstract* hw_target);
+  HW_Cell(COORD x, COORD y, HW_Target_Dwave* hw_target);
 
   /*! \brief default destructor
    */
@@ -90,13 +91,17 @@ public:
 
   /*! \brief get hardware target
    */
-  HW_Target_abstract* getTarget() const { return _hw_target; }
+  HW_Target_Dwave* getTarget() const { return _hw_target; }
+
+  /*! \brief get all interactions in the cell
+   */
+  INTERACTIONS& getInteractions() { return _interactions; }
 
 private:
   INTERACTIONS _interactions; //!< a container to store all interactions belong to this cell
   QUBITS       _qubits;       //!< a container to store all qubits belong to this cell
 
-  HW_Target_abstract* _hw_target; //!< a pointer to the hardware which owns this cell
+  HW_Target_Dwave* _hw_target; //!< a pointer to the hardware which owns this cell
 
   /*! \brief initialize dwave like cell structure
    */
@@ -122,12 +127,15 @@ public:
   /*! \brief iterators
    */
   INTER_ITER interaction_begin() { return _interactions.begin(); }
+
   /*! \brief iterators
    */
   INTER_ITER interaction_end() { return _interactions.end(); }
+
   /*! \brief iterators
    */
   INTER_ITER_CONST interaction_begin() const { return _interactions.begin(); }
+
   /*! \brief iterators
    */
   INTER_ITER_CONST interaction_end() const { return _interactions.end(); }
