@@ -18,6 +18,7 @@
  ****************************************************************************/
 
 #include "hw_target/hw_object.hh"
+#include "hw_target/hw_target.hh"
 
 #include <cassert>
 
@@ -72,17 +73,17 @@ HW_Qubit::HW_Qubit(const COORD x, const COORD y, const COORD local, HW_Cell* cel
   _enable(true) {}
 
 
-HW_Interaction(HW_Qubit* qubit1, HW_Qubit* qubit2, HW_Cell* cell, double max_weight, double min_weight) : 
+HW_Interaction::HW_Interaction(HW_Qubit* qubit1, HW_Qubit* qubit2, HW_Cell* cell, double max_weight, double min_weight) : 
  HW_Object(qubit1->getLoc().getGlobalIndex(), qubit2->getLoc().getGlobalIndex()),
  _cell(cell),
  _max_weight(max_weight),
  _min_weight(min_weight),
  _enable(true) {
 
-   if (qubit1->getLoc().getGlobalIndex() > qubit2->getGlobalIndex()) {
+   if (qubit1->getLoc().getGlobalIndex() > qubit2->getLoc().getGlobalIndex()) {
      _from_qubit = qubit2;
      _to_qubit = qubit1;
-   } else if (qubit1->getGlobalIndex() < qubit2->getGlobalIndex()) {
+   } else if (qubit1->getLoc().getGlobalIndex() < qubit2->getLoc().getGlobalIndex()) {
      _from_qubit = qubit1;
      _to_qubit = qubit2;
    } else {

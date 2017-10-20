@@ -72,7 +72,7 @@ public:
 
 
 
-private:
+protected:
 
   LocToQubit            _loc_to_qubit;         //!< a map between location and qubit
   LocToCellInteraction  _loc_to_interaction;   //!< a map between location and interaction

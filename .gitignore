@@ -41,6 +41,8 @@ src/place/Makefile
 src/route/Makefile
 src/route/route.cc
 src/syn/Makefile
+src/syn/*
+include/syn/*
 src/syn/multilevel/Makefile
 src/syn/twolevel/Makefile
 src/syn/utility/Makefile

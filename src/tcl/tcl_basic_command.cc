@@ -49,11 +49,11 @@ int QCOMMAND_source::execute(int argc, const char** argv, std::string &result, C
     return TCL_OK;
   }
 
-  qlog.speak("TCL", "source %s ...", argv[1]);
+  qlog.speak("TCL", "Rource %s ...", argv[1]);
 
   if (Tcl_EvalFile(interp, argv[1]) == TCL_ERROR) {
     const char* error_msg = Tcl_GetVar(interp, "errorInfo", 0);
-    qlog.speakError("%s",error_msg);
+    qlog.speakError("TCL_ERROR: %s", error_msg);
   }
 
   return TCL_OK;

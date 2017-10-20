@@ -95,6 +95,13 @@ public:
    */
   static bool isValidString(std::string opt);
 
+  /*! \brief check if the input command compatible with syntax
+   *  \param argc argument count
+   *  \param argv argument vector
+   *  \return bool
+   */
+  bool checkOptions(const int argc, const char** argv);
+
 
   friend TclManager;
 
@@ -131,12 +138,6 @@ private:
 
 
 
-  /*! \brief check if the input command compatible with syntax
-   *  \param argc argument count
-   *  \param argv argument vector
-   *  \return bool
-   */
-  bool checkOptions(const int argc, const char** argv);
 
   /*! \brief split syntax into options
    *  \param str string needs to parse

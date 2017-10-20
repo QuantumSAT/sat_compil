@@ -28,6 +28,8 @@
 #include "tcl/tcl_command.hh"
 #include "tcl/tcl_basic_command.hh"
 
+#include "syn/syn_tcl.hh"
+
 
 void registerAllCommands() {
 
@@ -35,7 +37,9 @@ void registerAllCommands() {
 
   tcl_manager->registerCommand(new QCOMMAND_source("source", "<string>"));
   tcl_manager->registerCommand(new QCOMMAND_hello("hello",""));
-  
+  tcl_manager->registerCommand(new QCOMMAND_read_blif("read_blif","<string>"));
+  tcl_manager->registerCommand(new QCOMMAND_write_blif("write_blif","<string>"));
+  tcl_manager->registerCommand(new QCOMMAND_write_blif("gen_dwave_nl",""));
 
 
 }
