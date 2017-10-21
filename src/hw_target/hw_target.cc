@@ -67,6 +67,9 @@ void HW_Target_Dwave::initializeTarget() {
 
 }
 
+HW_Target_Dwave* HW_Target_Dwave::_self = NULL;
+
+
 void HW_Target_Dwave::buildInterCellInteractions(COORD x1, COORD y1, COORD x2, COORD y2, bool vertical) {
   if (vertical) {
     for (COORD local = 0; local < 4; ++local) {

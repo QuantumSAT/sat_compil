@@ -119,11 +119,26 @@ public:
    */
   virtual ~HW_Target_Dwave();
 
-private:
+  /*! \brief set hardware target pointer
+   *  \param target the pointer to HW_Target_Dwave;
+   */
+  static void setHwTarget(HW_Target_Dwave* target) {
+    _self = target;
+  }
+
+  /*! \brief get hardware target
+   *  \return target pointer
+   */
+  static HW_Target_Dwave* getHwTarget() {
+    return _self;
+  }
 
   /*! \brief initialize hardware
    */
   void initializeTarget();
+
+private:
+
 
   /*! \brief build adjacent cell interactions
    *  \param x1 coordinate x for cell1
@@ -136,6 +151,8 @@ private:
   HW_Param* _hw_param;              //!< a paramter class which holds all hw info
 
   LocToCell  _loc_to_cell;          //!< a map between location and cell
+
+  static HW_Target_Dwave* _self;    //!< a pointer for itself
 
 
 };

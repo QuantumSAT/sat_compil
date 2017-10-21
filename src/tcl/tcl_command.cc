@@ -122,6 +122,26 @@ int QTclCommand::getOptionIndex(const int argc, const char** argv, const char* o
   return -1;
 }
 
+bool QTclCommand::getIntOption(const int argc, const char** argv, const char* option_name, int& value) {
+  int i = getOptionIndex(argc, argv, option_name);
+  if (i > -1) {
+    if (i == (argc - 1)) {
+      qlog.speak("TCL", "An integer value is expected after %s", option_name);
+      return false;
+    } else {
+      if (Tcl_GetInt(NULL, Tcl_GetString((Tcl_Obj*)argv[i+1]), &value) == TCL_OK) {
+        return true;
+      } else {
+        qlog.speak("TCL", "An integer value is expected after %s", option_name);
+        return false;
+      }
+        
+    }
+  }
+  qlog.speak("TCL", "Invalid option name %s for %s command", option_name, _command_name.c_str());
+  return false;
+}
+
 bool QTclCommand::isOptionExist(const int argc, const char** argv, const char* option_name) {
   if (getOptionIndex(argc, argv, option_name) > -1)
     return true;

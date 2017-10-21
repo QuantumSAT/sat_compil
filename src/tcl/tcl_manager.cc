@@ -115,7 +115,6 @@ int TclManager::execute_cmd_main(std::string cmd, ClientData clientData, Tcl_Int
   free(res);
 
   return status;
-  
 
 }
 

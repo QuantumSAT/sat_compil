@@ -105,6 +105,16 @@ public:
 
   friend TclManager;
 
+protected:
+
+  /*! \brief get int value by given the argument name
+   *  \param argc argument count
+   *  \param argv argument vector
+   *  \param option_name argument name
+   *  \param int& return result
+   *  \return bool
+   */
+  bool getIntOption(const int argc, const char** argv, const char* option_name, int& value);
 private:
 
   /*! \brief return a detailed help message
