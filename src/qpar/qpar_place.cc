@@ -17,55 +17,16 @@
  *   License along with QSat.  If not, see <http://www.gnu.org/licenses/>.  *
  ****************************************************************************/
 
-
 /*!
- * \file main.cc
+ * \file qpar_place.cc
  * \author Juexiao Su
- * \date 11 Jul 2017
- * \brief main function entry point
+ * \date 29 Oct 2017
+ * \brief class to implemement data structure and algorithm for placement
  */
 
 
-#include "utils/qlog.hh"
+#include "qpar_place.hh"
 
-#include "tcl/tcl_manager.hh"
-
-#include <string>
-#include <iostream>
-
-extern std::string getBanner();
-extern char* getBuildTime();
-extern char* getBuiltBy();
-
-
-extern void TclManagerCleanUp();
-
-
-
-int main(int argc, char** argv) {
-
-  qlog.setLogFile("QSat.log");
-  qlog.speak(getBanner().c_str());
-  qlog.speak("Build Time: ");
-  qlog.speak(getBuildTime());
-  qlog.speak("\n");
-  qlog.speak("Built By: ");
-  qlog.speak(getBuiltBy());
-  qlog.speak("\n");
-
-  qlog.skipLine();
-  qlog.speak("\n\n");
-  //QASSERT(0);
-
-
-  //init tcl manager
-  TclManager::init(argc, argv);
-
-  //clean up
-  TclManagerCleanUp();
-  return 0;
-
-}
 
 
 

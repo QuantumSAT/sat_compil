@@ -81,7 +81,7 @@ void qLog::speak(const char* step, const char* format, ...) {
 
 void qLog::speakError(const char* format, ...) {
 
-  std::string error = "Error";
+  std::string error = "!!!Error";
 
   va_list ap;
   va_start(ap, format);
@@ -93,6 +93,16 @@ void qLog::speakError(const char* format, ...) {
 
 }
 
+
+void qLog::speakWarning(const char* format, ...) {
+  std::string warning = "!!!Warning";
+  va_list ap;
+  va_start(ap, format);
+  vsnprintf(message_buffer, BUFFER_SIZE, format, ap);
+  va_end(ap);
+  qfprintf(warning.c_str(), message_buffer);
+}
+ 
 void qLog::speak(const char* format, ...) {
 
   va_list ap;

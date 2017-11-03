@@ -16,57 +16,46 @@
  *   You should have received a copy of the GNU Lesser General Public       *
  *   License along with QSat.  If not, see <http://www.gnu.org/licenses/>.  *
  ****************************************************************************/
+#ifndef QPAR_SYSTEM_HH
+#define QPAR_SYSTME_HH
 
 
-/*!
- * \file main.cc
- * \author Juexiao Su
- * \date 11 Jul 2017
- * \brief main function entry point
- */
+namespace SYN {
+  class Model;
+
+};
+
+class ParSystem {
+
+public:
+  /*! \brief default constructor
+   */
+  ParSystem(SYN::Model* syn_netlist, HW_Target_Dwave* hw_target);
+
+  /*! \brief initialize placement routing data structure
+   *  \return void
+   */
+  void initSystem();
+
+  /*! \brief perform constraints placement
+   *  \return void
+   */
+  void doPlacement();
+
+  /*! \brief perform chain routing
+   *  \return void
+   */
+  void doRoute();
+
+private:
+ 
+  Model* _syn_netlist; //<! netlist from synthesis tool
+  HW_Target_Dwave* _hw_target; //<! hardware target
 
 
-#include "utils/qlog.hh"
-
-#include "tcl/tcl_manager.hh"
-
-#include <string>
-#include <iostream>
-
-extern std::string getBanner();
-extern char* getBuildTime();
-extern char* getBuiltBy();
-
-
-extern void TclManagerCleanUp();
-
-
-
-int main(int argc, char** argv) {
-
-  qlog.setLogFile("QSat.log");
-  qlog.speak(getBanner().c_str());
-  qlog.speak("Build Time: ");
-  qlog.speak(getBuildTime());
-  qlog.speak("\n");
-  qlog.speak("Built By: ");
-  qlog.speak(getBuiltBy());
-  qlog.speak("\n");
-
-  qlog.skipLine();
-  qlog.speak("\n\n");
-  //QASSERT(0);
-
-
-  //init tcl manager
-  TclManager::init(argc, argv);
-
-  //clean up
-  TclManagerCleanUp();
-  return 0;
-
-}
+};
 
 
 
 
+#endif

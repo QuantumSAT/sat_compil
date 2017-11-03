@@ -17,12 +17,12 @@
  *   License along with QSat.  If not, see <http://www.gnu.org/licenses/>.  *
  ****************************************************************************/
 
-#ifndef PLACE_HH
-#define PLACE_HH
+#ifndef QPAR_PLACE_HH
+#define QPAR_PLACE_HH
 
 
 /*!
- * \file place.hh
+ * \file qpar_place.hh
  * \author Juexiao Su
  * \date 22 Oct 2017
  * \brief class to handle all place related functions
@@ -36,7 +36,7 @@ class Grid;
 class ParNetlist;
 
 
-class Place {
+class QPlace {
 
 
 public:
@@ -44,12 +44,14 @@ public:
    *  \param ParNetlist* netlist used in placement and routing
    *  \param HW_Target_Dwave* hardware target to describe device
    */
-  Place::Place(ParNetlist* netlist, HW_Target_Dwave* hw_target) {
+  QPlace::QPlace(ParNetlist* netlist, HW_Target_Dwave* hw_target) {
 
   }
 
   /*! \brief initialize placement related data structure
    *! \return void
+
+   build placement bin, coordinate, algorithm data structure
    */
   void buildPlacementData();
 

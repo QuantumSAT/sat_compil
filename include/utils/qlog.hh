@@ -69,11 +69,18 @@ public:
 
 
   /*!
-   * \brief warning function with step name
+   * \brief error function with step name
    * \param step step name
    * \param format format the output
    */
   void speakError(const char* format, ...) __attribute__((format(printf, 2,3)));
+
+  /*!
+   * \brief error function with step name
+   * \param step step name
+   * \param format format the output
+   */
+  void speakWarning(const char* format, ...) __attribute__((format(printf, 2,3)));
 
 
   /*!

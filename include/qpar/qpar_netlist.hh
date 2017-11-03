@@ -115,11 +115,34 @@ public:
 
 private:
 
+  SYN::Model* _syn_netlist //<! netlist form synthesis
   ParWireSet _wires; //<! wire container in netlist
   ParElementSet _elements; //<! element container in netlist
 
+
   static ParNetlist* _self; 
 
+
+
+};
+
+/*! \brief a target includes a source and a destination
+ * a ParWire may contain multiple targets if the wire is
+ * a multi fan-out wire
+ */
+class ParWireTarget {
+public:
+ 
+  /*! \brief default constructor
+   */
+  ParWireTarget(ParElement* source, ParElement* dest);
+
+  /*! \brief default destructor
+   */
+  ~ParWireTarget() {}
+private:
+  ParElement* _source; //<! source element
+  ParElement* _target; //<! target element
 
 
 };
@@ -135,14 +158,25 @@ public:
    */
   ParWire(SYN::Net* net);
 
+  /*! \brief default destructor
+   * delete all wire targets managed by this wire
+   */
+  ~ParWire();
+
+  /*! \brief add element that conencts to this wire
+   *  \function addElement(ParElement* elem)
+   *  \param ParElement* a element pointer
+   */
+  void addElement(ParElement* elem);
 
 private:
 
   /*! \brief build necessary wire data structure
    *  \function buildParWire()
-   *  \return void
+   *  \return std::vector<ParWireTarget*> return target vector
    */
-  void buildParWire();
+  std::vector<ParWireTarget*> buildWireTarget(
+      const std::unordered_set<SYN::Gate*, ParElement*>& gate_to_par_element);
 
   SYN::Net* _net; //!< net from synthesis model
   std::vector<ParWireTarget*> _targets; //!< targets on the wire
@@ -156,6 +190,11 @@ private:
 
 };
 
+/*! \brief ParElement is the element will be directly mapped to hardware
+ *
+ * Each ParElement will only have one output, as each gate after will only have one output.
+ * The above assumption can be extented
+ */
 class ParElement {
 
 public:
@@ -163,12 +202,18 @@ public:
    */
   ParElement(SYN::Gate* gate);
 
+  /*! \brief add wire that connects to this element
+   *  \function addWire(ParWire* wire)
+   *  \param ParWire* wire
+   *  \return void
+   */
+  void addWire(ParWire* wire) { _wires.push_back(wire); }
 
 private:
   SYN::Gate* _gate; //!< gate form synthesis model
 
   std::vector<ParWire*> _wires; //!< wire container that stores all wires connect to this element
-  ParWire* _sink; //!< the wire that driven by this element
+  ParWire* _sink; //!< the wire that driven by this element. not used
 
   static unsigned int _element_index_counter; //!< a element counter to generate unique id
   unsigned int _element_index; //!< unique index for each element
