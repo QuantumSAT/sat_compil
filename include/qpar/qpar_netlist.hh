@@ -95,13 +95,8 @@ typedef std::set<PairElement*, ParElementCmp> ParElementSet;
  *
  */
 class ParNetlist {
-
+typedef ParNetlist SELF;
 public:
-  /*! \brief default constructor
-   *  \function constructor
-   *  \param SYN::Model netlist from blif file
-   */
-  ParNetlist(SYN::Model* model);
 
   /*! \brief defualt destructor
    */
@@ -113,14 +108,23 @@ public:
    */
   void buildParNetlist();
 
+  static SELF* getOrCreate(SYN::Model* model);
+
 private:
+  /*! \brief default constructor
+   *  \function constructor
+   *  \param SYN::Model netlist from blif file
+   */
+  ParNetlist(SYN::Model* model);
+
+  ParNetlist(const ParNetlist&); //<! non-copyable
 
   SYN::Model* _syn_netlist //<! netlist form synthesis
   ParWireSet _wires; //<! wire container in netlist
   ParElementSet _elements; //<! element container in netlist
 
 
-  static ParNetlist* _self; 
+  static SELF* _self; 
 
 
 
@@ -135,14 +139,30 @@ public:
  
   /*! \brief default constructor
    */
-  ParWireTarget(ParElement* source, ParElement* dest);
+  ParWireTarget(ParElement* source, ParElement* dest, 
+      SYN::Pin* src_pin, SYN::Pin* tgt_pin);
 
   /*! \brief default destructor
    */
   ~ParWireTarget() {}
+
+  /*! \brief set the dont route flag
+   *  \param bool value
+   *  \return void
+   */
+  void setDontRoute(bool val) { _dontRoute = val; }
+
+  /*! \brief get dont route flag
+   */
+  bool getDontRoute() const { return _dontRoute; }
 private:
   ParElement* _source; //<! source element
   ParElement* _target; //<! target element
+
+  SYN::Pin* _src_pin; //<! source pin
+  SYN::Pin* _tgt_pin; //<! target pin
+
+  bool _dontRoute; //<! an indicator to decide wheterh it needs routing
 
 
 };
@@ -167,7 +187,9 @@ public:
    *  \function addElement(ParElement* elem)
    *  \param ParElement* a element pointer
    */
-  void addElement(ParElement* elem);
+  void addElement(ParElement* elem) {
+    _elements.insert(elem);
+  }
 
 private:
 
@@ -175,14 +197,14 @@ private:
    *  \function buildParWire()
    *  \return std::vector<ParWireTarget*> return target vector
    */
-  std::vector<ParWireTarget*> buildWireTarget(
+  std::vector<ParWireTarget*>& buildWireTarget(
       const std::unordered_set<SYN::Gate*, ParElement*>& gate_to_par_element);
 
   SYN::Net* _net; //!< net from synthesis model
   std::vector<ParWireTarget*> _targets; //!< targets on the wire
 
   ParElement* _source; //!< the source gate of wire
-  std::vector<ParElement*> _elements; //!< all elements that connect to this wire
+  ParElementSet _elements; //!< all elements that connect to this wire
 
   static unsigned int _wire_index_counter; //!< a wire counter to generate unique id for each ParWire
   unsigned int _wire_index; //!< uniq index for each wire
@@ -207,7 +229,7 @@ public:
    *  \param ParWire* wire
    *  \return void
    */
-  void addWire(ParWire* wire) { _wires.push_back(wire); }
+  void addWire(ParWire* wire);
 
 private:
   SYN::Gate* _gate; //!< gate form synthesis model

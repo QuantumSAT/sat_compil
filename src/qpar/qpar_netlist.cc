@@ -27,10 +27,18 @@
 
 ParNetlist* ParNetlist::_self = NULL;
 
+ParNetlist* ParNetlist::getOrCreate(SYN::Model* model) {
+  if (_self) return _self;
+
+  _self = new ParNetlist(model);
+  return _self;
+}
+
 ParNetlist::ParNetlist(SYN::Model* model) :
   _syn_netlist(model) {
     buildParNetlist();
 }
+
 
 ParNetlist::~ParNetlist() {
   ParElementSet::iterator e_iter = _elements.begin();
@@ -105,6 +113,11 @@ _gate(gate) {
   ++_element_index_counter;
 }
 
+void ParElement::addWire(ParWire* wire) {
+  _wires.push_back(wire);
+  wire->addElement(this);
+}
+
 unsigned int ParWire::_wire_index_counter = 0;
 ParWire::ParWire(SYN::Net* wire) : 
 _net(wire) {
@@ -112,7 +125,14 @@ _net(wire) {
   ++_wire_index_couter;
 }
 
-std::vector<ParWireTarget*>& ParWire::buildWireTarget() {
+ParWire::~ParWire() {
+  for (unsigned i = 0; i < _targets.size(); ++i) {
+    delete _targets[i];
+  }
+}
+
+std::vector<ParWireTarget*>& ParWire::buildWireTarget(
+    std::unordered_set<SYN::Gate*, ParElement*>& gate_to_par_element) {
   _target.clear();
   SYN::Pin* source = _net->uniqSource();
   QASSERT(source);
@@ -125,13 +145,64 @@ std::vector<ParWireTarget*>& ParWire::buildWireTarget() {
 
 
   if (src_is_model_pin) {
-    if (_net->getNumSink()) return _target;
+    SYN::Pin* gate1 = NULL;
+    for (unsigned i = 0; i < sink.size(); ++i) {
+      if (sink[i]->isGatePin()) {
+        gate1 = sink[i];
+        break;
+      }
+    }
+
+    if (gate1) {
+
+      for (unsigned i = 0; i < sink.size(); ++i) {
+        SYN::Pin* sk = sink[i];
+        if (sk == gate1) {
+          ParElement* src_ele = gate_to_par_element[gate1->getGate()];
+          ParWireTarget* target = new ParWireTarget(src_ele, src_ele, source, sk);
+          target->setDontRoute(true);
+          _targets.push_back(target);
+          continue;
+        }
+
+        if (sk->isModelPin()) {
+          ParElement* src_ele = gate_to_par_element[gate1->getGate()];
+          ParWireTarget* target = new ParWireTarget(NULL, NULL, source, sk);
+          target->setDontRoute(true);
+          _targets.push_back(target);
+        } else {
+          ParElement* src_ele = gate_to_par_element[gate1->getGate()];
+          ParElement* tgt_ele = gate_to_par_element[sk->getGate()];
+          ParWireTarget* target = new ParWireTarget(src_ele, tgt_ele, source, sk);
+          _targets.push_back(target);
+        }
+      }
+    } else {
+      for (unsigned i = 0; i < sink.size(); ++i) {
+        SYN::Pin* sk = sink[i];
+        ParWireTarget* target = new ParWireTarget(NULL, NULL, source, sk);
+        target->setDontRoute(true);
+        _targets.push_back(target);
+      }
+    }
   } else {
+    for (unsigned i = 0; i < sink.size(); ++i) {
+      SYN::Pin* sk = sink[i];
+      ParElement* src_ele = gate_to_par_element[source->getGate()];
+      if (sk->isModelPin()) {
+        ParWireTarget* target = new ParWireTarget(src_ele, NULL, source, sk);
+        target->setDontRoute(true);
+        _targets.push_back(target);
+      } else {
+        ParElement* tgt_ele = gate_to_par_element[sk->getGate()];
+        ParWireTarget* target = new ParWireTarget(src_ele, tgt_ele, source, sk);
+        _targets.push_back(target);
+      }
+    }
 
   }
 
-
-   
+  return _targets;
 }
 
 
