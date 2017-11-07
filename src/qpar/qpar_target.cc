@@ -16,74 +16,53 @@
  *   You should have received a copy of the GNU Lesser General Public       *
  *   License along with QSat.  If not, see <http://www.gnu.org/licenses/>.  *
  ****************************************************************************/
-#ifndef QPAR_SYSTEM_HH
-#define QPAR_SYSTME_HH
+
+#include "hw_target/hw_target.hh"
+#include "qpar/qpar_target.hh"
+
+#include <algorithm>
+#include <random>
+
+unsigned ParGrid::_grid_index_counter = 0;
+
+void ParGrid::setParElement(ParElement* element) {
+  _element.setStatus(element);
+}
+
+void ParGrid::save() {
+  _element.saveStatus();
+}
+
+void ParGrid::restore() {
+  _element.restoreStatus();
+}
+
+ParElement* ParGrid::getCurrentElement() const {
+  _element.getStatus();
+}
+
+void ParGridContainer::shuffle() {
+  std::mt19937 gen(0);
+  std::shuffle(SUPER::begin(), SUPER::end(), gen);
+}
+
+void ParGridContainer::sortId() {
+  GridCmp cmp;
+  std::sort(SUPER::begin(), SUPER::end(), cmp);
+}
+
+void ParTarget::initParTarget() {
+  HW_Target_abstract::C_ITER c_iter = _hw_target->cell_begin();
+  for (; c_iter != _hw_target->cell_end(); ++c_iter) {
+    HW_Cell* cell = c_iter->second;
+    ParGrid* grid = new ParGrid(cell);
+    _grid_vector.push_back(grid);
+    _grids.insert(std::make_pair(std::make_pair(c_iter->first.first, c_iter->first.second),
+          grid));
+    grid->setParElement(NULL);
+    grid->save();
+  }
+
+}
 
 
-#include "qpar/qpar_netlist.hh"
-
-namespace SYN {
-  class Model;
-};
-
-/* \brief a status struct to inidcate the Par status
- */
-struct ParStatus {
-  bool hasPlaced;
-  bool hasRouted;
-  bool hasTargetInit;
-  bool hasDesignInit;
-
-  ParStatus() :
-    hasPlaced(false),
-    hasRouted(false),
-    hasTargetInit(false),
-    hasDesignInit(false) {}
-};
-
-class ParSystem {
-
-public:
-  /*! \brief default constructor
-   */
-  ParSystem(SYN::Model* syn_netlist, HW_Target_Dwave* hw_target);
-
-  /*! \brief initialize placement routing data structure
-   *  \return void
-   */
-  void initSystem();
-
-
-  /*! \brief initialize placement target based on hardware target
-   *  \return void
-   */
-  void initHardware();
-
-  /*! \brief perform constraints placement
-   *  \return void
-   */
-  void doPlacement();
-
-  /*! \brief perform chain routing
-   *  \return void
-   */
-  void doRoute();
-
-  /* \brief perform configuration generation
-   */
-  void doGenerate();
-
-private:
- 
-  Model* _syn_netlist; //<! netlist from synthesis tool
-  HW_Target_Dwave* _hw_target; //<! hardware target
-
-  ParStatus _status;
-
-
-};
-
-
-
-
-#endif

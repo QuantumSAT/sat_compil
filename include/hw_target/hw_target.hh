@@ -48,6 +48,8 @@ public:
   typedef std::unordered_map<COORD, HW_Qubit*>::iterator Q_ITER;
   typedef std::unordered_map<std::pair<COORD,COORD>, HW_Interaction*, 
           boost::hash<std::pair<COORD,COORD> > >::iterator I_ITER;
+  typedef std::unordered_map<std::pair<COORD, COORD>, HW_Cell*,
+          boost::hash<std::pair<COORD,COORD> > >::iterator C_ITER;
   
 
   /*! \brief default constructor
@@ -136,6 +138,11 @@ public:
   /*! \brief initialize hardware
    */
   void initializeTarget();
+
+  C_ITER cell_begin() { return _loc_to_cell.begin(); }
+  C_ITER cell_end()   { return _loc_to_cell.end();}
+
+
 
 private:
 

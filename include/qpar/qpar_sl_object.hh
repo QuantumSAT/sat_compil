@@ -16,74 +16,64 @@
  *   You should have received a copy of the GNU Lesser General Public       *
  *   License along with QSat.  If not, see <http://www.gnu.org/licenses/>.  *
  ****************************************************************************/
-#ifndef QPAR_SYSTEM_HH
-#define QPAR_SYSTME_HH
 
+#ifndef QPAR_SL_OBJECT_HH
+#define QPAR_SL_OBJECT_HH
 
-#include "qpar/qpar_netlist.hh"
-
-namespace SYN {
-  class Model;
-};
-
-/* \brief a status struct to inidcate the Par status
+/*! 
+ * \file qpar_sl_object.hh
+ * \author Juexiao Su
+ * \data 06 Nov 2017
+ * \brief class of object with save and load function
+ *
+ * Make sure the template class T has operator= overload
+ * default save and restore function will use operator=
  */
-struct ParStatus {
-  bool hasPlaced;
-  bool hasRouted;
-  bool hasTargetInit;
-  bool hasDesignInit;
 
-  ParStatus() :
-    hasPlaced(false),
-    hasRouted(false),
-    hasTargetInit(false),
-    hasDesignInit(false) {}
-};
 
-class ParSystem {
+template <class T>
+class ParSaveAndLoadObject {
 
 public:
+
+  /*!\brief default constructor
+   */
+  ParSaveAndLoadObject() {}
+
   /*! \brief default constructor
    */
-  ParSystem(SYN::Model* syn_netlist, HW_Target_Dwave* hw_target);
+  ParSaveAndLoadObject(T init_status):
+  _cur_status(init_status),
+  _pre_status(init_status) {}
 
-  /*! \brief initialize placement routing data structure
-   *  \return void
+  /* \brief default destructor
    */
-  void initSystem();
+  ~ParSaveAndLoadObject() {}
 
-
-  /*! \brief initialize placement target based on hardware target
-   *  \return void
+  /*! \brief save current status to previous status
    */
-  void initHardware();
+  virtual void saveStatus();
 
-  /*! \brief perform constraints placement
-   *  \return void
+  /*! \brief restore to previous status
    */
-  void doPlacement();
+  virtual void restoreStatus();
 
-  /*! \brief perform chain routing
-   *  \return void
+  /*! \brief get current status
    */
-  void doRoute();
+  T getStatus() const { return _cur_status; }
 
-  /* \brief perform configuration generation
+  /*! \brief set current status
    */
-  void doGenerate();
+  void setStatus(T status) { _cur_status = status; }
+
 
 private:
- 
-  Model* _syn_netlist; //<! netlist from synthesis tool
-  HW_Target_Dwave* _hw_target; //<! hardware target
-
-  ParStatus _status;
-
+  T _cur_status; //!< current status
+  T _pre_status; //!< previous status
 
 };
 
-
+//#define QPAR_SL_OBJ ParSaveAndLoadObject;
 
 
 #endif

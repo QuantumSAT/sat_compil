@@ -16,74 +16,16 @@
  *   You should have received a copy of the GNU Lesser General Public       *
  *   License along with QSat.  If not, see <http://www.gnu.org/licenses/>.  *
  ****************************************************************************/
-#ifndef QPAR_SYSTEM_HH
-#define QPAR_SYSTME_HH
+
+#include "qpar/qpar_sl_object.hh"
 
 
-#include "qpar/qpar_netlist.hh"
+template<class T>
+void ParSaveAndLoadObject<T>::saveStatus() {
+  _pre_status = _cur_status;
+}
 
-namespace SYN {
-  class Model;
-};
-
-/* \brief a status struct to inidcate the Par status
- */
-struct ParStatus {
-  bool hasPlaced;
-  bool hasRouted;
-  bool hasTargetInit;
-  bool hasDesignInit;
-
-  ParStatus() :
-    hasPlaced(false),
-    hasRouted(false),
-    hasTargetInit(false),
-    hasDesignInit(false) {}
-};
-
-class ParSystem {
-
-public:
-  /*! \brief default constructor
-   */
-  ParSystem(SYN::Model* syn_netlist, HW_Target_Dwave* hw_target);
-
-  /*! \brief initialize placement routing data structure
-   *  \return void
-   */
-  void initSystem();
-
-
-  /*! \brief initialize placement target based on hardware target
-   *  \return void
-   */
-  void initHardware();
-
-  /*! \brief perform constraints placement
-   *  \return void
-   */
-  void doPlacement();
-
-  /*! \brief perform chain routing
-   *  \return void
-   */
-  void doRoute();
-
-  /* \brief perform configuration generation
-   */
-  void doGenerate();
-
-private:
- 
-  Model* _syn_netlist; //<! netlist from synthesis tool
-  HW_Target_Dwave* _hw_target; //<! hardware target
-
-  ParStatus _status;
-
-
-};
-
-
-
-
-#endif
+template<class T>
+void ParSaveAndLoadObject<T>::restoreStatus() {
+  _cur_status = _pre_status;
+}
