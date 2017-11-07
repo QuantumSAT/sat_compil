@@ -20,6 +20,7 @@
 #include <cstdio>
 
 #include "qpar/qpar_tcl.hh"
+#include "qpar/qpar_netlist.hh"
 #include "syn/blif.h"
 #include "utils/qlog.hh"
 
@@ -50,7 +51,7 @@ int QCOMMAND_build_qpar_nl::execute(int argc, const char** argv, std::string& re
   SYN::BlifReaderWriter reader;
   reader.readDesign(fp);
   fclose(fp);
-  ParNetlist(myTop);
+  ParNetlist::getOrCreate(SYN::myTop);
 
   return TCL_OK;
 }

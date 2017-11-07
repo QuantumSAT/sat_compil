@@ -21,6 +21,8 @@
 #define QPAR_NETLIST_HH
 
 #include <vector>
+#include <unordered_set>
+#include <unordered_map>
 #include <set>
 
 
@@ -34,6 +36,8 @@
 namespace SYN {
   class Model;
   class Net;
+  class Pin;
+  class Gate;
 }
 
 class ParWire;
@@ -54,7 +58,7 @@ struct ParWireCmp {
 
 struct ParWireTargetCmp {
 
-  /*! \brief compare two PairWireTarget
+  /*! \brief compare two ParWireTarget
    *  \function operator()
    *  \return bool
    */
@@ -62,19 +66,9 @@ struct ParWireTargetCmp {
 
 };
 
-struct ParWireCmp {
-
-  /*! \brief compare two PairWire
-   *  \function operator()
-   *  \return bool
-   */
-  bool operator()(ParWire* wire1, ParWire* wire2);
-
-};
-
 struct ParElementCmp {
 
-  /*! \brief compare two PairWire
+  /*! \brief compare two ParWire
    *  \function operator()
    *  \return bool
    */
@@ -84,9 +78,9 @@ struct ParElementCmp {
 
 
 
-typedef std::set<PairWire*, PairWireCmp> ParWireSet;
-typedef std::set<PairWireTarget*, PairWireTargetCmp> ParTargetSet;
-typedef std::set<PairElement*, ParElementCmp> ParElementSet;
+typedef std::set<ParWire*, ParWireCmp> ParWireSet;
+typedef std::set<ParWireTarget*, ParWireTargetCmp> ParTargetSet;
+typedef std::set<ParElement*, ParElementCmp> ParElementSet;
 
 
 /*! \brief ParNetlist is a light weight netlist to 
@@ -119,7 +113,7 @@ private:
 
   ParNetlist(const ParNetlist&); //<! non-copyable
 
-  SYN::Model* _syn_netlist //<! netlist form synthesis
+  SYN::Model* _syn_netlist; //<! netlist form synthesis
   ParWireSet _wires; //<! wire container in netlist
   ParElementSet _elements; //<! element container in netlist
 
@@ -191,14 +185,15 @@ public:
     _elements.insert(elem);
   }
 
-private:
-
   /*! \brief build necessary wire data structure
    *  \function buildParWire()
    *  \return std::vector<ParWireTarget*> return target vector
    */
   std::vector<ParWireTarget*>& buildWireTarget(
-      const std::unordered_set<SYN::Gate*, ParElement*>& gate_to_par_element);
+      const std::unordered_map<SYN::Gate*, ParElement*>& gate_to_par_element);
+
+private:
+
 
   SYN::Net* _net; //!< net from synthesis model
   std::vector<ParWireTarget*> _targets; //!< targets on the wire
