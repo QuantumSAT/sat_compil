@@ -25,6 +25,9 @@
 #include <unordered_map>
 #include <set>
 
+#include "qpar/qpar_sl_object.hh"
+#include "hw_target/hw_loc.hh"
+
 
 /*!
  * \file qpar_netlist.hh
@@ -43,6 +46,8 @@ namespace SYN {
 class ParWire;
 class ParWireTarget;
 class ParElement;
+
+class ParGrid;
 
 /*! \brief used in wire set to have deterministic behavior
  */
@@ -81,6 +86,7 @@ struct ParElementCmp {
 typedef std::set<ParWire*, ParWireCmp> ParWireSet;
 typedef std::set<ParWireTarget*, ParWireTargetCmp> ParTargetSet;
 typedef std::set<ParElement*, ParElementCmp> ParElementSet;
+typedef std::set<ParElement*, ParElementCmp>::iterator ELE_ITER;
 
 
 /*! \brief ParNetlist is a light weight netlist to 
@@ -96,20 +102,21 @@ public:
    */
   ~ParNetlist();
 
-  /*! \brief build netlist for placement and routing
-   *  \function buildParNetlist()
-   *  \return void
-   */
-  void buildParNetlist();
-
-  static SELF* getOrCreate(SYN::Model* model);
-
-private:
   /*! \brief default constructor
    *  \function constructor
    *  \param SYN::Model netlist from blif file
    */
   ParNetlist(SYN::Model* model);
+
+  ELE_ITER element_begin() { return _elements.begin(); }
+  ELE_ITER element_end() { return _elements.end(); }
+
+private:
+  /*! \brief build netlist for placement and routing
+   *  \function buildParNetlist()
+   *  \return void
+   */
+  void buildParNetlist();
 
   ParNetlist(const ParNetlist&); //<! non-copyable
 
@@ -117,8 +124,7 @@ private:
   ParWireSet _wires; //<! wire container in netlist
   ParElementSet _elements; //<! element container in netlist
 
-
-  static SELF* _self; 
+  std::vector<ParWireTarget*> _all_targets; //!< all wire target
 
 
 
@@ -226,6 +232,34 @@ public:
    */
   void addWire(ParWire* wire);
 
+  /*! \brief check is this element can be moved
+   */
+  bool isMovable() const { return _movable; }
+
+  /*! \brief set the grid that will have this element
+   */
+  void setGrid(ParGrid* grid);
+
+  /*1 \brief get current grid
+   */
+  ParGrid* getCurrentGrid() const;
+
+  /*! \brief save current status
+   */ 
+  void save();
+
+  /*! \brief restore to previous status
+   */
+  void restore();
+
+  /*! \brief get the x coordinate of the element if the element is placed
+   */
+  COORD getX() const;
+
+  /*! \brief get the y coordinate of the element if the element is placed
+   */
+  COORD getY() const;
+
 private:
   SYN::Gate* _gate; //!< gate form synthesis model
 
@@ -234,6 +268,12 @@ private:
 
   static unsigned int _element_index_counter; //!< a element counter to generate unique id
   unsigned int _element_index; //!< unique index for each element
+
+  bool _movable; //!< inidicate is this can be moved
+
+  ParSaveAndLoadObject<ParGird*> _grid;
+
+
 
 };
 

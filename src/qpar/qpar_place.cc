@@ -25,7 +25,42 @@
  */
 
 
-//#include "qpar_place.hh"
+#include "qpar/qpar_place.hh"
+#include "qpar/qpar_target.hh"
+#include "qpar/qpar_netlist.hh" 
+
+
+#include "utils/qlog.hh"
+
+void QPlace::run() {
+  initilizePlacement();
+}
+
+
+void QPlace::initilizePlacement() {
+  ParGridContainer& grids = _hw_target->getGrids();
+  grids.shuffle();
+  unsigned grid_index = 0;
+
+  ELE_ITER ele_iter = _netlist.element_begin();
+  for (; ele_iter != _netlist.end(); ++ele_iter) {
+    ParElement* element = *ele_iter;
+    if (!element->isMovable()) {
+      qlog.speakError("Cannot support fixed element!");
+    }
+
+    while (!grids[grid_index]->canBePlaced() && grid_index < grids.size())
+      ++grid_index;
+
+    if (grid_index == grids.size()) 
+      qlog.speakError("Placement does not have enough resources to performance placement");
+
+    element->setGrid(grids[grid_index]);
+    grids->setParElement(element);
+    ++grid_index;
+  }
+
+}
 
 
 

@@ -18,6 +18,7 @@
  ****************************************************************************/
 
 #include "hw_target/hw_target.hh"
+#include "utils/qlog.hh"
 #include "qpar/qpar_target.hh"
 
 #include <algorithm>
@@ -71,6 +72,7 @@ void ParTarget::initParTarget() {
     grid->setParElement(NULL);
     grid->save();
   }
+  qlog.echo("Par Target", "%u cells has been constructed", (unsigned)_grid_vector.size());
 
 }
 

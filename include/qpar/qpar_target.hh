@@ -47,7 +47,8 @@ class ParElement;
 class ParGrid {
 
 public:
-  ParGrid(HW_Cell* cell) : _cell(cell) {
+  ParGrid(HW_Cell* cell) : _cell(cell),
+   _canbeplaced(true) {
     _grid_index = _grid_index_counter;
     ++_grid_index_counter;
   }
@@ -72,6 +73,14 @@ public:
    */
   void restore();
 
+  /*! \brief check if the grid can be placed
+   */
+  bool canBePlaced() const { return _canbeplaced; }
+
+  /*! \brief get grid location
+   */
+  HW_Loc getLoc() const { return _cell->getLoc(); }
+
 private:
 
   HW_Cell* _cell; //!< the hardware cell to create this grid
@@ -79,6 +88,8 @@ private:
   unsigned _grid_index; //!< unique id for each grid
 
   ParSaveAndLoadObject<ParElement*> _element;
+
+  bool _canbeplaced; //!< a flag to indicate if this grid can be used to place
 
 };
 
@@ -135,6 +146,10 @@ public:
       return NULL;
     }
   }
+
+  /*! \brief get the grid vector container
+   */
+  ParGridContainers& getGrids() { return _grid_vector; }
 
 
 private:

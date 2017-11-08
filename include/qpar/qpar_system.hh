@@ -21,18 +21,22 @@
 
 
 #include "qpar/qpar_netlist.hh"
+#include "qpar/qpar_utils.hh"
 
 namespace SYN {
   class Model;
 };
 
-/* \brief a status struct to inidcate the Par status
+class ParNetlist;
+class ParTarget;
+
+/*! \brief a status struct to inidcate the Par status
  */
 struct ParStatus {
-  bool hasPlaced;
-  bool hasRouted;
   bool hasTargetInit;
   bool hasDesignInit;
+  bool hasPlaced;
+  bool hasRouted;
 
   ParStatus() :
     hasPlaced(false),
@@ -41,12 +45,23 @@ struct ParStatus {
     hasDesignInit(false) {}
 };
 
+/*! \brief modulize each functionality to avoid a huge class 
+ */
 class ParSystem {
 
 public:
   /*! \brief default constructor
    */
-  ParSystem(SYN::Model* syn_netlist, HW_Target_Dwave* hw_target);
+  ParSystem(SYN::Model* syn_netlist, HW_Target_Dwave* hw_target) :
+    _syn_netlist(syn_netlist),
+    _hw_target(hw_target),
+    _par_netlist(NULL),
+    _par_target(NULL),
+    _rand_gen(NULL) {}
+
+  /*! \brief default destructor
+   */
+  ~ParSystem();
 
   /*! \brief initialize placement routing data structure
    *  \return void
@@ -58,6 +73,10 @@ public:
    *  \return void
    */
   void initHardware();
+
+  /*! \brief initialize placement and routing netlist
+   */
+  void initNetlist();
 
   /*! \brief perform constraints placement
    *  \return void
@@ -78,7 +97,11 @@ private:
   Model* _syn_netlist; //<! netlist from synthesis tool
   HW_Target_Dwave* _hw_target; //<! hardware target
 
+  ParNetlist* _par_netlist;
+  ParTarget* _par_target;
+
   ParStatus _status;
+  RandomGenerator* _rand_gen;
 
 
 };

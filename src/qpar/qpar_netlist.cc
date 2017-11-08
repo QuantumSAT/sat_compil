@@ -19,19 +19,37 @@
 
 
 #include "qpar/qpar_netlist.hh"
+#include "qpar/qpar_target.hh"
 #include "syn/netlist.h"
 #include "utils/qlog.hh"
 
 #include <vector>
+#include <algorithm>
 #include <unordered_set>
 
-ParNetlist* ParNetlist::_self = NULL;
+void ParElement::setGrid(ParGrid* grid) {
+  _grid.setStatus(grid);
+}
 
-ParNetlist* ParNetlist::getOrCreate(SYN::Model* model) {
-  if (_self) return _self;
+void ParElement::save() { _grid.saveStatus(); }
 
-  _self = new ParNetlist(model);
-  return _self;
+void ParElement::restore() { 
+  _grid.restoreStatus(); 
+}
+
+COORD ParElement::getX() const {
+  QASSERT(_grid.getCurrentStatus());
+  return _grid.getCurrentStatus()->getLoc()->getLocX();
+}
+
+
+COORD ParElement::getY() const {
+  QASSERT(_grid.getCurrentStatus());
+  return _grid.getCurrentStatus()->getLoc()->getLocY();
+}
+
+ParGrid* ParElement::getCurrentGrid() const {
+  return _grid.getStatus();
 }
 
 ParNetlist::ParNetlist(SYN::Model* model) :
@@ -99,8 +117,14 @@ void ParNetlist::buildParNetlist() {
     std::unordered_map<SYN::Net*, ParWire*>::iterator w_iter = net_to_par_wire.begin();
     for (; w_iter != net_to_par_wire.end(); ++w_iter) {
       ParWire* wire = w_iter->second;
-      wire->buildWireTarget(gate_to_par_element);
+      std::vector<ParWireTarget*> targets = wire->buildWireTarget(gate_to_par_element);
+      _all_targets.insert(_all_targets.end(), target.begin(), targets.end());
     }
+
+    qlog.speak("Design", "%u wires and %u elements has been constructed",
+        (unsigned)net_to_par_wire.size(),
+        (unsigned)gate_to_par_element.size()
+        );
 
   }
 

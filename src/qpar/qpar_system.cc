@@ -17,61 +17,61 @@
  *   License along with QSat.  If not, see <http://www.gnu.org/licenses/>.  *
  ****************************************************************************/
 
-#ifndef QPAR_PLACE_HH
-#define QPAR_PLACE_HH
 
-
-/*!
- * \file qpar_place.hh
- * \author Juexiao Su
- * \date 22 Oct 2017
- * \brief class to handle all place related functions
+/*! \file qpar_system.cc
+ *  \author Juexiao Su
+ *  \date 07 Nov 2017
+ *  \brief this is the main class to handle all placement and routing behavior
  */
 
-namespace SYN {
-  class Model;
+
+#include "qpar_system.hh"
+#include "utils/qlog.hh"
+
+ParSystem::~ParSystem() {
+
+  if (_par_netlist) delete _par_netlist;
+  if (_par_target) delete _par_target;
+  if (_rand_gen) delete _rand_gen;
+
+  _par_netlist = NULL;
+  _par_target = NULL;
+  _rand_gen = NULL;
 }
 
-class Grid;
-class ParNetlist;
 
+void ParSystem::initSystem() {
+  qlog.speak("Initialize", "Build hardware target");
+  initHardware();
+  _status.hasTargetInit = true;
 
-class QPlace {
+  qlog.speak("Initialize", "Build netlist");
+  initNetlist();
+  _status.hasDesignInit = true;
+}
 
+void ParSystem::initNetlist() {
+  QASSERT(_par_netlist);
+  _par_netlist = new ParNetlist(_syn_netlist);
+}
 
-public:
-  /*! \brief default constructor for Place
-   *  \param ParNetlist* netlist used in placement and routing
-   *  \param ParTarget* hardware target to describe device
-   */
-  QPlace::QPlace(ParNetlist* netlist, ParTarget* hw_target) :
-   _netlist(netlist),
-   _hw_target(hw_target) {
+void ParSystem::initHardware() {
+  QASSERT(_par_target == NULL);
+  _par_target = new ParTarget(_hw_target);
+  _par_target.initParTarget();
+}
+
+void ParSystem::doPlacement() {
+
+  //check system status
+  if (_status.hasTargetInit && _status.hasDesignInit) {
+    QPlace placer(_par_netlist, _par_target);
+    placer.run();
+  } else {
+    qlog.speakError("Cannot run placement because target or design has not been initilized");
   }
 
-  /*! \brief initialize placement related data structure
-   *! \return void
-
-   build placement bin, coordinate, algorithm data structure
-   */
-  void buildPlacementData();
-
-  /*! \brief execute placement
-   */
-  void run();
-
-private:
-
-  ParNetlist* _netlist; //<! netlist to specify input problem
-  ParTarget* _hw_target; //<! hardware target
-
-  /*! \brief initilize placement by random assign element to each grid
-   */
-  void initilizePlacement();
-
-};
+}
 
 
-
-#endif
 
