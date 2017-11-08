@@ -19,6 +19,7 @@ b
 temp.blif
 
 log
+warn
 dwave
 dwave-debug
 
