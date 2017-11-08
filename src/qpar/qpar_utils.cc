@@ -17,61 +17,67 @@
  *   License along with QSat.  If not, see <http://www.gnu.org/licenses/>.  *
  ****************************************************************************/
 
-#include "hw_target/hw_target.hh"
-#include "qpar/qpar_target.hh"
+#include "qpar/qpar_utils.hh"
 
-#include <algorithm>
-#include <random>
+#include <cmath>
 
-unsigned ParGrid::_grid_index_counter = 0;
+/*!
+ * \file qpar_utils.cc
+ * \author Juexiao Su
+ * \date 07 Nov 2017
+ * \brief a collection of utilities used in qpar
+ */
 
-void ParGrid::setParElement(ParElement* element) {
-  _element.setStatus(element);
+
+unsigned RandomGenerator::uRand(unsigned min, unsigned max) {
+  std::uniform_int_distribution<unsigned>gen(min, max);
+  return gen(_gen);
 }
 
-void ParGrid::save() {
-  _element.saveStatus();
+int RandomGenerator::iRand(int min, int max) {
+  std::uniform_int_distribution<int>gen(min, max);
+  return gen(_gen);
 }
 
-void ParGrid::restore() {
-  _element.restoreStatus();
+float RandomGenerator::fRand(float min, float max) {
+  std::uniform_real_distribution<float>gen(min, max);
+  return gen(_gen);
 }
 
-ParElement* ParGrid::getCurrentElement() const {
-  return _element.getStatus();
+
+void Annealer::updateT(float sr) {
+  if (sr > annealer_step_1)
+    _current_t *= annealer_cool_speed1;
+  else if (sr > annealer_step_2)
+    _current_t *= annealer_cool_speed2;
+  else if (sr > annealer_step_3 || _radius_limit > 1.f)
+    _current_t *= annealer_cool_speed3;
+  else
+    _current_t *= annealer_cool_speed4;
 }
 
-void ParGridContainer::shuffle() {
-  std::mt19937 gen(0);
-  std::shuffle(SUPER::begin(), SUPER::end(), gen);
+void Annealer::updateMoveRadius(float sr) {
+  _radius_limit *= (1.0f - annealer_best_rate + sr);
+  _radius_limit = std::min(_radius_limit, _radius_max);
+  _radius_limit = std::max(_radius_limit, 1.0f);
 }
 
-void ParGridContainer::sortId() {
-  GridCmp cmp;
-  std::sort(SUPER::begin(), SUPER::end(), cmp);
-}
 
-ParTarget::~ParTarget() {
-  for (size_t i = 0; i < _grid_vector.size(); ++i)
-    delete _grid_vector[i];
+bool Annealer::shouldAccept(float delta_c) {
+  if (delta_c <= 0)
+    return true ;
 
-  _grid_vector.clear();
-  _grids.clear();
+  if (_current_t <= 0.0f)
+    return false;
 
-}
+  bool accept = true;
 
-void ParTarget::initParTarget() {
-  HW_Target_abstract::C_ITER c_iter = _hw_target->cell_begin();
-  for (; c_iter != _hw_target->cell_end(); ++c_iter) {
-    HW_Cell* cell = c_iter->second;
-    ParGrid* grid = new ParGrid(cell);
-    _grid_vector.push_back(grid);
-    _grids.insert(std::make_pair(std::make_pair(c_iter->first.first, c_iter->first.second),
-          grid));
-    grid->setParElement(NULL);
-    grid->save();
-  }
+  accept = _rand->fRand(0.0, 1.0) < std::exp(-_boltzmann*delta_c/_current_t);
+  return accept;
 
 }
 
+bool Annealer::shouldExit(float unit_cost) {
+  return (_current_t < 0.08 * unit_cost);
+}
 
