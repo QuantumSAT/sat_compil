@@ -20,6 +20,7 @@
 
 #include "qpar/qpar_netlist.hh"
 #include "qpar/qpar_target.hh"
+#include "qpar/qpar_utils.hh"
 #include "syn/netlist.h"
 #include "utils/qlog.hh"
 
@@ -144,7 +145,8 @@ void ParElement::addWire(ParWire* wire) {
 
 unsigned int ParWire::_wire_index_counter = 0;
 ParWire::ParWire(SYN::Net* wire) : 
-_net(wire) {
+_net(wire),
+_bounding_box(BoundingBox box) {
   _wire_index = _wire_index_counter;
   ++_wire_index_counter;
 }
@@ -228,6 +230,44 @@ std::vector<ParWireTarget*>& ParWire::buildWireTarget(
 
   return _targets;
 }
+
+void ParWire::initializeBoundingBox() {
+  int xl = std::numeric_limits<int>::max();
+  int xr = -1;
+  int yt = std::numeric_limits<int>::max();
+  int yb = -1;
+
+  int xle = 0;
+  int xre = 0;
+  int yte = 0;
+  int ybe = 0;
+
+  ELE_ITER ele_iter = _elements.begin();
+  for (; ele_iter != _elements.end(); ++ele_iter) {
+    ParElement* ele = *ele_iter;
+    COORD coordX = ele->getX();
+    COORD coordY = ele->getY();
+
+    if (coordX < xl) {
+      xl = coordX;
+      xle = 1;
+    } else if (coordX == xl) {
+      ++xle;
+    }
+
+    if (coordX > xr) {
+      xr = coordX;
+      xre = 1;
+    } else if (coordX = xr) {
+      ++xre;
+    }
+
+  }
+
+}
+
+
+
 
 
 

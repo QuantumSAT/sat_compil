@@ -60,6 +60,15 @@ void QPlace::initilizePlacement() {
     ++grid_index;
   }
 
+
+  // initilize bounding box for each wire
+  WIRE_ITER w_iter = _netlist.wire_begin();
+  for(; w_iter ! = _netlist.wire_end(); ++w_iter) {
+
+  }
+
+  // initilize grid utilization matrix
+
 }
 
 

@@ -147,6 +147,96 @@ private:
 
 };
 
+/*! \brief box class to record boundary value
+ */
+class Box {
+  public:
+    /*! \brief default constructor
+     */
+    Box(int xl, int xr, int yt, int yb) :
+      xl_(xl),
+      xr_(xr),
+      yt_(yt),
+      yb_(yb) {}
+
+    /*! \brief get left x value
+     */
+    int xl() const { return xl_ ; }
+    /*! \brief set left x value
+     */
+    void set_xl(int xl) { xl_ = xl ; }
+    /*! \brief increse left x value
+     */
+    void incr_xl() { xl_++ ; }
+    /*! \brief decrese left x value
+     */
+    void decr_xl() { xl_-- ; }
+
+    /*! \brief get right x value
+     */
+    int xr() const { return xr_ ; }
+    /*! \brief set right x value
+     */
+    int xr() const { return xr_ ; }
+    /*! \brief set right x value
+     */
+    void set_xr(int xr) { xr_ = xr ; }
+    /*! \brief increse right x value
+     */
+    void incr_xr() { xr_++ ; }
+    /*! \brief decrese right x value
+     */
+    void decr_xr() { xr_-- ; }
+
+    /*! \brief get top y value
+     */
+    int yt() const { return yt_ ; }
+    /*! \brief set top y value
+     */
+    void set_yt(int yt) { yt_ = yt ; }
+    /*! \brief increse top y value
+     */
+    void incr_yt() { yt_++ ; }
+    /*! \brief decrese top y value
+     */
+    void decr_yt() { yt_-- ; }
+
+    /*! \brief get bottom y value
+     */
+    int yb() const { return yb_ ; }
+    /*! \brief set bottom y value
+     */
+    void set_yb(int yb) { yb_ = yb ; }
+    /*! \brief increse bottom y value
+     */
+    void incr_yb() { yb_++ ; }
+    /*! \brief decerase bottom y value
+     */
+    void decr_yb() { yb_-- ; }
+
+    /*! \brief get width
+     */
+    int width() const { return xr_ - xl_; }
+    /*! \brief get height
+     */
+    int height() const { return yt_ - yb_; }
+
+    void operator=(const Box& other) {
+      xl_ = other.xl_ ;
+      xr_ = other.xr_ ;
+      yt_ = other.yt_ ;
+      yb_ = other.yb_ ;
+    }
+
+  private:
+    int xl_ ;
+    int xr_ ;
+    int yt_ ;
+    int yb_ ;
+} ;
+
+
+
 
 
 

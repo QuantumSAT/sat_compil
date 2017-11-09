@@ -17,63 +17,41 @@
  *   License along with QSat.  If not, see <http://www.gnu.org/licenses/>.  *
  ****************************************************************************/
 
-#ifndef QPAR_SL_OBJECT_HH
-#define QPAR_SL_OBJECT_HH
+#ifndef QPAR_MATRIX_HH
+#define QPAR_MATRIX_HH
 
-/*! 
- * \file qpar_sl_object.hh
+/*!
+ * \file qpar_matrix.hh
  * \author Juexiao Su
- * \data 06 Nov 2017
- * \brief class of object with save and load function
- *
- * Make sure the template class T has operator= overload
- * default save and restore function will use operator=
+ * \date 08 Non 2017
+ * \brief a matrix class
  */
 
 
+#include <vector>
+
 template <class T>
-class ParSaveAndLoadObject {
+class qpr_matrix {
+
 
 public:
-
-  /*!\brief default constructor
-   */
-  ParSaveAndLoadObject() {}
-
   /*! \brief default constructor
    */
-  ParSaveAndLoadObject(const T& init_status):
-  _cur_status(init_status),
-  _pre_status(init_status) {}
+  qpar_matrix(unsigned x, unsigned y);
 
-  /* \brief default destructor
+  /*! \brief access the data in the matrix
    */
-  ~ParSaveAndLoadObject() {}
-
-  /*! \brief save current status to previous status
-   */
-  virtual void saveStatus();
-
-  /*! \brief restore to previous status
-   */
-  virtual void restoreStatus();
-
-  /*! \brief get current status
-   */
-  T getStatus() const { return _cur_status; }
-
-  /*! \brief set current status
-   */
-  void setStatus(T status) { _cur_status = status; }
+  T& cell(unsigned x, unsigned y);
 
 
 private:
-  T _cur_status; //!< current status
-  T _pre_status; //!< previous status
 
+  std::vector<T> _data; //<! data in the matrix is stored in a vector
+  unsigned _maxX; //!< column number of the matrix
+  unsigned _maxY; //!< row number of the matrix
 };
 
-//#define QPAR_SL_OBJ ParSaveAndLoadObject;
 
 
 #endif
+

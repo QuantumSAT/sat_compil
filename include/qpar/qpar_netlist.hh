@@ -26,6 +26,7 @@
 #include <set>
 
 #include "qpar/qpar_sl_object.hh"
+#include "qpar/qpar_utils.hh"
 #include "hw_target/hw_loc.hh"
 
 
@@ -87,6 +88,7 @@ typedef std::set<ParWire*, ParWireCmp> ParWireSet;
 typedef std::set<ParWireTarget*, ParWireTargetCmp> ParTargetSet;
 typedef std::set<ParElement*, ParElementCmp> ParElementSet;
 typedef std::set<ParElement*, ParElementCmp>::iterator ELE_ITER;
+typedef std::set<ParWire*, ParWireCmp>::iterator WIRE_ITER;
 
 
 /*! \brief ParNetlist is a light weight netlist to 
@@ -110,6 +112,12 @@ public:
 
   ELE_ITER element_begin() { return _elements.begin(); }
   ELE_ITER element_end() { return _elements.end(); }
+
+  WIRE_ITER wire_begin() { return _wires.begin(); }
+  WIRE_ITER wire_end() { return _wires.end(); }
+
+  
+
 
 private:
   /*! \brief build netlist for placement and routing
@@ -168,6 +176,22 @@ private:
 };
 
 
+/* a class to support incremental bounding box update
+ */
+class BoundingBox {
+
+public:
+  BoundingBox(Box bound, Box edge) :
+    _bound(bound),
+    _edge_num(edge) {}
+
+private:
+  Box _bound; //!< bounding box value
+  Box _edge_num; //!< number of element on the edge of box
+
+
+};
+
 
 /*! \brief wire that connects different gates
  */
@@ -198,6 +222,10 @@ public:
   std::vector<ParWireTarget*>& buildWireTarget(
       const std::unordered_map<SYN::Gate*, ParElement*>& gate_to_par_element);
 
+  /*! \brief initialize bounding box based on the placement
+   */
+  void initializeBoundingBox();
+
 private:
 
 
@@ -209,6 +237,31 @@ private:
 
   static unsigned int _wire_index_counter; //!< a wire counter to generate unique id for each ParWire
   unsigned int _wire_index; //!< uniq index for each wire
+  ParSaveAndLoadObject<BoundingBox> _bounding_box; //!< bounding box 
+
+
+};
+
+/* a class to support incremental bounding box update
+ */
+class BoundingBox {
+
+public:
+  /*! default constructor
+   */
+  BoundingBox() :
+    _bound(-1,-1,-1,-1),
+    _edge_num(-1,-1,-1,-1) {}
+
+  /*! constructor
+   */
+  BoundingBox(Box bound, Box edge) :
+    _bound(bound),
+    _edge_num(edge) {}
+
+private:
+  Box _bound; //!< bounding box value
+  Box _edge_num; //!< number of element on the edge of box
 
 
 };
@@ -271,7 +324,7 @@ private:
 
   bool _movable; //!< inidicate is this can be moved
 
-  ParSaveAndLoadObject<ParGird*> _grid;
+  ParSaveAndLoadObject<ParGird*> _grid; //!< the grid that this element is snap on
 
 
 

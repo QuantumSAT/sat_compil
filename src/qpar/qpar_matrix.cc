@@ -17,63 +17,21 @@
  *   License along with QSat.  If not, see <http://www.gnu.org/licenses/>.  *
  ****************************************************************************/
 
-#ifndef QPAR_SL_OBJECT_HH
-#define QPAR_SL_OBJECT_HH
-
-/*! 
- * \file qpar_sl_object.hh
- * \author Juexiao Su
- * \data 06 Nov 2017
- * \brief class of object with save and load function
- *
- * Make sure the template class T has operator= overload
- * default save and restore function will use operator=
- */
-
+#include "qpar/qpar_matrix.hh"
+#include "utils/qlog.hh"
 
 template <class T>
-class ParSaveAndLoadObject {
+qpar_matrix<T>::qpar_matrix(unsigned x, unsigned y) :
+  _maxX(x), _maxY(y) {
+    _data.resize(x * y);
+}
 
-public:
-
-  /*!\brief default constructor
-   */
-  ParSaveAndLoadObject() {}
-
-  /*! \brief default constructor
-   */
-  ParSaveAndLoadObject(const T& init_status):
-  _cur_status(init_status),
-  _pre_status(init_status) {}
-
-  /* \brief default destructor
-   */
-  ~ParSaveAndLoadObject() {}
-
-  /*! \brief save current status to previous status
-   */
-  virtual void saveStatus();
-
-  /*! \brief restore to previous status
-   */
-  virtual void restoreStatus();
-
-  /*! \brief get current status
-   */
-  T getStatus() const { return _cur_status; }
-
-  /*! \brief set current status
-   */
-  void setStatus(T status) { _cur_status = status; }
+template <class T>
+T &qpar_matrix<T>::cell(unsigned x, unsigned y) {
+  QASSERT(x < _maxX);
+  QASSERT(y < _maxY);
+  return _data[y * _maxX + x];
+}
 
 
-private:
-  T _cur_status; //!< current status
-  T _pre_status; //!< previous status
 
-};
-
-//#define QPAR_SL_OBJ ParSaveAndLoadObject;
-
-
-#endif
