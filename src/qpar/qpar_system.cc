@@ -25,7 +25,9 @@
  */
 
 
-#include "qpar_system.hh"
+#include "qpar/qpar_system.hh"
+#include "qpar/qpar_target.hh"
+#include "qpar/qpar_place.hh"
 #include "utils/qlog.hh"
 
 ParSystem::~ParSystem() {
@@ -58,7 +60,7 @@ void ParSystem::initNetlist() {
 void ParSystem::initHardware() {
   QASSERT(_par_target == NULL);
   _par_target = new ParTarget(_hw_target);
-  _par_target.initParTarget();
+  _par_target->initParTarget();
 }
 
 void ParSystem::doPlacement() {

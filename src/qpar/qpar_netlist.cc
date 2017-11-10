@@ -39,14 +39,14 @@ void ParElement::restore() {
 }
 
 COORD ParElement::getX() const {
-  QASSERT(_grid.getCurrentStatus());
-  return _grid.getCurrentStatus()->getLoc()->getLocX();
+  QASSERT(_grid.getStatus());
+  return _grid.getStatus()->getLoc().getLocX();
 }
 
 
 COORD ParElement::getY() const {
-  QASSERT(_grid.getCurrentStatus());
-  return _grid.getCurrentStatus()->getLoc()->getLocY();
+  QASSERT(_grid.getStatus());
+  return _grid.getStatus()->getLoc().getLocY();
 }
 
 ParGrid* ParElement::getCurrentGrid() const {
@@ -119,7 +119,7 @@ void ParNetlist::buildParNetlist() {
     for (; w_iter != net_to_par_wire.end(); ++w_iter) {
       ParWire* wire = w_iter->second;
       std::vector<ParWireTarget*> targets = wire->buildWireTarget(gate_to_par_element);
-      _all_targets.insert(_all_targets.end(), target.begin(), targets.end());
+      _all_targets.insert(_all_targets.end(), targets.begin(), targets.end());
     }
 
     qlog.speak("Design", "%u wires and %u elements has been constructed",
@@ -145,8 +145,7 @@ void ParElement::addWire(ParWire* wire) {
 
 unsigned int ParWire::_wire_index_counter = 0;
 ParWire::ParWire(SYN::Net* wire) : 
-_net(wire),
-_bounding_box(BoundingBox box) {
+_net(wire) {
   _wire_index = _wire_index_counter;
   ++_wire_index_counter;
 }
@@ -262,7 +261,29 @@ void ParWire::initializeBoundingBox() {
       ++xre;
     }
 
+    if (coordY > yb) {
+      yb = coordY;
+      ybe = 1;
+    } else if (coordY == yb) {
+      ++ybe;
+    }
+
+    if (coordY < yt) {
+      yt = coordY;
+      yte = 1;
+    } else if (coordY == yt) {
+      ++yte;
+    }
+
   }
+
+  Box box1(xl, xr, yt, yb);
+  Box box2(xle,xre,yte,ybe);
+  _bounding_box.getStatus().setBoundingBox(box1);
+  _bounding_box.getStatus().setEdgeBox(box2);
+
+  _bounding_box.saveStatus();
+
 
 }
 

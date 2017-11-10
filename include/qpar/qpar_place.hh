@@ -20,6 +20,8 @@
 #ifndef QPAR_PLACE_HH
 #define QPAR_PLACE_HH
 
+#include "qpar_matrix.hh"
+
 
 /*!
  * \file qpar_place.hh
@@ -34,6 +36,7 @@ namespace SYN {
 
 class Grid;
 class ParNetlist;
+class ParTarget;
 
 
 class QPlace {
@@ -44,10 +47,12 @@ public:
    *  \param ParNetlist* netlist used in placement and routing
    *  \param ParTarget* hardware target to describe device
    */
-  QPlace::QPlace(ParNetlist* netlist, ParTarget* hw_target) :
+  QPlace(ParNetlist* netlist, ParTarget* hw_target) :
    _netlist(netlist),
    _hw_target(hw_target) {
   }
+
+  ~QPlace();
 
   /*! \brief initialize placement related data structure
    *! \return void
@@ -68,6 +73,8 @@ private:
   /*! \brief initilize placement by random assign element to each grid
    */
   void initilizePlacement();
+
+  qpr_matrix<unsigned>* _used_matrix; //!< a matrix inidicate the number of used cell
 
 };
 

@@ -54,7 +54,8 @@ public:
 
   /*! \brief default constructor
    */
-  HW_Target_abstract() {}
+  HW_Target_abstract() :
+  _maxX(0), _maxY(0) {}
 
   /*! \brief default destructor
    */
@@ -71,6 +72,14 @@ public:
    */
   virtual HW_Interaction* getInteraction(const HW_Loc& loc1, const HW_Loc& loc2) const = 0;
 
+  /*! \brief get x limit
+   */
+  COORD getXLimit() const { return _maxX; } 
+
+  /*! \brief get y limit
+   */
+  COORD getYLimit() const { return _maxY; }
+
 
 
 
@@ -78,6 +87,9 @@ protected:
 
   LocToQubit            _loc_to_qubit;         //!< a map between location and qubit
   LocToCellInteraction  _loc_to_interaction;   //!< a map between location and interaction
+
+  COORD _maxX; //!< max x coordinate
+  COORD _maxY; //!< max y coordinate
   
 };
 

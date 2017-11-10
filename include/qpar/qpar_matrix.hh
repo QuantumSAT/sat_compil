@@ -37,7 +37,7 @@ class qpr_matrix {
 public:
   /*! \brief default constructor
    */
-  qpar_matrix(unsigned x, unsigned y);
+  qpr_matrix(unsigned x, unsigned y);
 
   /*! \brief access the data in the matrix
    */

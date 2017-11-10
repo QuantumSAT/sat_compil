@@ -29,6 +29,7 @@ namespace SYN {
 
 class ParNetlist;
 class ParTarget;
+class HW_Target_Dwave;
 
 /*! \brief a status struct to inidcate the Par status
  */
@@ -94,7 +95,7 @@ public:
 
 private:
  
-  Model* _syn_netlist; //<! netlist from synthesis tool
+  SYN::Model* _syn_netlist; //<! netlist from synthesis tool
   HW_Target_Dwave* _hw_target; //<! hardware target
 
   ParNetlist* _par_netlist;

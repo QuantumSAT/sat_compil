@@ -172,9 +172,6 @@ class Box {
      */
     void decr_xl() { xl_-- ; }
 
-    /*! \brief get right x value
-     */
-    int xr() const { return xr_ ; }
     /*! \brief set right x value
      */
     int xr() const { return xr_ ; }

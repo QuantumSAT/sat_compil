@@ -43,6 +43,8 @@ void HW_Target_Dwave::initializeTarget() {
   
   COORD x_num = _hw_param->getMaxRangeX();
   COORD y_num = _hw_param->getMaxRangeY();
+  _maxX = x_num;
+  _maxY = y_num;
 
 
   //1) initialize all qubits and interactions in cells

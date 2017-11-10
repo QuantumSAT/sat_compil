@@ -32,6 +32,13 @@
 
 #include "utils/qlog.hh"
 
+
+QPlace::~QPlace() {
+    if (_used_matrix)
+      delete _used_matrix;
+    _used_matrix = NULL;
+}
+
 void QPlace::run() {
   initilizePlacement();
 }
@@ -42,8 +49,8 @@ void QPlace::initilizePlacement() {
   grids.shuffle();
   unsigned grid_index = 0;
 
-  ELE_ITER ele_iter = _netlist.element_begin();
-  for (; ele_iter != _netlist.end(); ++ele_iter) {
+  ELE_ITER ele_iter = _netlist->element_begin();
+  for (; ele_iter != _netlist->element_end(); ++ele_iter) {
     ParElement* element = *ele_iter;
     if (!element->isMovable()) {
       qlog.speakError("Cannot support fixed element!");
@@ -56,19 +63,56 @@ void QPlace::initilizePlacement() {
       qlog.speakError("Placement does not have enough resources to performance placement");
 
     element->setGrid(grids[grid_index]);
-    grids->setParElement(element);
+    grids[grid_index]->setParElement(element);
     ++grid_index;
   }
 
 
   // initilize bounding box for each wire
-  WIRE_ITER w_iter = _netlist.wire_begin();
-  for(; w_iter ! = _netlist.wire_end(); ++w_iter) {
-
+  WIRE_ITER w_iter = _netlist->wire_begin();
+  for(; w_iter != _netlist->wire_end(); ++w_iter) {
+    ParWire* wire = *w_iter;
+    wire->initializeBoundingBox();
   }
 
-  // initilize grid utilization matrix
+  COORD y_limit = _hw_target->getYLimit();
+  COORD x_limit = _hw_target->getXLimit();
 
+  QASSERT(y_limit);QASSERT(x_limit);
+  _used_matrix = new qpr_matrix<unsigned>(x_limit, y_limit);
+
+  // initilize grid utilization matrix
+  if (_hw_target->getGrid(0,0)->getCurrentElement())
+    _used_matrix->cell(0,0) = 1;
+  else
+    _used_matrix->cell(0,0) = 0;
+
+  for (COORD y = 1; y < y_limit; ++y) {
+    if (_hw_target->getGrid(0,y)->getCurrentElement())
+      _used_matrix->cell(0,y) = _used_matrix->cell(0,y-1) + 1;
+    else
+      _used_matrix->cell(0,y) = _used_matrix->cell(0,y-1);
+  }
+
+  for (COORD x = 1; x < x_limit; ++x) {
+    if (_hw_target->getGrid(x, 0)->getCurrentElement())
+      _used_matrix->cell(x, 0) = _used_matrix->cell(x-1,0) - 1;
+    else
+      _used_matrix->cell(x, 0) = _used_matrix->cell(x-1,0);
+  }
+
+  for (COORD x = 1; x < x_limit; ++x) {
+    for (COORD y = 1; y < y_limit; ++y) {
+      unsigned used_element = 
+        _used_matrix->cell(x-1, y) +
+        _used_matrix->cell(x, y-1) -
+        _used_matrix->cell(x-1, y-1);
+      if (_hw_target->getGrid(x,y)->getCurrentElement())
+        _used_matrix->cell(x,y) = used_element + 1;
+      else
+        _used_matrix->cell(x,y) = used_element;
+    }
+  }
 }
 
 

@@ -18,6 +18,7 @@
  ****************************************************************************/
 
 #include "hw_target/hw_target.hh"
+#include "hw_target/hw_object.hh"
 #include "utils/qlog.hh"
 #include "qpar/qpar_target.hh"
 
@@ -42,6 +43,10 @@ ParElement* ParGrid::getCurrentElement() const {
   return _element.getStatus();
 }
 
+HW_Loc ParGrid::getLoc() const {
+  return _cell->getLoc();
+}
+
 void ParGridContainer::shuffle() {
   std::mt19937 gen(0);
   std::shuffle(SUPER::begin(), SUPER::end(), gen);
@@ -62,6 +67,9 @@ ParTarget::~ParTarget() {
 }
 
 void ParTarget::initParTarget() {
+  _maxX = _hw_target->getXLimit();
+  _maxY = _hw_target->getYLimit();
+
   HW_Target_abstract::C_ITER c_iter = _hw_target->cell_begin();
   for (; c_iter != _hw_target->cell_end(); ++c_iter) {
     HW_Cell* cell = c_iter->second;
@@ -72,7 +80,7 @@ void ParTarget::initParTarget() {
     grid->setParElement(NULL);
     grid->save();
   }
-  qlog.echo("Par Target", "%u cells has been constructed", (unsigned)_grid_vector.size());
+  qlog.speak("Par Target", "%u cells has been constructed", (unsigned)_grid_vector.size());
 
 }
 

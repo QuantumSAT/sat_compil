@@ -60,7 +60,11 @@ public:
 
   /*! \brief get current status
    */
-  T getStatus() const { return _cur_status; }
+  const T& getStatus() const { return _cur_status; }
+
+  /*! \brief accessor
+   */
+  T& getStatus() { return _cur_status; }
 
   /*! \brief set current status
    */

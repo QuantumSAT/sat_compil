@@ -79,7 +79,7 @@ public:
 
   /*! \brief get grid location
    */
-  HW_Loc getLoc() const { return _cell->getLoc(); }
+  HW_Loc getLoc() const;
 
 private:
 
@@ -123,7 +123,8 @@ public:
 public:
   /*! \brief default constructor
    */
-  ParTarget(HW_Target_Dwave* hw_target) : _hw_target(hw_target) {}
+  ParTarget(HW_Target_Dwave* hw_target) : _hw_target(hw_target),
+  _maxX(0), _maxY(0) {}
 
   /*! \brief default destructor
    */
@@ -149,13 +150,24 @@ public:
 
   /*! \brief get the grid vector container
    */
-  ParGridContainers& getGrids() { return _grid_vector; }
+  ParGridContainer& getGrids() { return _grid_vector; }
+
+  /*! \brief get x limit
+   */
+  COORD getXLimit() const { return _maxX; }
+
+  /*! \brief get y limit
+   */
+  COORD getYLimit() const { return _maxY; }
 
 
 private:
   HW_Target_Dwave* _hw_target; //!< hardware target
   ParGridContainer _grid_vector; //!< a vector that stores all grid
   LocToGrid _grids; //!< find the grid based on location
+
+  COORD _maxX; //!< number of cells on x direction
+  COORD _maxY; //!< number of cells on y direction
 
 };
 

@@ -34,9 +34,10 @@ std::string QCOMMAND_build_qpar_nl::help() const {
 }
 
 int QCOMMAND_build_qpar_nl::execute(int argc, const char** argv, std::string& result, ClientData clientData) {
-  TclManager* tcl_manager = static_cast<TclManager*>(clientData);
-  Tcl_Interp* interp = tcl_manager->getInterp();
+  //TclManager* tcl_manager = static_cast<TclManager*>(clientData);
+  //Tcl_Interp* interp = tcl_manager->getInterp();
 
+  result = "OK";
   if (!checkOptions(argc, argv)) {
     printHelp();
     return TCL_OK;
@@ -51,7 +52,7 @@ int QCOMMAND_build_qpar_nl::execute(int argc, const char** argv, std::string& re
   SYN::BlifReaderWriter reader;
   reader.readDesign(fp);
   fclose(fp);
-  ParNetlist::getOrCreate(SYN::myTop);
+  ParNetlist netlist(SYN::myTop);
 
   return TCL_OK;
 }
