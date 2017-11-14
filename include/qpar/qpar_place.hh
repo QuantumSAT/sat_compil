@@ -76,6 +76,27 @@ private:
 
   qpr_matrix<unsigned>* _used_matrix; //!< a matrix inidicate the number of used cell
 
+  /*! \brief check if the incremental update the value correctly
+   * use a brutal force method
+   */
+  void usedMatrixSanityCheck(unsigned x, unsigned y);
+
+  /*! \brief check if the placer is ready to move
+   */
+  void checkIfReadyToMove();
+
+  /*! \brief move a random element to a random place
+   */
+  void tryMove();
+
+  void std::vector<ParElement*> _movable_elements; //!< a vector container to store all movable element
+
+  void generateMove(ParElement* element, COORD&x, COORD&y);
+
+  /*! \brief given the source element and the destination coordinate collect all affected wires and elements
+   */
+  void findAffectedElementsAndWires(ParElement* element, COORD x, COORD y);
+
 };
 
 

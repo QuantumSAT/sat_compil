@@ -81,6 +81,12 @@ public:
    */
   HW_Loc getLoc() const;
 
+  /*! \brief check if grid is ready to move
+   */
+  bool checkIfReadyToMove() const {
+    return _element.checkStatusSame();
+  }
+
 private:
 
   HW_Cell* _cell; //!< the hardware cell to create this grid

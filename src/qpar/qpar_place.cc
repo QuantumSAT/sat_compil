@@ -53,8 +53,9 @@ void QPlace::initilizePlacement() {
   for (; ele_iter != _netlist->element_end(); ++ele_iter) {
     ParElement* element = *ele_iter;
     if (!element->isMovable()) {
-      qlog.speakError("Cannot support fixed element!");
+      qlog.speakError("Placement does not support fixed element!");
     }
+    _movable_elements.push_back(element);
 
     while (!grids[grid_index]->canBePlaced() && grid_index < grids.size())
       ++grid_index;
@@ -113,6 +114,55 @@ void QPlace::initilizePlacement() {
         _used_matrix->cell(x,y) = used_element;
     }
   }
+}
+
+void QPlace::usedMatrixSanityCheck(unsigned x, unsigned y) {
+  unsigned sum = 0;
+  for (COORD i = 0; i < x; ++i) {
+    for (COORD j = 0; j < y; ++j) {
+      if (_hw_target->getGrid(x,y)->getCurrentElement())
+        ++sum;
+    }
+  }
+  QASSERT(_used_matrix->cell(x, y) == sum);
+}
+
+void QPlace::checkIfReadyToMove() {
+  WIRE_ITER w_iter = _netlist->wire_begin();
+  for(; w_iter != _netlist->wire_end(); ++w_iter) {
+    ParWire* wire = *w_iter;
+    QASSERT(wire->isReadyToMove());
+  }
+
+  ELE_ITER ele_iter = _netlist->element_begin();
+  for (; ele_iter != _netlist->element_end(); ++ele_iter) {
+    ParElement* element = *ele_iter;
+    QASSERT(element->isReadyToMove());
+  }
+
+  for (COORD x = 1; x < x_limit; ++x) {
+    for (COORD y = 1; y < y_limit; ++y) {
+      QASSERT(_hw_target->getGrid(x,y)->isReadyToMove());
+    }
+  }
+
+
+}
+
+
+void QPlace::tryMove() {
+  //1) check if they placer is ready to move
+  checkIfReadyToMove();
+
+  COORD& x = std::numeric_limits<COORD>::max();
+  COORD& y = std::numeric_limits<COORD>::max();
+
+  ParElement* ele = NULL;
+  generateMove(ele, x, y);
+
+  findAffectedElementsAndWires(ele, x, y);
+
+
 }
 
 

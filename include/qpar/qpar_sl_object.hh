@@ -70,6 +70,10 @@ public:
    */
   void setStatus(T status) { _cur_status = status; }
 
+  bool checkStatusSame() const {
+    return _current_status == _pre_status;
+  }
+
 
 private:
   T _cur_status; //!< current status

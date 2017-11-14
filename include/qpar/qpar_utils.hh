@@ -225,6 +225,13 @@ class Box {
       yb_ = other.yb_ ;
     }
 
+    bool operator==(const Box& left, const Box& right) const {
+      return (left.xl_ == right.xl_) &&
+             (left.xr_ == right.xr_) &&
+             (left.yt_ == right.yt_) &&
+             (left.yb_ == right.yb_);
+    }
+
   private:
     int xl_ ;
     int xr_ ;

@@ -243,6 +243,10 @@ public:
    */
   void initializeBoundingBox();
 
+  /*! \brief sanity check to check if the wire ready to move
+   */
+  bool isReadyToMove() const { return _bouding_box.checkStatusSame(); };
+
 private:
 
 
@@ -255,6 +259,7 @@ private:
   static unsigned int _wire_index_counter; //!< a wire counter to generate unique id for each ParWire
   unsigned int _wire_index; //!< uniq index for each wire
   ParSaveAndLoadObject<BoundingBox> _bounding_box; //!< bounding box 
+
 
 
 };
@@ -306,6 +311,12 @@ public:
    */
   COORD getY() const;
 
+  /*! \brief check if the element is ready to move
+   */
+  bool isReadyToMove() const {
+    return _grid.checkStatusSame();
+  }
+
 private:
   SYN::Gate* _gate; //!< gate form synthesis model
 
@@ -318,6 +329,7 @@ private:
   bool _movable; //!< inidicate is this can be moved
 
   ParSaveAndLoadObject<ParGrid*> _grid; //!< the grid that this element is snap on
+
 
 
 
