@@ -43,6 +43,16 @@ public:
    */
   T& cell(unsigned x, unsigned y);
 
+  /*! \brief get the matrix x size
+   *  \return unsigned size
+   */
+  unsigned getSizeX() const { return _maxX; }
+
+  /*! \brief get the matrix y size
+   *  \return unsigned size
+   */
+  unsigned getSizeY() const { return _maxY; }
+
 
 private:
 

@@ -20,7 +20,8 @@
 #ifndef QPAR_PLACE_HH
 #define QPAR_PLACE_HH
 
-#include "qpar_matrix.hh"
+#include "qpar/qpar_matrix.hh"
+#include "qpar/qpar_utils.hh"
 
 
 /*!
@@ -49,7 +50,8 @@ public:
    */
   QPlace(ParNetlist* netlist, ParTarget* hw_target) :
    _netlist(netlist),
-   _hw_target(hw_target) {
+   _hw_target(hw_target),
+  __annealer(NULL) {
   }
 
   ~QPlace();
@@ -72,9 +74,23 @@ private:
 
   /*! \brief initilize placement by random assign element to each grid
    */
-  void initilizePlacement();
+  void initializePlacement();
+
+  /*! \brief incremental update use matrix
+   *  \param COORD from x coord
+   *  \param COORD from y coord
+   *  \param COORD to x coord
+   *  \param COORD to x coord
+   *  \return void
+   */
+  void updateUseMatrix(COORD from_x, COORD from_y, COORD to_x, COORD to_y);
 
   qpr_matrix<unsigned>* _used_matrix; //!< a matrix inidicate the number of used cell
+
+  /*! \brief check all used matrix
+   *  \return void
+   */
+  void usedMatrixSanityCheck();
 
   /*! \brief check if the incremental update the value correctly
    * use a brutal force method
@@ -91,11 +107,17 @@ private:
 
   void std::vector<ParElement*> _movable_elements; //!< a vector container to store all movable element
 
-  void generateMove(ParElement* element, COORD&x, COORD&y);
+  void generateMove(ParElement* &element, COORD& x, COORD& y);
 
   /*! \brief given the source element and the destination coordinate collect all affected wires and elements
    */
   void findAffectedElementsAndWires(ParElement* element, COORD x, COORD y);
+
+  RandomGenerator _random_gen; //!< a random nubmer generator
+
+  Annealer* _annealer; //!< a annealer manager
+
+  std::vector<ParElement*> _affected_elements; //!< a container to store the affected elemnts
 
 };
 

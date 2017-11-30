@@ -131,6 +131,10 @@ public:
    */
   bool shouldExit(float unit_cost);
 
+  /*! \brief get radius limit
+   */
+  float getRLimit() const { _radium_limit; }
+
 private:
 
   RandomGenerator* _rand; //!< random nubmer gen
