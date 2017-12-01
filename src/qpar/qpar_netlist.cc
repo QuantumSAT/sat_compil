@@ -104,7 +104,7 @@ void ParNetlist::buildParNetlist() {
         parwire = net_to_par_wire.at(net);
       } else {
         if (net == NULL || net->isDummy()) {
-          qlog.speak("Placement", "Gate %s Pin %s is dangling",
+          qlog.speak("Design", "Gate %s Pin %s is dangling",
               pin->getGate()->getName().c_str(),
               net->name().c_str());
           continue;
@@ -141,6 +141,13 @@ _gate(gate) {
 void ParElement::addWire(ParWire* wire) {
   _wires.push_back(wire);
   wire->addElement(this);
+}
+
+void ParElement::updatePlacement() {
+  QASSERT(_grid.getCurrentStatus());
+  _x = _grid.getCurrentStatu()->getLoc()->getLocX():
+  _y = _grid.getCurrentStatu()->getLoc()->getLocY():
+
 }
 
 unsigned int ParWire::_wire_index_counter = 0;
@@ -285,6 +292,87 @@ void ParWire::initializeBoundingBox() {
   _bounding_box.saveStatus();
 
 
+}
+
+void ParWire::saveCost() {
+  _cost.saveStatus();
+}
+
+double ParWire::getCurrentCost() const {
+  return _cost.getStatus();
+}
+
+double ParWire::getSavedCost() const {
+  return _cost.getSavedStatus();
+}
+
+void ParWire::setCost(double val) {
+  _cost.setStatus(val);
+}
+
+void ParWire::sanityCheck() {
+  int xl = std::numeric_limits<int>::max();
+  int xr = -1;
+  int yt = std::numeric_limits<int>::max();
+  int yb = -1;
+
+  int xle = 0;
+  int xre = 0;
+  int yte = 0;
+  int ybe = 0;
+
+  ELE_ITER ele_iter = _elements.begin();
+  for (; ele_iter != _elements.end(); ++ele_iter) {
+    ParElement* ele = *ele_iter;
+    COORD coordX = ele->getX();
+    COORD coordY = ele->getY();
+
+    if (coordX < xl) {
+      xl = coordX;
+      xle = 1;
+    } else if (coordX == xl) {
+      ++xle;
+    }
+
+    if (coordX > xr) {
+      xr = coordX;
+      xre = 1;
+    } else if (coordX = xr) {
+      ++xre;
+    }
+
+    if (coordY > yb) {
+      yb = coordY;
+      ybe = 1;
+    } else if (coordY == yb) {
+      ++ybe;
+    }
+
+    if (coordY < yt) {
+      yt = coordY;
+      yte = 1;
+    } else if (coordY == yt) {
+      ++yte;
+    }
+
+  }
+
+  Box box = getCurrentBoundingBox().getBoundBox();
+  if (box.xr() != xr)
+    qlog.speak("Place", "Sanity Checking Net: BoundingBox xr %u is not equal to incr %u", box.xr(), xr);
+  if (box.xl() != xl)
+    qlog.speak("Place", "Sanity Checking Net: BoundingBox xl %u is not equal to incr %u", box.xl(), xl);
+  if (box.yb() != yb)
+    qlog.speak("Place", "Sanity Checking Net: BoundingBox yb %u is not equal to incr %u", box.yb(), yb);
+  if (box.yt() != yt)
+    qlog.speak("Place", "Sanity Checking Net: BoundingBox yt %u is not equal to incr %u", box.yt(), yt);
+
+
+}
+
+void PairWire::restore() {
+  _bounding_box->restore();
+  _cost->restore();
 }
 
 

@@ -89,6 +89,7 @@ typedef std::set<ParWireTarget*, ParWireTargetCmp> ParTargetSet;
 typedef std::set<ParElement*, ParElementCmp> ParElementSet;
 typedef std::set<ParElement*, ParElementCmp>::iterator ELE_ITER;
 typedef std::set<ParWire*, ParWireCmp>::iterator WIRE_ITER;
+typedef std::vector<ParWire*>::iterator WIRE_ITER_V;
 
 /* a class to support incremental bounding box update
  */
@@ -114,6 +115,14 @@ public:
   /*! \brief set edge box
    */
   void setEdgeBox(Box edge) { _edge_num = edge; }
+
+  /*! \brief get bounding box
+   */
+  Box getBoundBox() const { return _bound; }
+
+  /*! \brief get edge number box
+   */
+  Box getEdgeBox() const { return _edge_num; }
 
 private:
   Box _bound; //!< bounding box value
@@ -150,7 +159,9 @@ public:
   WIRE_ITER wire_begin() { return _wires.begin(); }
   WIRE_ITER wire_end() { return _wires.end(); }
 
-  
+  /*! \brief get number of wires in the netlist
+   */
+  size_t getWireNum() const { return _wires.size(); }
 
 
 private:
@@ -232,6 +243,10 @@ public:
     _elements.insert(elem);
   }
 
+  size_t getElementNumber() const {
+    return _elements.size();
+  }
+
   /*! \brief build necessary wire data structure
    *  \function buildParWire()
    *  \return std::vector<ParWireTarget*> return target vector
@@ -247,6 +262,54 @@ public:
    */
   bool isReadyToMove() const { return _bouding_box.checkStatusSame(); };
 
+  /*! \brief incrementally update bounding box
+   */
+  void updateBoundingBox(COORD from_x, COORD from_y, COORD to_x, COORD to_y);
+
+  /*! \brief get current cost
+   *  \return double cost
+   */
+  double getCurrentCost() const;
+
+  /*! \brief get saved cost
+   *  \return double cost
+   */
+  double getSavedCost();
+
+  /*! \brief save cost
+   */
+  void saveCost();
+
+  /*! \brief set cost
+   */
+  void setCost(double val);
+
+  /*! \brief restore the wire to the state before swap
+   */
+  void restore();
+
+  /*! \brief get current bounding box
+   */
+  BoundingBox getCurrentBoundingBox() const;
+
+  /*! \brief get saved bounding box
+   */
+  BoundingBox getSavedBoundingBox();
+
+  /*! \brief save bouding box
+   */
+  void saveBoundingBox();
+
+  /*! \brief set current bounding box
+   */
+  void setBoundingBox(BoundingBox box);
+
+  /*! \brief check if incremetal update is the same with 
+   *         brute force
+   */
+  void sanityCheck();
+  
+
 private:
 
 
@@ -259,6 +322,7 @@ private:
   static unsigned int _wire_index_counter; //!< a wire counter to generate unique id for each ParWire
   unsigned int _wire_index; //!< uniq index for each wire
   ParSaveAndLoadObject<BoundingBox> _bounding_box; //!< bounding box 
+  ParSaveAndLoadObject<double> _cost; //!< cost of the wire
 
 
 
@@ -317,6 +381,15 @@ public:
     return _grid.checkStatusSame();
   }
 
+  /*! \brief write the placmeent result back to ParNetlist
+   */
+  void updatePlacement();
+
+
+
+  WIRE_ITER_V begin() { return _wires.begin(); }
+  WIRE_ITER_V end() { return _wires.end(); }
+
 private:
   SYN::Gate* _gate; //!< gate form synthesis model
 
@@ -329,6 +402,10 @@ private:
   bool _movable; //!< inidicate is this can be moved
 
   ParSaveAndLoadObject<ParGrid*> _grid; //!< the grid that this element is snap on
+
+  COORD _x;  //!< post placement result
+
+  COORD _y;  //!< post placement result
 
 
 

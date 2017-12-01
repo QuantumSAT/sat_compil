@@ -17,55 +17,39 @@
  *   License along with QSat.  If not, see <http://www.gnu.org/licenses/>.  *
  ****************************************************************************/
 
-#ifndef QPAR_MATRIX_HH
-#define QPAR_MATRIX_HH
+#ifndef QPAR_PLACE_COST_HH
+#define QPAR_PLACE_COST_HH
 
-/*!
- * \file qpar_matrix.hh
- * \author Juexiao Su
- * \date 08 Nov 2017
- * \brief a matrix class
+
+/*! \file qpar_place_cost.hh
+ *  \author Juexiao Su
+ *  \date 28 Nov 2017
+ *  \brief placement cost function
  */
 
+#include "qpar/qpar_matrix.hh"
 
-#include <vector>
-
-template <class T>
-class qpr_matrix {
+class ParWire;
 
 
+class PlacementCost {
 public:
-  /*! \brief default constructor
-   */
-  qpr_matrix(unsigned x, unsigned y);
+  static const float cross_count[50];
+  virtual double computeCost(ParWire* wire, const qpr_matrix<unsigned>& used_matrix) = 0;
+};
 
-  /*! \brief access the data in the matrix
-   */
-  T& cell(unsigned x, unsigned y);
+class BoundingBoxCost : public PlacementCost {
+public:
+  virtual double computeCost(ParWire* wire, const qpr_matrix<unsigned>& used_matrix);
+};
 
-  /*! \brief access the data in the matrix
-   */
-  T& cell(unsigned x, unsigned y) const;
-
-  /*! \brief get the matrix x size
-   *  \return unsigned size
-   */
-  unsigned getSizeX() const { return _maxX; }
-
-  /*! \brief get the matrix y size
-   *  \return unsigned size
-   */
-  unsigned getSizeY() const { return _maxY; }
-
-
-private:
-
-  std::vector<T> _data; //<! data in the matrix is stored in a vector
-  unsigned _maxX; //!< column number of the matrix
-  unsigned _maxY; //!< row number of the matrix
+class CongestionAwareCost : public PlacementCost {
+public:
+  virtual double computeCost(ParWire* wire, const qpr_matrix<unsigned>& used_matrix);
 };
 
 
 
 #endif
+
 

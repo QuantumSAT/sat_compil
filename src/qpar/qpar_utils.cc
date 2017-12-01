@@ -81,3 +81,8 @@ bool Annealer::shouldExit(float unit_cost) {
   return (_current_t < 0.08 * unit_cost);
 }
 
+bool Box::isInBox(int x, int y) const {
+
+
+}
+

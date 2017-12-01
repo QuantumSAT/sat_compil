@@ -38,6 +38,7 @@ namespace SYN {
 class Grid;
 class ParNetlist;
 class ParTarget;
+class PlacementCost;
 
 
 class QPlace {
@@ -51,7 +52,9 @@ public:
   QPlace(ParNetlist* netlist, ParTarget* hw_target) :
    _netlist(netlist),
    _hw_target(hw_target),
-  __annealer(NULL) {
+   _annealer(NULL),
+   _placement_cost(NULL),
+   _current_total_cost(0.0) {
   }
 
   ~QPlace();
@@ -103,7 +106,28 @@ private:
 
   /*! \brief move a random element to a random place
    */
-  void tryMove();
+  bool tryMove();
+
+  /*! \brief populate all the move information
+   */
+  void updateMove();
+
+  /*! \brief commit the move action
+   */
+  void commitMove();
+
+  /*! \brief restore to previous status
+   */
+  void restoreMove();
+
+  /*! \brief compute the cost for a give placement
+   *  \return double cost
+   */
+  double computeTotalCost();
+
+  /*! \brief get initial annealing temperature based on random experiments
+   */
+  float getStartingT();
 
   void std::vector<ParElement*> _movable_elements; //!< a vector container to store all movable element
 
@@ -113,11 +137,18 @@ private:
    */
   void findAffectedElementsAndWires(ParElement* element, COORD x, COORD y);
 
+  double getStdDev(unsigned num, double ave, double s_square) const;
+
   RandomGenerator _random_gen; //!< a random nubmer generator
 
   Annealer* _annealer; //!< a annealer manager
 
+  PlacementCost* _placement_cost; //!< placement cost 
+
   std::vector<ParElement*> _affected_elements; //!< a container to store the affected elemnts
+  ParWireSet _affected_wires; //!< a container to store the affected wires
+
+  double _current_total_cost; //!< to record the total cost
 
 };
 

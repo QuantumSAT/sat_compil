@@ -135,6 +135,22 @@ public:
    */
   float getRLimit() const { _radium_limit; }
 
+  /*! \brief set radium limit
+   */
+  void setRLimit(float val) { _radium_limit = val; }
+
+  /*! \brief set current annealing temperature
+   */
+  void setCurrentT(float t) {
+    _current_t = t;
+  }
+
+  /*! \brief set initial annealing temperature
+   */
+  void setInitT(float t) {
+    _initial_t = t;
+  }
+
 private:
 
   RandomGenerator* _rand; //!< random nubmer gen
@@ -145,9 +161,6 @@ private:
   float _radius_max; //!< maxium allowed move radius
   float _radius_limit; //!< the radius limit during annealing
   float _boltzmann; //!< boltzmann factor
-
-
-
 
 };
 
@@ -235,6 +248,11 @@ class Box {
              (left.yt_ == right.yt_) &&
              (left.yb_ == right.yb_);
     }
+
+    /*! \brief check if a give point within the box
+     *  \return bool
+     */
+    bool isInBox(int x, int y) const;
 
   private:
     int xl_ ;

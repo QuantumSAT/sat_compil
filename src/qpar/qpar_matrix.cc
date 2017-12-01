@@ -33,5 +33,12 @@ T &qpr_matrix<T>::cell(unsigned x, unsigned y) {
   return _data[y * _maxX + x];
 }
 
+template <class T>
+T &qpr_matrix<T>::cell(unsigned x, unsigned y) const {
+  QASSERT(x < _maxX);
+  QASSERT(y < _maxY);
+  return _data[y * _maxX + x];
+}
+
 
 

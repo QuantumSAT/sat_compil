@@ -62,9 +62,17 @@ public:
    */
   const T& getStatus() const { return _cur_status; }
 
+  /*! \brief get saved status
+   */
+  const T& getSavedStatus() const { return _pre_status; }
+
   /*! \brief accessor
    */
   T& getStatus() { return _cur_status; }
+
+  /*! \brief accessor
+   */
+  T& getSavedStatus() { return _pre_status; }
 
   /*! \brief set current status
    */

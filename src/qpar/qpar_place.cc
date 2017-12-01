@@ -41,10 +41,106 @@ QPlace::~QPlace() {
     if (_annealer)
       delete _annealer;
     _annealer = NULL;
+
+    if (_placement_cost)
+      delete _placement_cost;
+    _placement_cost = NULL;
 }
 
 void QPlace::run() {
   initializePlacement();
+
+  _current_total_cost = computeTotalCost();
+
+  qlog.speak("Place", "Initial placement cost is %.6f", _current_total_cost);
+
+  const int num_move = std::max(_movable_elements.size(), 100);
+  const int move_limit = std::max(4 * std::pow(_movable_elements.size(), 1.333));
+  _annealer->setRLimit((float)(std::max(_hw_target->getXLimit(), _hw_target->getYLimit())));
+
+  const float final_limit = 1.0;
+  const float init_t = getStartingT();
+  _annealer->setInitT(init_t);
+  _annealer->setCurrentT(init_t);
+  
+  int tot_iter = 0;
+  int outer_iter = 0;
+  int move_since_recompute = 0;
+
+  double cost_ave = 0;
+  double sum_of_square = 0;
+  int success_num = 0;
+
+  qlog.speak("Place", "Start Placement");
+  qlog.speak("Place", "|=======================================================");
+  qlog.speak("Place", "|%5s|%11s|%10s |%9s  |   %7s | %10s|", "Iter", "T",  "Cost", "Succ_Swap",   "R_Limit",   "Tot Mov");
+
+  while(!_annealer->shouldExit(_current_total_cost / (float)(_netlist->getWireNum()))) {
+    cost_ave = 0;
+    sum_of_squares = 0.0;
+    success_num = 0;
+    ++outer_iter;
+
+    for (unsigned inner_iter = 0; inner_iter < move_limit; ++inner_iter) {
+      if (tryMove()) {
+        ++sucess_num;
+        cost_ave += _current_total_cost;
+        sum_of_square = _current_total_cost * _current_total_cost;
+      }
+    }
+
+    move_since_recompute += move_limit;
+    if (move_since_recompute > 50000) {
+      float new_cost = computeTotalCost();
+      float delta = new_cost - _current_total_cost;
+      qlog.speak("Place", "Recompute cost delta is %f", delta);
+      _current_total_cost = new_cost;
+      move_since_recompute = 0;
+    }
+
+    tot_iter += move_limit;
+    float success_rat = (float)(success_sum) / (float)move_limit;
+    if (success_sum > 0)
+      cost_ave /= success_sum;
+    else 
+      cost_ave = _current_total_cost;
+
+    double std_dev = getStdDev(success_sum, sum_of_square, cost_ave);
+    float old_t = _annealer->getCurrentT();
+    _annealer->updateT(success_rat);
+    _annealer->updateMoveRadius(success_rat);
+
+    if (outer_iter > 105)
+      break;
+
+    qlog.speak("Place","|%5d|%11.3f|%10.2f |%9d  |   %7f | %10d|", outer_iter, _annealer->getCurrentT(), _current_total_cost, success_sum, _annealer->getRLimit(), tot_iter);
+
+
+  }
+  sanityCheck();
+  ELE_ITER ele_iter = _netlist->element_begin();
+  for (; ele_iter != _netlist->element_end(); ++ele_iter) {
+    ParElement* element = *ele_iter;
+    element->updatePlacement();
+  }
+}
+
+void QPlace::sanityCheck() {
+  WIRE_ITER w_iter = _netlist->wire_begin();
+  for(; w_iter != _netlist->wire_end(); ++w_iter) {
+    ParWire* wire = *w_iter;
+    wire->sanityCheck();
+  }
+}
+
+double QPlace::computeTotalCost() {
+  double cost = 0.0;
+  WIRE_ITER w_iter = _netlist->wire_begin();
+  for(; w_iter != _netlist->wire_end(); ++w_iter) {
+    ParWire* wire = *w_iter;
+    cost += _placement_cost->computeCost(par_wire, _used_matrix);
+  }
+  return cost;
 }
 
 
@@ -53,7 +149,6 @@ void QPlace::initializePlacement() {
   // initialize annealer
   float max_r = std::max(_hw_target->getXLimit(), _hw_target->getYLimit());
   _annealer = new Annealer(100.0, 1.0, max_r);
-
 
   ParGridContainer& grids = _hw_target->getGrids();
   grids.shuffle();
@@ -190,7 +285,7 @@ void QPlace::generateMove(ParElement* &element, COORD& x, COORD& y) {
 }
 
 
-void QPlace::tryMove() {
+bool QPlace::tryMove() {
   //1) check if they placer is ready to move
   checkIfReadyToMove();
 
@@ -202,7 +297,60 @@ void QPlace::tryMove() {
 
   findAffectedElementsAndWires(ele, x, y);
 
+  double delta_cost = 0;
+  WIRE_ITER w_iter = _affected_wires.begin();
+  for (; w_iter != _affected_wires.end(); ++w_iter) {
+    ParWire* par_wire = *w_iter;
+    par_wire->saveCost();
+    new_cost = _placement_cost->computeCost(par_wire, _used_matrix);
+    delta_cost += (new_cost - par_wire->getSavedCost());
+  }
+
+  bool accept = _annealer->shouldAccept(delta_cost);
+  if (accept) {
+    commitMove();
+    _current_total_cost += delta_cost;
+  } else 
+    restoreMove();
+
+  _affected_wires.clear();
+  _affected_elements.clear();
+  return accept
 }
+
+void QPlace::commitMove() {
+  for (size_t i = 0; i < _affected_elements.size(); ++i) {
+    ParElement* element = _affected_elements[i];
+    ParGrid* grid = element->getCurrentGrid();
+    grid->save();
+    element->save();
+  }
+
+  WIRE_ITER w_iter = _affected_wires.begin();
+  for (; w_iter != _affected_wires.end(); ++w_iter) {
+    (*w_iter)->saveBoundingBox();
+    (*w_iter)->saveCost();
+  }
+
+}
+
+void QPlace::restoreMove(COORD from_x, COORD from_y, COORD to_x, COORD to_y) {
+  for (size_t i = 0; i < _affected_elements.size(); ++i) {
+    ParElement* element = _affected_elements[i];
+    ParGrid* grid = element->getCurrentGrid();
+    grid->restore();
+    element->restore();
+  }
+
+  WIRE_ITER w_iter = _affected_wires.begin();
+  for (; w_iter != _affected_wires.end(); ++w_iter) {
+    (*w_iter)->restore();
+  }
+
+  updateUseMatrix(to_x, to_y, from_x, from_y);
+
+}
+
 
 void QPlace::findAffectedElementsAndWires(ParElement* element, COORD dest_x, COORD dest_y) {
   QASSERT(_affected_elements.size() == 0);
@@ -217,7 +365,12 @@ void QPlace::findAffectedElementsAndWires(ParElement* element, COORD dest_x, COO
 
   ParElement* tgt_element = tgt_grid->getCurrentElement();
   bool is_swap = tgt_element;
-  
+
+  COORD from_x = src_grid->getLoc().getLocX();
+  COORD from_y = src_grid->getLoc().getLocY();
+
+  COORD to_x = src_grid->getLoc().getLocX();
+  COORD to_y = src_grid->getLoc().getLocY();
   
 
   if (is_swap) {
@@ -236,15 +389,37 @@ void QPlace::findAffectedElementsAndWires(ParElement* element, COORD dest_x, COO
 
     element->setGrid(tgt_grid);
 
-    //only swap to an empty grid need to update the use matrix
-    updateUseMatrix(src_grid->getLoc().getLocX(), src_grid->getLoc().getLocY(),
-                  dest_x, dest_y);
+    ////only swap to an empty grid need to update the use matrix
+    //updateUseMatrix(src_grid->getLoc().getLocX(), src_grid->getLoc().getLocY(),
+    //              dest_x, dest_y);
 
-    //sanity check
-    usedMatrixSanityCheck();
+    ////sanity check
+    //usedMatrixSanityCheck();
   }
 
+  updateUseMatrix(from_x, from_y, to_x, to_y);
 
+  std::vector<ParElement*>::iterator ele_iter = _affected_elements.begin();
+  for (; ele_iter != _affected_elements.end(); ++ele_iter) {
+    ParElement* curr_ele = *ele_iter;
+    WIRE_ITER_V w_iter = curr_ele->begin();
+    for (; w_iter != curr_ele->end(); ++w_iter) {
+      _affected_wires.insert(*w_iter);
+      (*w_iter)->updateBoundingBox();
+    }
+  }
+
+  if (!is_swap) {
+    WIRE_ITER w_iter = _netlist->wire_begin(); 
+    for (; w_iter != _netlist->wire_end(); ++w_iter) {
+      if (_affected_wires.count(*w_iter)) continue;
+
+      ParWire* wire = *w_iter;
+      if (wire->getCurrentBox().getBoundBox().isInBox(from_x, from_y) ||
+          wire->getCurrentBox().getBoundBox().isInBox(to_x, to_y))
+        _affected_wires.insert(*w_iter);
+    }
+  }
 }
 
 void QPlace::updateUseMatrix(COORD from_x, COORD from_y, COORD to_x, COORD to_y) {
@@ -292,6 +467,46 @@ void QPlace::updateUseMatrix(COORD from_x, COORD from_y, COORD to_x, COORD to_y)
   }
 
 
+}
+
+float QPlace::getStartingT() {
+  qlog.speak("Place", "Getting starting temperature...");
+  const int num_move = std::max(_movable_elements.size(), 100);
+  unsigned num_accepted = 0;
+  double ave = 0.0;
+  double sum_of_square = 0.0;
+  for (int i = 0; i < num_move; ++i) {
+    if (tryMove()) {
+      ++num_accepted;
+      avg += _current_total_cost;
+      sum_of_square = _current_total_cost * _current_total_cost;
+    }
+
+  }
+
+  if (num_accepted > 0)
+    ave /= num_accepted;
+
+  double std_dev = getStdDev(num_accepted, sum_of_square, ave) ;
+  qlog.speak("Place", "std_dev: %g, avg_cost: %g, starting_T: %g\n", std_dev, ave, 20 * std_dev) ;
+
+
+  return static_cast<float>(20 * std_dev);
+}
+
+double QPlace::getStdDev(unsigned num, double ave, double s_square) const {
+  
+  double std_dev = 0.0;
+  if (num > 1) {
+    std_dev = (s_square - (num*ave*ave))/(num - 1);
+  } else {
+    std_dev = s_square;
+  }
+
+  if (std_dev > 0)
+    std_dev = std::sqrt(std_dev);
+
+  return std_dev;
 }
 
 
