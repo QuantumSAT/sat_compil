@@ -385,6 +385,13 @@ public:
    */
   void updatePlacement();
 
+  std::string getName() const {
+    return _gate->getName();
+  }
+
+  /*! \brief get the current placement of the element
+   */
+  std::pair<COORD,COORD> getPlacement() const;
 
 
   WIRE_ITER_V begin() { return _wires.begin(); }

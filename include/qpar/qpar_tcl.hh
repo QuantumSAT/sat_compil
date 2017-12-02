@@ -24,5 +24,6 @@
 #include "tcl/tcl_manager.hh"
 
 TCL_COMMAND_DEFINE(QCOMMAND_build_qpar_nl)
+TCL_COMMAND_DEFINE(QCOMMAND_init_system)
 
 #endif

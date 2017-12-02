@@ -32,6 +32,8 @@
 
 #include "utils/qlog.hh"
 
+#include <fstream>
+
 
 QPlace::~QPlace() {
     if (_used_matrix)
@@ -468,6 +470,26 @@ void QPlace::updateUseMatrix(COORD from_x, COORD from_y, COORD to_x, COORD to_y)
 
 
 }
+
+void QPlace::dumpCurrentPlacement(std::string filename) {
+  std::ofstream outfile;
+  outfile.open(filename.c_str());
+  
+
+  ELE_ITER ele_iter = _netlist->element_begin();
+  for (; ele_iter != _netlist->element_end(); ++ele_iter) {
+    ParElement* element = *ele_iter;
+    COORD x = element->getX();
+    COORD y = element->getY();
+    std::string name = element->getName();
+    outfile << "Gate: " << name <<
+      " " << x <<" " << y << std::endl;
+  }
+
+  outfile.close();
+
+}
+
 
 float QPlace::getStartingT() {
   qlog.speak("Place", "Getting starting temperature...");

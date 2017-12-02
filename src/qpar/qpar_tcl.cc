@@ -57,3 +57,9 @@ int QCOMMAND_build_qpar_nl::execute(int argc, const char** argv, std::string& re
   return TCL_OK;
 }
 
+std::string QCOMMAND_init_system::help() const {
+  const std::string msg = "init_system";
+  return msg;
+
+}
+

@@ -70,6 +70,8 @@ public:
    */
   void run();
 
+  void dumpCurrentPlacement(std::string filename = "current.place") const;
+
 private:
 
   ParNetlist* _netlist; //<! netlist to specify input problem
