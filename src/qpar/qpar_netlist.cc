@@ -28,6 +28,10 @@
 #include <algorithm>
 #include <unordered_set>
 
+bool ParWireCmp::operator()(const ParWire* wire1, const ParWire* wire2) const {
+  return wire1->getUniqId() < wire2->getUniqId();
+}
+
 void ParElement::setGrid(ParGrid* grid) {
   _grid.setStatus(grid);
 }
@@ -53,9 +57,11 @@ ParGrid* ParElement::getCurrentGrid() const {
   return _grid.getStatus();
 }
 
-std::pair<COORD,COORD> ParElement::getCurrentPlacement() const {
-  return std::make_pair(getX(),getY());
-}
+//std::pair<COORD,COORD> ParElement::getCurrentPlacement() const {
+//  return std::make_pair(getX(),getY());
+//}
+
+ParNetlist* ParNetlist::_top_netlist = NULL;
 
 ParNetlist::ParNetlist(SYN::Model* model) :
   _syn_netlist(model) {
@@ -148,10 +154,14 @@ void ParElement::addWire(ParWire* wire) {
 }
 
 void ParElement::updatePlacement() {
-  QASSERT(_grid.getCurrentStatus());
-  _x = _grid.getCurrentStatu()->getLoc()->getLocX():
-  _y = _grid.getCurrentStatu()->getLoc()->getLocY():
+  QASSERT(_grid.getStatus());
+  _x = (_grid.getStatus())->getLoc().getLocX();
+  _y = (_grid.getStatus())->getLoc().getLocY();
 
+}
+
+std::string ParElement::getName() const {
+  return _gate->getName();
 }
 
 unsigned int ParWire::_wire_index_counter = 0;
@@ -374,9 +384,9 @@ void ParWire::sanityCheck() {
 
 }
 
-void PairWire::restore() {
-  _bounding_box->restore();
-  _cost->restore();
+void ParWire::restore() {
+  _bounding_box.restoreStatus();
+  _cost.restoreStatus();
 }
 
 

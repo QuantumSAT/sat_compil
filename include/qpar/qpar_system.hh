@@ -89,20 +89,33 @@ public:
    */
   void doRoute();
 
-  /* \brief perform configuration generation
+  /*! \brief perform configuration generation
    */
   void doGenerate();
 
+  /*! \brief set par system 
+   */
+  static void setParSystem(ParSystem* system_p) {
+    _system = system_p;
+  }
+
+  /*! \brief get par system
+   */
+  static ParSystem* getParSystem() {
+    return _system;
+  }
+
 private:
+  static ParSystem* _system; //<! qpar system, a global data structure
  
   SYN::Model* _syn_netlist; //<! netlist from synthesis tool
   HW_Target_Dwave* _hw_target; //<! hardware target
 
-  ParNetlist* _par_netlist;
-  ParTarget* _par_target;
+  ParNetlist* _par_netlist; //!< light weigh netlist used in placement and routing
+  ParTarget* _par_target; //!< hardware file used in placement and routing
 
-  ParStatus _status;
-  RandomGenerator* _rand_gen;
+  ParStatus _status; //!< system status indicates the the initializing procedure
+  RandomGenerator* _rand_gen; //!< a random number generator used across entire qpar system
 
 
 };

@@ -58,7 +58,7 @@ struct ParWireCmp {
    *  \function operator()(ParWire*, ParWire*)
    *  \return bool
    */
-  bool operator()(ParWire* wire1, ParWire* wire2);
+  bool operator()(const ParWire* wire1, const ParWire* wire2) const;
 
 };
 
@@ -68,7 +68,7 @@ struct ParWireTargetCmp {
    *  \function operator()
    *  \return bool
    */
-  bool operator()(ParWireTarget* tgt1, ParWireTarget* tgt2);
+  bool operator()(const ParWireTarget* tgt1, const ParWireTarget* tgt2) const;
 
 };
 
@@ -78,7 +78,7 @@ struct ParElementCmp {
    *  \function operator()
    *  \return bool
    */
-  bool operator()(ParElement* elem1, ParElement* elem2);
+  bool operator()(const ParElement* elem1, const ParElement* elem2) const;
 };
 
 
@@ -124,6 +124,11 @@ public:
    */
   Box getEdgeBox() const { return _edge_num; }
 
+  bool operator==(const BoundingBox& rhs) const {
+    return (this->_bound == rhs._bound &&
+            this->_edge_num == rhs._edge_num);
+  }
+
 private:
   Box _bound; //!< bounding box value
   Box _edge_num; //!< number of element on the edge of box
@@ -163,6 +168,14 @@ public:
    */
   size_t getWireNum() const { return _wires.size(); }
 
+  /*! \brief set top netlist based on syn netlist
+   */ 
+  static void setTopNetlist(SELF* netlist) { _top_netlist = netlist; }
+
+  /*! \brief get top netlist
+   */
+  static SELF* getTopNetlist() { return _top_netlist; }
+
 
 private:
   /*! \brief build netlist for placement and routing
@@ -179,6 +192,7 @@ private:
 
   std::vector<ParWireTarget*> _all_targets; //!< all wire target
 
+  static SELF* _top_netlist; //<! top netlist that is used by different step
 
 
 };
@@ -260,7 +274,7 @@ public:
 
   /*! \brief sanity check to check if the wire ready to move
    */
-  bool isReadyToMove() const { return _bouding_box.checkStatusSame(); };
+  bool isReadyToMove() const { return _bounding_box.checkStatusSame(); };
 
   /*! \brief incrementally update bounding box
    */
@@ -274,7 +288,7 @@ public:
   /*! \brief get saved cost
    *  \return double cost
    */
-  double getSavedCost();
+  double getSavedCost() const;
 
   /*! \brief save cost
    */
@@ -308,6 +322,10 @@ public:
    *         brute force
    */
   void sanityCheck();
+
+  /*! \brief get wire uniq id 
+   */
+  unsigned int getUniqId() const { return _wire_index; }
   
 
 private:
@@ -385,9 +403,9 @@ public:
    */
   void updatePlacement();
 
-  std::string getName() const {
-    return _gate->getName();
-  }
+  /*! \brief get element name
+   */
+  std::string getName() const;
 
   /*! \brief get the current placement of the element
    */

@@ -20,6 +20,8 @@
 #include "qpar/qpar_place_cost.hh"
 #include "qpar/qpar_netlist.hh"
 
+#include "utils/qlog.hh"
+
 #include <cmath>
 #include <cassert>
 
@@ -69,7 +71,7 @@ double CongestionAwareCost::computeCost(ParWire* wire, const qpr_matrix<unsigned
   unsigned number_of_ele = wire->getElementNumber();
 
   if (number_of_ele <= 49)
-    fill_rate = fill_rate * PlacementCost::cross_count[number_of_ele]
+    fill_rate = fill_rate * PlacementCost::cross_count[number_of_ele];
   else
     fill_rate = fill_rate * static_cast<float>(2.7933 + 0.02616 * (number_of_ele - 50));
 

@@ -30,6 +30,8 @@
 #include "qpar/qpar_place.hh"
 #include "utils/qlog.hh"
 
+ParSystem* ParSystem::_system = NULL;
+
 ParSystem::~ParSystem() {
 
   if (_par_netlist) delete _par_netlist;

@@ -22,6 +22,11 @@
 
 #include "qpar/qpar_matrix.hh"
 #include "qpar/qpar_utils.hh"
+#include "qpar/qpar_netlist.hh"
+
+#include "hw_target/hw_loc.hh"
+
+#include <vector>
 
 
 /*!
@@ -39,6 +44,7 @@ class Grid;
 class ParNetlist;
 class ParTarget;
 class PlacementCost;
+class ParElement;
 
 
 class QPlace {
@@ -71,6 +77,8 @@ public:
   void run();
 
   void dumpCurrentPlacement(std::string filename = "current.place") const;
+
+  void sanityCheck();
 
 private:
 
@@ -120,7 +128,7 @@ private:
 
   /*! \brief restore to previous status
    */
-  void restoreMove();
+  void restoreMove(COORD from_x, COORD from_y, COORD to_x, COORD to_y);
 
   /*! \brief compute the cost for a give placement
    *  \return double cost
@@ -131,7 +139,7 @@ private:
    */
   float getStartingT();
 
-  void std::vector<ParElement*> _movable_elements; //!< a vector container to store all movable element
+  std::vector<ParElement*> _movable_elements; //!< a vector container to store all movable element
 
   void generateMove(ParElement* &element, COORD& x, COORD& y);
 

@@ -83,7 +83,7 @@ public:
 
   /*! \brief check if grid is ready to move
    */
-  bool checkIfReadyToMove() const {
+  bool isReadyToMove() const {
     return _element.checkStatusSame();
   }
 

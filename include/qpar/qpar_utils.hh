@@ -133,11 +133,11 @@ public:
 
   /*! \brief get radius limit
    */
-  float getRLimit() const { _radium_limit; }
+  float getRLimit() const { _radius_limit; }
 
-  /*! \brief set radium limit
+  /*! \brief set radius limit
    */
-  void setRLimit(float val) { _radium_limit = val; }
+  void setRLimit(float val) { _radius_limit = val; }
 
   /*! \brief set current annealing temperature
    */
@@ -242,11 +242,11 @@ class Box {
       yb_ = other.yb_ ;
     }
 
-    bool operator==(const Box& left, const Box& right) const {
-      return (left.xl_ == right.xl_) &&
-             (left.xr_ == right.xr_) &&
-             (left.yt_ == right.yt_) &&
-             (left.yb_ == right.yb_);
+    bool operator==(const Box& right) const {
+      return ((*this).xl_ == right.xl_) &&
+             ((*this).xr_ == right.xr_) &&
+             ((*this).yt_ == right.yt_) &&
+             ((*this).yb_ == right.yb_);
     }
 
     /*! \brief check if a give point within the box
@@ -260,8 +260,6 @@ class Box {
     int yt_ ;
     int yb_ ;
 } ;
-
-
 
 
 

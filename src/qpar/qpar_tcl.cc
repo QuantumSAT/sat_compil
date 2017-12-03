@@ -21,8 +21,11 @@
 
 #include "qpar/qpar_tcl.hh"
 #include "qpar/qpar_netlist.hh"
+#include "qpar/qpar_system.hh"
+
 #include "syn/blif.h"
 #include "utils/qlog.hh"
+#include "hw_target/hw_target.hh"
 
 namespace SYN {
   extern Model* myTop;
@@ -52,7 +55,7 @@ int QCOMMAND_build_qpar_nl::execute(int argc, const char** argv, std::string& re
   SYN::BlifReaderWriter reader;
   reader.readDesign(fp);
   fclose(fp);
-  ParNetlist netlist(SYN::myTop);
+  ParNetlist::setTopNetlist(new ParNetlist(SYN::myTop));
 
   return TCL_OK;
 }
@@ -62,4 +65,45 @@ std::string QCOMMAND_init_system::help() const {
   return msg;
 
 }
+
+int QCOMMAND_init_system::execute(int argc, const char** argv, std::string& result, ClientData clientData) {
+  result = "OK";
+
+  if (!checkOptions(argc, argv)) {
+    printHelp();
+    return TCL_OK;
+  }
+
+  if (SYN::myTop == NULL)
+    qlog.speakError("QPAR: synthesis netlist is not loaded");
+
+  HW_Target_Dwave* dwave_target = HW_Target_Dwave::getHwTarget();
+  if (dwave_target == NULL)
+    qlog.speakError("QPAP: hardware target is not loaded");
+
+  ParSystem::setParSystem(new ParSystem(SYN::myTop, dwave_target));
+  ParSystem::getParSystem()->initSystem();
+
+  return TCL_OK;
+
+}
+
+std::string QCOMMAND_place::help() const {
+  const std::string msg = "place";
+  return msg;
+}
+
+int QCOMMAND_place::execute(int argc, const char** argv, std::string& result, ClientData clientData) {
+  result = "OK";
+
+  if (!checkOptions(argc, argv)) {
+    printHelp();
+    return TCL_OK;
+  }
+
+  ParSystem::getParSystem()->doPlacement();
+
+  return TCL_OK;
+}
+
 
