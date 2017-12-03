@@ -27,6 +27,7 @@
  * \brief a matrix class
  */
 
+#include "utils/qlog.hh"
 
 #include <vector>
 
@@ -45,7 +46,7 @@ public:
 
   /*! \brief access the data in the matrix
    */
-  T& cell(unsigned x, unsigned y) const;
+  const T& cell(unsigned x, unsigned y) const;
 
   /*! \brief get the matrix x size
    *  \return unsigned size
@@ -64,6 +65,8 @@ private:
   unsigned _maxX; //!< column number of the matrix
   unsigned _maxY; //!< row number of the matrix
 };
+
+#include "qpar_matrix_impl.hh"
 
 
 

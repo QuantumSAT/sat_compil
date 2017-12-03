@@ -38,6 +38,8 @@ HW_Target_abstract::~HW_Target_abstract() {
 
 }
 
+HW_Target_Dwave* HW_Target_Dwave::_self = NULL;
+
 
 void HW_Target_Dwave::initializeTarget() {
   
@@ -69,7 +71,11 @@ void HW_Target_Dwave::initializeTarget() {
 
 }
 
-HW_Target_Dwave* HW_Target_Dwave::_self = NULL;
+void HW_Target_Dwave::addInteraction(COORD x, COORD y, HW_Interaction* interac) {
+  _loc_to_interaction.insert(std::make_pair(std::make_pair(x,y),
+        interac));
+}
+
 
 
 void HW_Target_Dwave::buildInterCellInteractions(COORD x1, COORD y1, COORD x2, COORD y2, bool vertical) {
@@ -92,6 +98,11 @@ void HW_Target_Dwave::buildInterCellInteractions(COORD x1, COORD y1, COORD x2, C
       addInteraction(qbit_index1,qbit_index2,interac);
     }
   }
+}
+
+void HW_Target_Dwave::addQubit(COORD x, HW_Qubit* qubit) {
+  _loc_to_qubit.insert(std::make_pair(x, qubit));
+
 }
 
 

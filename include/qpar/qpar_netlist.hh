@@ -108,6 +108,7 @@ public:
     _bound(bound),
     _edge_num(edge) {}
 
+
   /*! \brief set bounding box
    */
   void setBoundingBox(Box bound) { _bound = bound; }
@@ -128,6 +129,7 @@ public:
     return (this->_bound == rhs._bound &&
             this->_edge_num == rhs._edge_num);
   }
+
 
 private:
   Box _bound; //!< bounding box value
@@ -222,6 +224,12 @@ public:
   /*! \brief get dont route flag
    */
   bool getDontRoute() const { return _dontRoute; }
+
+  /*! \brief get target uniqId
+   */
+  unsigned getUniqId() const {
+    return _target_index; 
+  }
 private:
   ParElement* _source; //<! source element
   ParElement* _target; //<! target element
@@ -230,6 +238,8 @@ private:
   SYN::Pin* _tgt_pin; //<! target pin
 
   bool _dontRoute; //<! an indicator to decide wheterh it needs routing
+  unsigned _target_index; //<! target index
+  static unsigned _wire_target_counter; //!< index counter
 
 
 };
@@ -410,6 +420,12 @@ public:
   /*! \brief get the current placement of the element
    */
   std::pair<COORD,COORD> getPlacement() const;
+
+  /*! \brief get uniq id for the element
+   */
+  unsigned int getUniqId() const {
+    return _element_index;
+  }
 
 
   WIRE_ITER_V begin() { return _wires.begin(); }

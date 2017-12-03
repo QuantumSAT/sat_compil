@@ -29,6 +29,8 @@
 #include "tcl/tcl_basic_command.hh"
 
 #include "syn/syn_tcl.hh"
+#include "hw_target/hw_tcl.hh"
+#include "qpar/qpar_tcl.hh"
 
 
 void registerAllCommands() {
@@ -37,9 +39,18 @@ void registerAllCommands() {
 
   tcl_manager->registerCommand(new QCOMMAND_source("source", "<string>"));
   tcl_manager->registerCommand(new QCOMMAND_hello("hello",""));
+
+  //netlist related
   tcl_manager->registerCommand(new QCOMMAND_read_blif("read_blif","<string>"));
   tcl_manager->registerCommand(new QCOMMAND_write_blif("write_blif","<string>"));
+
+  //hardware related
   tcl_manager->registerCommand(new QCOMMAND_write_blif("gen_dwave_nl",""));
+
+  //placement and routing related
+  tcl_manager->registerCommand(new QCOMMAND_build_qpar_nl("build_qpar_nl", ""));
+  tcl_manager->registerCommand(new QCOMMAND_init_system("init_system", ""));
+  tcl_manager->registerCommand(new QCOMMAND_init_system("place", ""));
 
 
 }

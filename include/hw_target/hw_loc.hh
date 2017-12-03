@@ -96,7 +96,7 @@ public:
 
   /*! \brief copy constructor
    */
-  HW_Loc(const HW_Loc&); 
+  HW_Loc(const HW_Loc& loc); 
 
   /*! \brief destructor
    */

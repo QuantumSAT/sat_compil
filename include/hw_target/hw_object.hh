@@ -87,7 +87,7 @@ public:
 
   /*! \brief default destructor
    */
-  virtual ~HW_Cell();
+  virtual ~HW_Cell() {};
 
   /*! \brief get hardware target
    */

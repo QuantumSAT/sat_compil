@@ -21,6 +21,7 @@
 #include "qpar/qpar_netlist.hh"
 #include "qpar/qpar_target.hh"
 #include "qpar/qpar_utils.hh"
+
 #include "syn/netlist.h"
 #include "utils/qlog.hh"
 
@@ -30,6 +31,14 @@
 
 bool ParWireCmp::operator()(const ParWire* wire1, const ParWire* wire2) const {
   return wire1->getUniqId() < wire2->getUniqId();
+}
+
+bool ParWireTargetCmp::operator()(const ParWireTarget* tgt1, const ParWireTarget* tgt2) const {
+  return tgt1->getUniqId() < tgt2->getUniqId();
+}
+
+bool ParElementCmp::operator()(const ParElement* ele1, const ParElement* ele2) const {
+  return ele1->getUniqId() < ele2->getUniqId();
 }
 
 void ParElement::setGrid(ParGrid* grid) {
@@ -388,6 +397,27 @@ void ParWire::restore() {
   _bounding_box.restoreStatus();
   _cost.restoreStatus();
 }
+
+BoundingBox ParWire::getCurrentBoundingBox() const {
+  _bounding_box.getStatus();
+}
+
+void ParWire::saveBoundingBox() {
+  _bounding_box.saveStatus();
+}
+
+unsigned ParWireTarget::_wire_target_counter = 0;
+
+ParWireTarget::ParWireTarget(ParElement* source, ParElement* dest,
+    SYN::Pin* src_pin, SYN::Pin* tgt_pin) :
+  _source(source),
+  _target(dest),
+  _src_pin(src_pin),
+  _tgt_pin(tgt_pin),
+  _dontRoute(false) {
+    _target_index = _wire_target_counter;
+    ++_wire_target_counter;
+  }
 
 
 

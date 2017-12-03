@@ -52,11 +52,11 @@ public:
 
   /*! \brief save current status to previous status
    */
-  virtual void saveStatus();
+  void saveStatus();
 
   /*! \brief restore to previous status
    */
-  virtual void restoreStatus();
+  void restoreStatus();
 
   /*! \brief get current status
    */
@@ -88,6 +88,8 @@ private:
   T _pre_status; //!< previous status
 
 };
+
+#include "qpar/qpar_sl_object_impl.hh"
 
 //#define QPAR_SL_OBJ ParSaveAndLoadObject;
 

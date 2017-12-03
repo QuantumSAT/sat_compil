@@ -17,28 +17,14 @@
  *   License along with QSat.  If not, see <http://www.gnu.org/licenses/>.  *
  ****************************************************************************/
 
-#include "qpar/qpar_matrix.hh"
-#include "utils/qlog.hh"
 
-template <class T>
-qpr_matrix<T>::qpr_matrix(unsigned x, unsigned y) :
-  _maxX(x), _maxY(y) {
-    _data.resize(x * y);
+
+template<class T>
+void ParSaveAndLoadObject<T>::saveStatus() {
+  _pre_status = _cur_status;
 }
 
-template <class T>
-T &qpr_matrix<T>::cell(unsigned x, unsigned y) {
-  QASSERT(x < _maxX);
-  QASSERT(y < _maxY);
-  return _data[y * _maxX + x];
+template<class T>
+void ParSaveAndLoadObject<T>::restoreStatus() {
+  _cur_status = _pre_status;
 }
-
-template <class T>
-T &qpr_matrix<T>::cell(unsigned x, unsigned y) const {
-  QASSERT(x < _maxX);
-  QASSERT(y < _maxY);
-  return _data[y * _maxX + x];
-}
-
-
-
