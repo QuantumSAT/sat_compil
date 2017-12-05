@@ -45,7 +45,8 @@ void registerAllCommands() {
   tcl_manager->registerCommand(new QCOMMAND_write_blif("write_blif","<string>"));
 
   //hardware related
-  tcl_manager->registerCommand(new QCOMMAND_write_blif("gen_dwave_nl",""));
+  tcl_manager->registerCommand(new QCOMMAND_init_target("init_target","-row <int> -col <int> -local <int>"));
+  tcl_manager->registerCommand(new QCOMMAND_gen_dwave_nl("gen_dwave_nl",""));
 
   //placement and routing related
   tcl_manager->registerCommand(new QCOMMAND_build_qpar_nl("build_qpar_nl", ""));

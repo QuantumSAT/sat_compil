@@ -102,6 +102,10 @@ public:
    */
   HW_Target_Dwave(HW_Param* hw_param) : _hw_param(hw_param) {}
 
+  /*! \brief default destructor
+   */
+  virtual ~HW_Target_Dwave();
+
   /*! \brief get the qubit by its location
    *  \param loc the qubit location
    */
@@ -128,10 +132,6 @@ public:
    *  \param loc the cell location
    */
   HW_Cell* getCell(const HW_Loc& loc) const;
-
-  /*! \brief default destructor
-   */
-  virtual ~HW_Target_Dwave();
 
   /*! \brief set hardware target pointer
    *  \param target the pointer to HW_Target_Dwave;

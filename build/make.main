@@ -17,7 +17,7 @@ endif
 TARGET_EXE = $(BIN_DIR)/$(TARGET_NAME)
 
 #the sequence must be follow below
-LIB_SRCS = utils tcl hw_target syn qpar hw_target
+LIB_SRCS = utils tcl syn qpar hw_target
 
 IN_LIB_SRCS =  $(strip $(LIB_SRCS))
 

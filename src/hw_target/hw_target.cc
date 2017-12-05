@@ -100,8 +100,40 @@ void HW_Target_Dwave::buildInterCellInteractions(COORD x1, COORD y1, COORD x2, C
   }
 }
 
+HW_Interaction* HW_Target_Dwave::getInteraction(const HW_Loc& loc1, const HW_Loc& loc2) const {
+  if (_loc_to_interaction.count(std::make_pair(loc1.getGlobalIndex(),
+                                               loc2.getGlobalIndex())))
+    return _loc_to_interaction.at(std::make_pair(loc1.getGlobalIndex(),
+                                                 loc2.getGlobalIndex()));
+  else
+    return NULL;
+}
+
+HW_Qubit* HW_Target_Dwave::getQubit(const HW_Loc& loc) const {
+  if (_loc_to_qubit.count(loc.getGlobalIndex()))
+    return _loc_to_qubit.at(loc.getGlobalIndex());
+  else
+    return NULL;
+}
+
 void HW_Target_Dwave::addQubit(COORD x, HW_Qubit* qubit) {
   _loc_to_qubit.insert(std::make_pair(x, qubit));
+
+}
+
+HW_Target_Dwave::~HW_Target_Dwave() {
+ for (Q_ITER qiter = _loc_to_qubit.begin(); 
+        qiter != _loc_to_qubit.end(); ++qiter) {
+    delete qiter->second;
+  }
+
+  _loc_to_qubit.clear();
+
+  for (I_ITER iter = _loc_to_interaction.begin();
+        iter != _loc_to_interaction.end(); ++iter)
+    delete iter->second;
+
+  _loc_to_interaction.clear();
 
 }
 

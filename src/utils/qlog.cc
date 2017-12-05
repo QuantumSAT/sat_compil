@@ -132,6 +132,7 @@ void qLog::openFile(const char* logFileName) {
       std::fprintf(stderr, "*** Error: Cannot open log file %s\n", logFileName);
     }
   }
+  fflush(stderr);
 
 }
 
@@ -140,6 +141,8 @@ void qLog::qfprintf(const char* step, const char* message) {
   std::fprintf(stderr, "*    %s : %s\n", step, message);
   if (_logFile)
     std::fprintf(_logFile, " *    %s : %s\n", step, message);
+  fflush(stderr);
+  fflush(_logFile);
 
 }
 
@@ -149,6 +152,9 @@ void qLog::qfprintf(const char* message, bool cr) {
   if (_logFile)
     std::fprintf(_logFile, "%s%s", message, cr?"\n":"");
 
+  fflush(stderr);
+  fflush(_logFile);
+
 }
 
 
@@ -157,6 +163,9 @@ void qLog::qassert(const char* expr, const char* file, int line) {
   std::fprintf(stderr, "!!! Assertion '%s' failed at %s line %d\n", expr, file, line);
   if (_logFile)
     std::fprintf(_logFile, "!!! Assertion '%s' failed at %s line %d\n", expr, file, line);
+  fflush(stderr);
+  fflush(_logFile);
+
   abort();
 }
 

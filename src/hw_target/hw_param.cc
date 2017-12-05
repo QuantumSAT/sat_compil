@@ -20,4 +20,5 @@
 #include "hw_target/hw_param.hh"
 
 
+HW_Param* HW_Param::_self = NULL;
 

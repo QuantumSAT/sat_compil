@@ -129,7 +129,7 @@ bool QTclCommand::getIntOption(const int argc, const char** argv, const char* op
       qlog.speak("TCL", "An integer value is expected after %s", option_name);
       return false;
     } else {
-      if (Tcl_GetInt(NULL, Tcl_GetString((Tcl_Obj*)argv[i+1]), &value) == TCL_OK) {
+      if (Tcl_GetInt(NULL, Tcl_GetString(Tcl_NewStringObj(argv[i+1], strlen(argv[i+1]))), &value) == TCL_OK) {
         return true;
       } else {
         qlog.speak("TCL", "An integer value is expected after %s", option_name);
@@ -153,7 +153,7 @@ void QTclCommand::splitSyntax(const std::string& str, std::vector<CommandOption>
 
   std::vector<std::string> opts;
   boost::split(opts, str, boost::is_any_of(sep), boost::token_compress_on);
-  size_t opts_num = options.size();
+  size_t opts_num = opts.size();
   for (size_t i = 0; i < opts_num; ++i) {
     while (i < opts_num && !isSeperator(opts[i])) ++i;
 
@@ -239,9 +239,10 @@ bool QTclCommand::checkOptions(const int argc, const char** argv) {
         if (o_iter->matchFlag(argu))
           break;
       } else {
-        qlog.speak("TCL", "Invalid option arguments %s for syntax %s", argu.c_str(), o_iter->flag.c_str());
-        printHelp();
-        return false;
+        continue;
+        //qlog.speak("TCL", "Invalid option arguments %s for syntax %s", argu.c_str(), o_iter->flag.c_str());
+        //printHelp();
+        //return false;
       }
     }
     if (o_iter == _options.end()) {

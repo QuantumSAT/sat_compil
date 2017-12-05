@@ -63,6 +63,8 @@ int QCOMMAND_init_target::execute(int argc, const char** argv, std::string& resu
   hw_param->setMaxRangeY((unsigned)row_num);
   hw_param->setMaxRangeLocal((unsigned)local_num);
 
+  HW_Loc::setHWParam(hw_param);
+
   HW_Target_Dwave* target = new HW_Target_Dwave(hw_param);
   qlog.speak("TCL", "Initializing hardware %d...");
   target->initializeTarget();
