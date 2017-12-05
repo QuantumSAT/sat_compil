@@ -119,11 +119,11 @@ public:
 
   /*! \brief get bounding box
    */
-  Box getBoundBox() const { return _bound; }
+  Box& getBoundBox() { return _bound; }
 
   /*! \brief get edge number box
    */
-  Box getEdgeBox() const { return _edge_num; }
+  Box& getEdgeBox() { return _edge_num; }
 
   bool operator==(const BoundingBox& rhs) const {
     return (this->_bound == rhs._bound &&
@@ -290,6 +290,7 @@ public:
    */
   void updateBoundingBox(COORD from_x, COORD from_y, COORD to_x, COORD to_y);
 
+
   /*! \brief get current cost
    *  \return double cost
    */
@@ -339,6 +340,9 @@ public:
   
 
 private:
+  /*! \brief re-compute bouding box
+   */
+  void recomputeBoundingBox();
 
 
   SYN::Net* _net; //!< net from synthesis model

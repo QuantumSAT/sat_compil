@@ -260,7 +260,8 @@ std::vector<ParWireTarget*>& ParWire::buildWireTarget(
   return _targets;
 }
 
-void ParWire::initializeBoundingBox() {
+void ParWire::recomputeBoundingBox() {
+
   int xl = std::numeric_limits<int>::max();
   int xr = -1;
   int yt = std::numeric_limits<int>::max();
@@ -312,9 +313,11 @@ void ParWire::initializeBoundingBox() {
   _bounding_box.getStatus().setBoundingBox(box1);
   _bounding_box.getStatus().setEdgeBox(box2);
 
+}
+
+void ParWire::initializeBoundingBox() {
+  recomputeBoundingBox();
   _bounding_box.saveStatus();
-
-
 }
 
 void ParWire::saveCost() {
@@ -404,6 +407,73 @@ BoundingBox ParWire::getCurrentBoundingBox() const {
 
 void ParWire::saveBoundingBox() {
   _bounding_box.saveStatus();
+}
+
+void ParWire::updateBoundingBox(COORD from_x, COORD from_y, COORD to_x, COORD to_y) {
+  Box& bbox = _bounding_box.getStatus().getBoundBox();
+  Box& ebox = _bounding_box.getStatus().getEdgeBox();
+  bool recal = false ;
+
+  if (to_x < bbox.xl()) {
+    bbox.set_xl(to_x) ;
+    ebox.set_xl(1) ;
+  } else if (to_x == bbox.xl()) {
+    ebox.incr_xl() ;
+    if (from_x == bbox.xl())
+      ebox.decr_xl() ;
+  } else if (from_x == bbox.xl()) {
+    if (ebox.xl() > 1)
+      ebox.decr_xl() ;
+    else
+      recal = recal || true ;
+  }
+
+  if (to_x > bbox.xr()) {
+    bbox.set_xr(to_x) ;
+    ebox.set_xr(1) ;
+  } else if (to_x == bbox.xr()) {
+    ebox.incr_xr() ;
+    if (from_x == bbox.xr())
+      ebox.decr_xr() ;
+  } else if (from_x == bbox.xr()) {
+    if (ebox.xr() > 1)
+      ebox.decr_xr() ;
+    else
+      recal = recal || true ;
+  }
+
+  if (to_y < bbox.yt()) {
+    bbox.set_yt(to_y) ;
+    ebox.set_yt(1) ;
+  } else if (to_y == bbox.yt()) {
+    ebox.incr_yt() ;
+    if (from_y == bbox.yt())
+      ebox.decr_yt() ;
+  } else if (from_y == bbox.yt()) {
+    if (ebox.yt() > 1)
+      ebox.decr_yt() ;
+    else
+      recal = recal || true ;
+  }
+
+
+  if (to_y > bbox.yb()) {
+    bbox.set_yb(to_y) ;
+    ebox.set_yb(1) ;
+  } else if (to_y == bbox.yb()) {
+    ebox.incr_yb() ;
+    if (from_y == bbox.yb())
+      ebox.decr_yb() ;
+  } else if (from_y == bbox.yb()) {
+    if (ebox.yb() > 1)
+      ebox.decr_yb() ;
+    else
+      recal = recal || true ;
+  }
+
+  if (recal)
+    recomputeBoundingBox();
+
 }
 
 unsigned ParWireTarget::_wire_target_counter = 0;
