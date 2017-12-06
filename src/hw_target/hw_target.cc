@@ -21,6 +21,7 @@
 #include "hw_target/hw_object.hh"
 #include "hw_target/hw_param.hh"
 
+#include "utils/qlog.hh"
 
 HW_Target_abstract::~HW_Target_abstract() {
   for (Q_ITER qiter = _loc_to_qubit.begin(); 
@@ -69,13 +70,15 @@ void HW_Target_Dwave::initializeTarget() {
     }
   }
 
+  qlog.speak("HW_Target", "Target has been initialized with %d x %d cells, %lu qubits and %u interactions",
+     _maxX, _maxY, _loc_to_qubit.size(), _loc_to_interaction.size());
+
 }
 
 void HW_Target_Dwave::addInteraction(COORD x, COORD y, HW_Interaction* interac) {
   _loc_to_interaction.insert(std::make_pair(std::make_pair(x,y),
         interac));
 }
-
 
 
 void HW_Target_Dwave::buildInterCellInteractions(COORD x1, COORD y1, COORD x2, COORD y2, bool vertical) {

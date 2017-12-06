@@ -39,7 +39,7 @@ HW_Cell::HW_Cell(COORD x, COORD y, HW_Target_Dwave* hw_target) :
   for (; qubit_iter != _qubits.end(); ++qubit_iter) {
     COORD coord = qubit_iter->first;
     HW_Qubit* qubit = qubit_iter->second;
-    hw_target->addQubit(coord, qubit);
+    hw_target->addQubit(qubit->getLoc().getGlobalIndex(), qubit);
   }
 
 }

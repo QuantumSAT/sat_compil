@@ -17,58 +17,15 @@
  *   License along with QSat.  If not, see <http://www.gnu.org/licenses/>.  *
  ****************************************************************************/
 
-#include <cassert>
-#include "hw_target/hw_tcl.hh"
-#include "hw_target/hw_param.hh"
-#include "hw_target/hw_target.hh"
-#include "utils/qlog.hh"
+#ifndef SYN_TCL_HH
+#define SYN_TCL_HH
+
+#include "tcl/tcl_command.hh"
+#include "tcl/tcl_manager.hh"
+
+TCL_COMMAND_DEFINE(QCOMMAND_read_blif)
+TCL_COMMAND_DEFINE(QCOMMAND_write_blif)
+TCL_COMMAND_DEFINE(QCOMMAND_gen_dwave_nl)
 
 
-std::string QCOMMAND_init_target::help() const {
-  const std::string msg = "init_target -row <int> -col <int> -local <int>";
-  return msg;
-}
-
-int QCOMMAND_init_target::execute(int argc, const char** argv, std::string& result, ClientData clientData) {
-  TclManager* tcl_manager = static_cast<TclManager*>(clientData);
-  Tcl_Interp* interp = tcl_manager->getInterp();
-
-  if (!checkOptions(argc, argv)) {
-    printHelp();
-    return TCL_OK;
-  }
-
-  int row_num = -1;
-  int col_num = -1;
-  int local_num = -1;
-
-  if (!getIntOption(argc, argv, "-row", row_num)) {
-    printHelp();
-    return TCL_OK;
-  }
-
-  if (!getIntOption(argc, argv, "-col", col_num)) {
-    printHelp();
-    return TCL_OK;
-  }
-
-  if (!getIntOption(argc, argv, "-local", local_num)) {
-    printHelp();
-    return TCL_OK;
-  }
-
-
-  HW_Param* hw_param = HW_Param::getOrCreate();
-  hw_param->setMaxRangeX((unsigned)col_num);
-  hw_param->setMaxRangeY((unsigned)row_num);
-  hw_param->setMaxRangeLocal((unsigned)local_num);
-
-  HW_Loc::setHWParam(hw_param);
-
-  HW_Target_Dwave* target = new HW_Target_Dwave(hw_param);
-  qlog.speak("TCL", "Initializing hardware...");
-  target->initializeTarget();
-  HW_Target_Dwave::setHwTarget(target);
-
-}
-
+#endif

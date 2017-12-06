@@ -66,7 +66,6 @@ public:
    */
   virtual HW_Qubit* getQubit(const HW_Loc& loc) const = 0;
 
-
   /*! \brief get interaction by its location
    *  \return a pointer of HW_Interaction
    */
@@ -112,8 +111,7 @@ public:
   virtual HW_Qubit* getQubit(const HW_Loc& loc) const;
 
   /*! \brief add qubit into dwave
-   *  \param x coordinate x
-   *  \param y coordinate y
+   *  \param x global index
    */
   void addQubit(COORD x, HW_Qubit* qubit);
 
@@ -123,7 +121,7 @@ public:
   virtual HW_Interaction* getInteraction(const HW_Loc& loc1, const HW_Loc& loc2) const;
 
   /*! \brief add new interation into hw target
-   *  \param x coordinate x
+   *  \param x coordinate global x 
    *  \param y coordinate y
    */
   void addInteraction(COORD x, COORD y, HW_Interaction* interac);
