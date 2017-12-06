@@ -23,7 +23,6 @@ warn
 dwave
 dwave-debug
 
-/build/build.var
 tags
 time.cc.bak
 obj/
@@ -35,20 +34,6 @@ lib/
 
 */*/Makefile
 
-src/device_model/Makefile
-src/gui/Makefile
-src/gui/moc/Makefile
-src/place/Makefile
-src/route/Makefile
-src/route/route.cc
-src/syn/Makefile
-src/syn/*
-src/syn/multilevel/Makefile
-src/syn/twolevel/Makefile
-src/syn/utility/Makefile
-src/tcl/Makefile
-src/util/Makefile
-build/*
 bin
 doc/*
 
