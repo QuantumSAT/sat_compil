@@ -118,12 +118,12 @@ void QPlace::run() {
     else 
       cost_ave = _current_total_cost;
 
-    double std_dev = getStdDev(success_num, sum_of_square, cost_ave);
+    double std_dev = getStdDev(success_num, cost_ave, sum_of_square);
     float old_t = _annealer->getCurrentT();
     _annealer->updateT(success_rat);
     _annealer->updateMoveRadius(success_rat);
 
-    qlog.speak("Place","|%5d|%11.3f|%10.2f |%9d  |   %7f | %10d|", outer_iter, _annealer->getCurrentT(), _current_total_cost, success_num, _annealer->getRLimit(), tot_iter);
+    qlog.speak("Place","|%5d|%11.3f|%10.2f |%7d  |   %.3f | %10d|", outer_iter, _annealer->getCurrentT(), _current_total_cost, success_num, _annealer->getRLimit(), tot_iter);
 
     if (outer_iter > 105)
       break;
@@ -581,7 +581,7 @@ float QPlace::getStartingT() {
     if (tryMove()) {
       ++num_accepted;
       ave += _current_total_cost;
-      sum_of_square = _current_total_cost * _current_total_cost;
+      sum_of_square += (_current_total_cost * _current_total_cost);
     }
 
   }
@@ -589,7 +589,7 @@ float QPlace::getStartingT() {
   if (num_accepted > 0)
     ave /= num_accepted;
 
-  double std_dev = getStdDev(num_accepted, sum_of_square, ave) ;
+  double std_dev = getStdDev(num_accepted, ave, sum_of_square) ;
   qlog.speak("Place", "std_dev: %g, avg_cost: %g, starting_T: %g\n", std_dev, ave, 20 * std_dev) ;
 
 
