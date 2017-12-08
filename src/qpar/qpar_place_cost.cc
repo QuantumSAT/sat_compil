@@ -60,9 +60,9 @@ double CongestionAwareCost::computeCost(ParWire* wire, const qpr_matrix<unsigned
   unsigned yb = bbox.yb();
 
   unsigned used_cell = used_matrix.cell(xr, yb) +
-                       used_matrix.cell(xl - 1, yt - 1) -
-                       used_matrix.cell(xl - 1, yb) -
-                       used_matrix.cell(xr, yt - 1);
+                       ((xl == 0 || yt == 0) ? 0 : used_matrix.cell(xl - 1, yt - 1)) -
+                       ((xl == 0) ? 0 : used_matrix.cell(xl - 1, yb)) -
+                       ((yt == 0) ? 0 : used_matrix.cell(xr, yt - 1));
 
   double fill_rate = double(used_cell)/double(number_of_cell);
   QASSERT(fill_rate <= 1.0);

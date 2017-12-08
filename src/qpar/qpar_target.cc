@@ -80,7 +80,7 @@ void ParTarget::initParTarget() {
     grid->setParElement(NULL);
     grid->save();
   }
-  qlog.speak("Par Target", "%u cells has been constructed", (unsigned)_grid_vector.size());
+  qlog.speak("ParTarget", "%u cells has been constructed", (unsigned)_grid_vector.size());
 
 }
 

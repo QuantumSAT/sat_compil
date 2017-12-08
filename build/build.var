@@ -5,12 +5,13 @@ LBITS		= $(shell getconf LONG_BIT)
 PURIFY 		= purify
 SUFFIX  	= cc
 SHELL		= /bin/bash
-SYSNAME = $(shell $(ROOT)/build/sysname)
+SYSNAME = linux
 PLATFORM = $(SYSNAME)_$(LBITS)
 
-PURIFY		=
+PURIFY		  =
 IFLAG       =	
-CFLAG		= -c
+CFLAG		    = -c
+CFLAG      += -Werror=return-type
 LFLAG       = 
 LFLAG2      = 
 

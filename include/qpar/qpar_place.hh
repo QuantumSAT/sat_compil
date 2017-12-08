@@ -76,8 +76,15 @@ public:
    */
   void run();
 
+  /*! \brief print current placement
+   *  \param std::string filename for outfile 
+   */
   void dumpCurrentPlacement(std::string filename = "current.place") const;
 
+  void dumpUsedMatrix(std::string file = "current.usedmatrix") const;
+
+  /*! \brief performe sanity check for bounding box and utilization map
+   */
   void sanityCheck();
 
 private:

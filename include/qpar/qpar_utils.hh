@@ -133,7 +133,7 @@ public:
 
   /*! \brief get radius limit
    */
-  float getRLimit() const { _radius_limit; }
+  float getRLimit() const { return _radius_limit; }
 
   /*! \brief set radius limit
    */

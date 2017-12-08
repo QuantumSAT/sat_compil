@@ -83,6 +83,10 @@ bool Annealer::shouldExit(float unit_cost) {
 
 bool Box::isInBox(int x, int y) const {
 
+  return (x >= xl_ &&
+          x <= xr_ &&
+          y >= yt_ &&
+          y <= yb_);
 
 }
 

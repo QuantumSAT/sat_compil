@@ -36,6 +36,12 @@
 #include <fstream>
 #include <algorithm>
 
+#if 0
+#define DBG_CODE(code) code
+#else
+#define DBG_CODE(code)
+#endif
+
 
 QPlace::~QPlace() {
     if (_used_matrix)
@@ -53,6 +59,8 @@ QPlace::~QPlace() {
 
 void QPlace::run() {
   initializePlacement();
+
+  _placement_cost = new CongestionAwareCost;
 
   _current_total_cost = computeTotalCost();
 
@@ -173,7 +181,9 @@ void QPlace::initializePlacement() {
       qlog.speakError("Placement does not have enough resources to performance placement");
 
     element->setGrid(grids[grid_index]);
+    element->save();
     grids[grid_index]->setParElement(element);
+    grids[grid_index]->save();
     ++grid_index;
   }
 
@@ -206,7 +216,7 @@ void QPlace::initializePlacement() {
 
   for (COORD x = 1; x < x_limit; ++x) {
     if (_hw_target->getGrid(x, 0)->getCurrentElement())
-      _used_matrix->cell(x, 0) = _used_matrix->cell(x-1,0) - 1;
+      _used_matrix->cell(x, 0) = _used_matrix->cell(x-1,0) + 1;
     else
       _used_matrix->cell(x, 0) = _used_matrix->cell(x-1,0);
   }
@@ -223,6 +233,10 @@ void QPlace::initializePlacement() {
         _used_matrix->cell(x,y) = used_element;
     }
   }
+
+  qlog.speak("QPlace", "Dump initial placement result");
+  dumpCurrentPlacement("init.place"); 
+  dumpUsedMatrix("init.matrix");
 }
 
 void QPlace::usedMatrixSanityCheck() {
@@ -274,13 +288,13 @@ void QPlace::generateMove(ParElement* &element, COORD& x, COORD& y) {
   float r_limit = _annealer->getRLimit();
 
   COORD x_range_min = (ele_x >= r_limit) ? ele_x - r_limit : 0;
-  COORD x_range_max = ((ele_x + r_limit) > _hw_target->getXLimit()) ? _hw_target->getXLimit() : (ele_x + r_limit);
+  COORD x_range_max = ((ele_x + r_limit) >= _hw_target->getXLimit()) ? (_hw_target->getXLimit() - 1) : (ele_x + r_limit);
   QASSERT((ele_x - x_range_min) < r_limit);
   QASSERT((x_range_max - ele_x) < r_limit);
 
 
   COORD y_range_min = (ele_y >= r_limit) ? ele_y - r_limit : 0;
-  COORD y_range_max = ((ele_y + r_limit) > _hw_target->getYLimit()) ? _hw_target->getYLimit() : (ele_y + r_limit);
+  COORD y_range_max = ((ele_y + r_limit) >= _hw_target->getYLimit()) ? (_hw_target->getYLimit() - 1) : (ele_y + r_limit);
   QASSERT((ele_y - y_range_min) < r_limit);
   QASSERT((y_range_max - ele_y) < r_limit);
 
@@ -478,11 +492,32 @@ void QPlace::updateUseMatrix(COORD from_x, COORD from_y, COORD to_x, COORD to_y)
 
 }
 
+void QPlace::dumpUsedMatrix(std::string filename) const {
+
+  std::ofstream outfile;
+  outfile.open(filename.c_str());
+
+  qlog.speak("QPlace", "Dump utilization matrix to %s", filename.c_str());
+
+  outfile << "#used matrix"<< std::endl;
+ 
+  COORD y_limit = _hw_target->getYLimit();
+  COORD x_limit = _hw_target->getYLimit();
+  for (COORD y = 0; y < y_limit; ++y) {
+    for (COORD x = 0; x < x_limit; ++x) {
+      outfile << "x: "  << x << " y: " << y << " " << _used_matrix->cell(x, y) << std::endl;
+    }
+  }
+
+  outfile.close();
+}
+
 void QPlace::dumpCurrentPlacement(std::string filename) const {
   std::ofstream outfile;
   outfile.open(filename.c_str());
   
 
+  qlog.speak("QPlace", "Dump placement to %s", filename.c_str());
   ELE_ITER ele_iter = _netlist->element_begin();
   for (; ele_iter != _netlist->element_end(); ++ele_iter) {
     ParElement* element = *ele_iter;

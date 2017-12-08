@@ -79,7 +79,7 @@ int QCOMMAND_init_system::execute(int argc, const char** argv, std::string& resu
 
   HW_Target_Dwave* dwave_target = HW_Target_Dwave::getHwTarget();
   if (dwave_target == NULL)
-    qlog.speakError("QPAP: hardware target is not loaded");
+    qlog.speakError("QPAR: hardware target is not loaded");
 
   ParSystem::setParSystem(new ParSystem(SYN::myTop, dwave_target));
   ParSystem::getParSystem()->initSystem();

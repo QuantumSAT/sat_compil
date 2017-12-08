@@ -33,6 +33,8 @@ int QCOMMAND_init_target::execute(int argc, const char** argv, std::string& resu
   TclManager* tcl_manager = static_cast<TclManager*>(clientData);
   Tcl_Interp* interp = tcl_manager->getInterp();
 
+  result = "OK";
+
   if (!checkOptions(argc, argv)) {
     printHelp();
     return TCL_OK;
@@ -69,6 +71,7 @@ int QCOMMAND_init_target::execute(int argc, const char** argv, std::string& resu
   qlog.speak("TCL", "Initializing hardware...");
   target->initializeTarget();
   HW_Target_Dwave::setHwTarget(target);
+  return TCL_OK;
 
 }
 

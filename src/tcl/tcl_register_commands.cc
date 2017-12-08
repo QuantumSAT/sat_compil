@@ -51,7 +51,7 @@ void registerAllCommands() {
   //placement and routing related
   tcl_manager->registerCommand(new QCOMMAND_build_qpar_nl("build_qpar_nl", ""));
   tcl_manager->registerCommand(new QCOMMAND_init_system("init_system", ""));
-  tcl_manager->registerCommand(new QCOMMAND_init_system("place", ""));
+  tcl_manager->registerCommand(new QCOMMAND_place("place", ""));
 
 
 }

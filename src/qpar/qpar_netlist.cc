@@ -141,18 +141,20 @@ void ParNetlist::buildParNetlist() {
       _all_targets.insert(_all_targets.end(), targets.begin(), targets.end());
     }
 
-    qlog.speak("Design", "%u wires and %u elements has been constructed",
-        (unsigned)net_to_par_wire.size(),
-        (unsigned)gate_to_par_element.size()
-        );
-
   }
+
+  qlog.speak("Design", "%u wires and %u elements has been constructed",
+      (unsigned)net_to_par_wire.size(),
+      (unsigned)gate_to_par_element.size()
+      );
 
 }
 
 unsigned int ParElement::_element_index_counter = 0;
 ParElement::ParElement(SYN::Gate* gate) : 
-_gate(gate) {
+_gate(gate),
+_sink(NULL),
+_movable(true) {
   _element_index = _element_index_counter;
   ++_element_index_counter;
 }
@@ -402,7 +404,7 @@ void ParWire::restore() {
 }
 
 BoundingBox ParWire::getCurrentBoundingBox() const {
-  _bounding_box.getStatus();
+  return _bounding_box.getStatus();
 }
 
 void ParWire::saveBoundingBox() {

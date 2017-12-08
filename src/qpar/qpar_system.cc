@@ -55,7 +55,7 @@ void ParSystem::initSystem() {
 }
 
 void ParSystem::initNetlist() {
-  QASSERT(_par_netlist);
+  QASSERT(_par_netlist == NULL);
   _par_netlist = new ParNetlist(_syn_netlist);
 }
 

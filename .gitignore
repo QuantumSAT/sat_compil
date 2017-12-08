@@ -12,7 +12,6 @@ benchmark/collect_result.py
 test/blifs/.dwave_history_cmd
 test/.dwave_history_cmd
 test.tcl
-*.tcl
 *.log
 b
 
