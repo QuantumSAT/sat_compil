@@ -190,6 +190,7 @@ private:
 
   SYN::Model* _syn_netlist; //<! netlist form synthesis
   ParWireSet _wires; //<! wire container in netlist
+  ParWireSet _model_wires; //<! wire conainter for wires that only connect to top model port
   ParElementSet _elements; //<! element container in netlist
 
   std::vector<ParWireTarget*> _all_targets; //!< all wire target
@@ -332,11 +333,15 @@ public:
   /*! \brief check if incremetal update is the same with 
    *         brute force
    */
-  void sanityCheck();
+  bool sanityCheck();
 
   /*! \brief get wire uniq id 
    */
   unsigned int getUniqId() const { return _wire_index; }
+
+  /*! \brief get the only element
+   */
+  ParElement* getUniqElement();
   
 
 private:
@@ -378,6 +383,10 @@ public:
    *  \return void
    */
   void addWire(ParWire* wire);
+
+  /*! \brief disconnect a wire
+   */
+  void disconnectWire(ParWire* wire);
 
   /*! \brief check is this element can be moved
    */

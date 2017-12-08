@@ -35,6 +35,7 @@
 
 #include <fstream>
 #include <algorithm>
+#include <cmath>
 
 #if 0
 #define DBG_CODE(code) code
@@ -62,7 +63,7 @@ void QPlace::run() {
 
   _placement_cost = new CongestionAwareCost;
 
-  _current_total_cost = computeTotalCost();
+  _current_total_cost = computeTotalCost(true);
 
   qlog.speak("Place", "Initial placement cost is %.6f", _current_total_cost);
 
@@ -103,7 +104,7 @@ void QPlace::run() {
 
     move_since_recompute += move_limit;
     if (move_since_recompute > 50000) {
-      float new_cost = computeTotalCost();
+      float new_cost = computeTotalCost(true);
       float delta = new_cost - _current_total_cost;
       qlog.speak("Place", "Recompute cost delta is %f", delta);
       _current_total_cost = new_cost;
@@ -122,13 +123,13 @@ void QPlace::run() {
     _annealer->updateT(success_rat);
     _annealer->updateMoveRadius(success_rat);
 
+    qlog.speak("Place","|%5d|%11.3f|%10.2f |%9d  |   %7f | %10d|", outer_iter, _annealer->getCurrentT(), _current_total_cost, success_num, _annealer->getRLimit(), tot_iter);
+
     if (outer_iter > 105)
       break;
 
-    qlog.speak("Place","|%5d|%11.3f|%10.2f |%9d  |   %7f | %10d|", outer_iter, _annealer->getCurrentT(), _current_total_cost, success_num, _annealer->getRLimit(), tot_iter);
-
-
   }
+
   sanityCheck();
   ELE_ITER ele_iter = _netlist->element_begin();
   for (; ele_iter != _netlist->element_end(); ++ele_iter) {
@@ -141,16 +142,19 @@ void QPlace::sanityCheck() {
   WIRE_ITER w_iter = _netlist->wire_begin();
   for(; w_iter != _netlist->wire_end(); ++w_iter) {
     ParWire* wire = *w_iter;
-    wire->sanityCheck();
+    QASSERT(wire->sanityCheck());
   }
 }
 
-double QPlace::computeTotalCost() {
+double QPlace::computeTotalCost(bool set_wire_cost) {
   double cost = 0.0;
   WIRE_ITER w_iter = _netlist->wire_begin();
   for(; w_iter != _netlist->wire_end(); ++w_iter) {
     ParWire* wire = *w_iter;
-    cost += _placement_cost->computeCost(wire, *_used_matrix);
+    double cost_t = _placement_cost->computeCost(wire, *_used_matrix);
+    cost += cost_t;
+    if (set_wire_cost)
+      wire->setCost(cost_t);
   }
   return cost;
 }
@@ -247,11 +251,15 @@ void QPlace::usedMatrixSanityCheck() {
 
 void QPlace::usedMatrixSanityCheck(unsigned x, unsigned y) {
   unsigned sum = 0;
-  for (COORD i = 0; i < x; ++i) {
-    for (COORD j = 0; j < y; ++j) {
+  for (COORD i = 0; i <= x; ++i) {
+    for (COORD j = 0; j <= y; ++j) {
       if (_hw_target->getGrid(i,j)->getCurrentElement())
         ++sum;
     }
+  }
+  if (_used_matrix->cell(x, y) != sum) {
+    dumpCurrentPlacement("debug.place");
+    dumpUsedMatrix("debug.usedmatrix");
   }
   QASSERT(_used_matrix->cell(x, y) == sum);
 }
@@ -279,7 +287,7 @@ void QPlace::checkIfReadyToMove() {
 }
 
 void QPlace::generateMove(ParElement* &element, COORD& x, COORD& y) {
-  unsigned ele_i = _random_gen.uRand(0, _movable_elements.size());
+  unsigned ele_i = _random_gen.uRand(0, _movable_elements.size()-1);
   element = _movable_elements[ele_i];
 
   COORD ele_x = element->getX();
@@ -287,25 +295,31 @@ void QPlace::generateMove(ParElement* &element, COORD& x, COORD& y) {
 
   float r_limit = _annealer->getRLimit();
 
-  COORD x_range_min = (ele_x >= r_limit) ? ele_x - r_limit : 0;
-  COORD x_range_max = ((ele_x + r_limit) >= _hw_target->getXLimit()) ? (_hw_target->getXLimit() - 1) : (ele_x + r_limit);
+  COORD x_range_min = std::ceil(((float)ele_x >= r_limit) ? (float)ele_x - r_limit : 0);
+  COORD x_range_max = (((float)ele_x + r_limit) >= (float)_hw_target->getXLimit()) ? 
+    (_hw_target->getXLimit() - 1) : std::floor(((float)ele_x + r_limit));
   QASSERT((ele_x - x_range_min) < r_limit);
   QASSERT((x_range_max - ele_x) < r_limit);
 
 
-  COORD y_range_min = (ele_y >= r_limit) ? ele_y - r_limit : 0;
-  COORD y_range_max = ((ele_y + r_limit) >= _hw_target->getYLimit()) ? (_hw_target->getYLimit() - 1) : (ele_y + r_limit);
+  COORD y_range_min = std::ceil(((float)ele_y >= r_limit) ? (float)ele_y - r_limit : 0);
+  COORD y_range_max = (((float)ele_y + r_limit) >= (float)_hw_target->getYLimit()) ? 
+    (_hw_target->getYLimit() - 1) : std::floor(((float)ele_y + r_limit));
   QASSERT((ele_y - y_range_min) < r_limit);
   QASSERT((y_range_max - ele_y) < r_limit);
 
-  x = _random_gen.iRand(x_range_min, x_range_max);
-  y = _random_gen.iRand(y_range_min, y_range_max);
+  do {
+    x = _random_gen.iRand(x_range_min, x_range_max);
+    y = _random_gen.iRand(y_range_min, y_range_max);
+  } while( x == ele_x && y == ele_y );
 }
 
 
 bool QPlace::tryMove() {
-  //1) check if they placer is ready to move
+  //1) check if they placer is ready to move, this is unnecessary, only for debug
   checkIfReadyToMove();
+  usedMatrixSanityCheck();
+  sanityCheck();
 
   COORD x = std::numeric_limits<COORD>::max();
   COORD y = std::numeric_limits<COORD>::max();
@@ -315,6 +329,9 @@ bool QPlace::tryMove() {
 
   COORD from_x = ele->getX();
   COORD from_y = ele->getY();
+
+  ParGrid* tgt_grid = _hw_target->getGrid(x, y);
+  bool is_swap = tgt_grid->getCurrentElement();
 
 
   findAffectedElementsAndWires(ele, x, y);
@@ -333,19 +350,23 @@ bool QPlace::tryMove() {
     commitMove();
     _current_total_cost += delta_cost;
   } else 
-    restoreMove(from_x, from_y, x, y);
+    restoreMove(from_x, from_y, x, y, is_swap);
 
   _affected_wires.clear();
   _affected_elements.clear();
+  _affected_grids.clear();
   return accept;
 }
 
 void QPlace::commitMove() {
   for (size_t i = 0; i < _affected_elements.size(); ++i) {
     ParElement* element = _affected_elements[i];
-    ParGrid* grid = element->getCurrentGrid();
-    grid->save();
     element->save();
+  }
+
+  for (size_t i = 0; i < _affected_grids.size(); ++i) {
+    ParGrid* grid = _affected_grids[i];
+    grid->save();
   }
 
   WIRE_ITER w_iter = _affected_wires.begin();
@@ -356,12 +377,15 @@ void QPlace::commitMove() {
 
 }
 
-void QPlace::restoreMove(COORD from_x, COORD from_y, COORD to_x, COORD to_y) {
+void QPlace::restoreMove(COORD from_x, COORD from_y, COORD to_x, COORD to_y, bool is_swap) {
   for (size_t i = 0; i < _affected_elements.size(); ++i) {
     ParElement* element = _affected_elements[i];
-    ParGrid* grid = element->getCurrentGrid();
-    grid->restore();
     element->restore();
+  }
+
+  for (size_t i = 0; i < _affected_grids.size(); ++i) {
+    ParGrid* grid = _affected_grids[i];
+    grid->restore();
   }
 
   WIRE_ITER w_iter = _affected_wires.begin();
@@ -369,13 +393,16 @@ void QPlace::restoreMove(COORD from_x, COORD from_y, COORD to_x, COORD to_y) {
     (*w_iter)->restore();
   }
 
-  updateUseMatrix(to_x, to_y, from_x, from_y);
+  if (!is_swap)
+    updateUseMatrix(to_x, to_y, from_x, from_y);
 
 }
 
 
 void QPlace::findAffectedElementsAndWires(ParElement* element, COORD dest_x, COORD dest_y) {
   QASSERT(_affected_elements.size() == 0);
+  QASSERT(_affected_wires.size() == 0);
+  QASSERT(_affected_grids.size() == 0);
   element->save();
 
   ParGrid* src_grid = element->getCurrentGrid();
@@ -384,6 +411,9 @@ void QPlace::findAffectedElementsAndWires(ParElement* element, COORD dest_x, COO
   ParGrid* tgt_grid = _hw_target->getGrid(dest_x, dest_y);
   tgt_grid->save();
 
+  _affected_grids.push_back(src_grid);
+  _affected_grids.push_back(tgt_grid);
+
 
   ParElement* tgt_element = tgt_grid->getCurrentElement();
   bool is_swap = tgt_element;
@@ -391,8 +421,8 @@ void QPlace::findAffectedElementsAndWires(ParElement* element, COORD dest_x, COO
   COORD from_x = src_grid->getLoc().getLocX();
   COORD from_y = src_grid->getLoc().getLocY();
 
-  COORD to_x = src_grid->getLoc().getLocX();
-  COORD to_y = src_grid->getLoc().getLocY();
+  COORD to_x = tgt_grid->getLoc().getLocX();
+  COORD to_y = tgt_grid->getLoc().getLocY();
   
 
   if (is_swap) {
@@ -416,10 +446,10 @@ void QPlace::findAffectedElementsAndWires(ParElement* element, COORD dest_x, COO
     //              dest_x, dest_y);
 
     ////sanity check
-    //usedMatrixSanityCheck();
+    updateUseMatrix(from_x, from_y, to_x, to_y);
+    usedMatrixSanityCheck();
   }
 
-  updateUseMatrix(from_x, from_y, to_x, to_y);
 
   std::vector<ParElement*>::iterator ele_iter = _affected_elements.begin();
   for (; ele_iter != _affected_elements.end(); ++ele_iter) {
@@ -427,10 +457,15 @@ void QPlace::findAffectedElementsAndWires(ParElement* element, COORD dest_x, COO
     WIRE_ITER_V w_iter = curr_ele->begin();
     for (; w_iter != curr_ele->end(); ++w_iter) {
       _affected_wires.insert(*w_iter);
-      (*w_iter)->updateBoundingBox(from_x, from_y,
-        to_x, to_y);
+      if (curr_ele == element)
+        (*w_iter)->updateBoundingBox(from_x, from_y, to_x, to_y);
+      else if (curr_ele == tgt_element)
+        (*w_iter)->updateBoundingBox(to_x, to_y, from_x, from_y);
+      else
+        QASSERT(0);
     }
   }
+
 
   if (!is_swap) {
     WIRE_ITER w_iter = _netlist->wire_begin(); 
@@ -438,8 +473,8 @@ void QPlace::findAffectedElementsAndWires(ParElement* element, COORD dest_x, COO
       if (_affected_wires.count(*w_iter)) continue;
 
       ParWire* wire = *w_iter;
-      if (wire->getCurrentBoundingBox().getBoundBox().isInBox(from_x, from_y) ||
-          wire->getCurrentBoundingBox().getBoundBox().isInBox(to_x, to_y))
+      if (wire->getCurrentBoundingBox().getBoundBox().isInBox((unsigned)from_x, (unsigned)from_y) ||
+          wire->getCurrentBoundingBox().getBoundBox().isInBox((unsigned)to_x, (unsigned)to_y))
         _affected_wires.insert(*w_iter);
     }
   }
@@ -451,40 +486,40 @@ void QPlace::updateUseMatrix(COORD from_x, COORD from_y, COORD to_x, COORD to_y)
   bool y_inc = to_y >= from_y;
 
   if (x_inc == y_inc) {
-    for (unsigned i = (x_inc)?from_x:to_x; i < _used_matrix->getSizeX(); ++i) {
-      for (unsigned j = (x_inc)?from_y:to_y; j <= ((x_inc)?to_y:from_y - 1); ++j) {
+    for (COORD i = (x_inc)?from_x:to_x; i < _used_matrix->getSizeX(); ++i) {
+      for (COORD j = (x_inc)?from_y:to_y; j <= (((x_inc)?to_y:from_y) - 1); ++j) {
         if (x_inc)
-          --_used_matrix->cell(i, j);
+          --_used_matrix->cell((unsigned)i, (unsigned)j);
         else
-          ++_used_matrix->cell(i, j);
+          ++_used_matrix->cell((unsigned)i, (unsigned)j);
       }
     }
 
-    for (unsigned i = (x_inc)?from_x:to_x; i <= ((x_inc)?to_x:from_x - 1); ++i) {
-      for (unsigned j = (x_inc)?to_y:from_y; j < _used_matrix->getSizeY(); ++j) {
+    for (COORD i = (x_inc)?from_x:to_x; i <= (((x_inc)?to_x:from_x) - 1); ++i) {
+      for (COORD j = (x_inc)?to_y:from_y; j < _used_matrix->getSizeY(); ++j) {
         if (x_inc)
-          --_used_matrix->cell(i, j);
+          --_used_matrix->cell((unsigned)i, (unsigned)j);
         else
-          ++_used_matrix->cell(i, j);
+          ++_used_matrix->cell((unsigned)i, (unsigned)j);
       }
     }
 
-  } else if ( x_inc && !y_inc) {
-    for (unsigned i = (x_inc)?from_x:to_x; i <= ((x_inc)?to_y:from_y - 1); ++i) {
-      for (unsigned j = (x_inc)?from_y:to_y; j < _used_matrix->getSizeY(); ++j) {
+  } else {
+    for (COORD i = (x_inc)?from_x:to_x; i <= (((x_inc)?to_x:from_x) - 1); ++i) {
+      for (COORD j = (x_inc)?from_y:to_y; j < _used_matrix->getSizeY(); ++j) {
         if (x_inc)
-          --_used_matrix->cell(i, j);
+          --_used_matrix->cell((unsigned)i, (unsigned)j);
         else
-          ++_used_matrix->cell(i, j);
+          ++_used_matrix->cell((unsigned)i, (unsigned)j);
       }
     }
 
-    for (unsigned i = (x_inc)?to_x:from_x; i < _used_matrix->getSizeX(); ++i) {
-      for (unsigned j = (x_inc)?to_y:from_y; j < ((x_inc)?from_y:to_y - 1); ++j) {
+    for (COORD i = (x_inc)?to_x:from_x; i < _used_matrix->getSizeX(); ++i) {
+      for (COORD j = (x_inc)?to_y:from_y; j <= (((x_inc)?from_y:to_y) - 1); ++j) {
         if (x_inc)
-          ++_used_matrix->cell(i, j);
+          ++_used_matrix->cell((unsigned)i, (unsigned)j);
         else
-          --_used_matrix->cell(i, j);
+          --_used_matrix->cell((unsigned)i, (unsigned)j);
       }
     }
   }
@@ -505,7 +540,7 @@ void QPlace::dumpUsedMatrix(std::string filename) const {
   COORD x_limit = _hw_target->getYLimit();
   for (COORD y = 0; y < y_limit; ++y) {
     for (COORD x = 0; x < x_limit; ++x) {
-      outfile << "x: "  << x << " y: " << y << " " << _used_matrix->cell(x, y) << std::endl;
+      outfile << "x: "  << x << " y: " << y << " " << _used_matrix->cell((unsigned)x, (unsigned)y) << std::endl;
     }
   }
 
@@ -540,6 +575,9 @@ float QPlace::getStartingT() {
   double ave = 0.0;
   double sum_of_square = 0.0;
   for (int i = 0; i < num_move; ++i) {
+    qlog.speak("JSU_DEBUG", "Try move %d", i);
+    dumpCurrentPlacement("debug.place");
+    dumpUsedMatrix("debug.usedmatrix");
     if (tryMove()) {
       ++num_accepted;
       ave += _current_total_cost;

@@ -63,7 +63,7 @@ void Annealer::updateMoveRadius(float sr) {
 }
 
 
-bool Annealer::shouldAccept(float delta_c) {
+bool Annealer::shouldAccept(double delta_c) {
   if (delta_c <= 0)
     return true ;
 

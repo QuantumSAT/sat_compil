@@ -124,7 +124,7 @@ public:
    *  \param float delta_cost the cost reduction
    *  \return bool
    */
-  bool shouldAccept(float delta_cost);
+  bool shouldAccept(double delta_cost);
 
   /*! \brief decide whether the annealing procedure should be exit
    *  \param float unit_cost is a normalized bounding box cost

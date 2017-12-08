@@ -44,6 +44,7 @@ public:
    */
   T& cell(unsigned x, unsigned y);
 
+
   /*! \brief access the data in the matrix
    */
   const T& cell(unsigned x, unsigned y) const;

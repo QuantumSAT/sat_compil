@@ -44,6 +44,9 @@ const float PlacementCost::cross_count[50] = {
 
 double CongestionAwareCost::computeCost(ParWire* wire, const qpr_matrix<unsigned>& used_matrix) {
 
+  //this is a model wire that connects only to the top module port
+  if (wire->getElementNumber() <= 1) return 0.0;
+
   BoundingBox current_bb = wire->getCurrentBoundingBox();
   Box bbox = current_bb.getBoundBox();
   Box ebox = current_bb.getEdgeBox();

@@ -129,22 +129,33 @@ void ParNetlist::buildParNetlist() {
           continue;
         }
         parwire = new ParWire(net);
-        _wires.insert(parwire);
+
         net_to_par_wire.insert(std::make_pair(net, parwire));
       }
       element->addWire(parwire);
     }
-    std::unordered_map<SYN::Net*, ParWire*>::iterator w_iter = net_to_par_wire.begin();
-    for (; w_iter != net_to_par_wire.end(); ++w_iter) {
-      ParWire* wire = w_iter->second;
-      std::vector<ParWireTarget*> targets = wire->buildWireTarget(gate_to_par_element);
-      _all_targets.insert(_all_targets.end(), targets.begin(), targets.end());
-    }
-
   }
 
-  qlog.speak("Design", "%u wires and %u elements has been constructed",
-      (unsigned)net_to_par_wire.size(),
+
+  std::unordered_map<SYN::Net*, ParWire*>::iterator w_iter = net_to_par_wire.begin();
+  for (; w_iter != net_to_par_wire.end(); ++w_iter) {
+    ParWire* wire = w_iter->second;
+    std::vector<ParWireTarget*> targets = wire->buildWireTarget(gate_to_par_element);
+    _all_targets.insert(_all_targets.end(), targets.begin(), targets.end());
+    if (wire->getElementNumber() <= 1) {
+      _model_wires.insert(wire);
+      ParElement* ele_uniq = wire->getUniqElement();
+      if (ele_uniq) ele_uniq->disconnectWire(wire);
+    }
+    else
+      _wires.insert(wire);
+  }
+
+
+
+  qlog.speak("Design", "%u wires, %u model wires, %u elements has been constructed",
+      (unsigned)_wires.size(),
+      (unsigned)_model_wires.size(),
       (unsigned)gate_to_par_element.size()
       );
 
@@ -164,6 +175,15 @@ void ParElement::addWire(ParWire* wire) {
   wire->addElement(this);
 }
 
+void ParElement::disconnectWire(ParWire* wire) {
+  std::vector<ParWire*> new_wires;
+  for (WIRE_ITER_V w_iter = begin(); w_iter != end(); ++w_iter) {
+    if ((*w_iter) != wire)
+      new_wires.push_back(*w_iter);
+  }
+  _wires = new_wires;
+}
+
 void ParElement::updatePlacement() {
   QASSERT(_grid.getStatus());
   _x = (_grid.getStatus())->getLoc().getLocX();
@@ -177,7 +197,8 @@ std::string ParElement::getName() const {
 
 unsigned int ParWire::_wire_index_counter = 0;
 ParWire::ParWire(SYN::Net* wire) : 
-_net(wire) {
+_net(wire),
+_source(NULL) {
   _wire_index = _wire_index_counter;
   ++_wire_index_counter;
 }
@@ -190,7 +211,7 @@ ParWire::~ParWire() {
 
 std::vector<ParWireTarget*>& ParWire::buildWireTarget(
     const std::unordered_map<SYN::Gate*, ParElement*>& gate_to_par_element) {
-  _targets.clear();
+ _targets.clear();
   SYN::Pin* source = _net->uniqSource();
   QASSERT(source);
   std::vector<SYN::Pin*> sink;
@@ -290,7 +311,7 @@ void ParWire::recomputeBoundingBox() {
     if (coordX > xr) {
       xr = coordX;
       xre = 1;
-    } else if (coordX = xr) {
+    } else if (coordX == xr) {
       ++xre;
     }
 
@@ -338,7 +359,7 @@ void ParWire::setCost(double val) {
   _cost.setStatus(val);
 }
 
-void ParWire::sanityCheck() {
+bool ParWire::sanityCheck() {
   int xl = std::numeric_limits<int>::max();
   int xr = -1;
   int yt = std::numeric_limits<int>::max();
@@ -365,7 +386,7 @@ void ParWire::sanityCheck() {
     if (coordX > xr) {
       xr = coordX;
       xre = 1;
-    } else if (coordX = xr) {
+    } else if (coordX == xr) {
       ++xre;
     }
 
@@ -386,14 +407,24 @@ void ParWire::sanityCheck() {
   }
 
   Box box = getCurrentBoundingBox().getBoundBox();
-  if (box.xr() != xr)
+  if (box.xr() != xr) {
     qlog.speak("Place", "Sanity Checking Net: BoundingBox xr %u is not equal to incr %u", box.xr(), xr);
-  if (box.xl() != xl)
+    return false;
+  }
+  if (box.xl() != xl) {
     qlog.speak("Place", "Sanity Checking Net: BoundingBox xl %u is not equal to incr %u", box.xl(), xl);
-  if (box.yb() != yb)
+    return false;
+  }
+  if (box.yb() != yb) {
     qlog.speak("Place", "Sanity Checking Net: BoundingBox yb %u is not equal to incr %u", box.yb(), yb);
-  if (box.yt() != yt)
+    return false;
+  }
+  if (box.yt() != yt) {
     qlog.speak("Place", "Sanity Checking Net: BoundingBox yt %u is not equal to incr %u", box.yt(), yt);
+    return false;
+  }
+
+  return true;
 
 
 }
@@ -478,6 +509,11 @@ void ParWire::updateBoundingBox(COORD from_x, COORD from_y, COORD to_x, COORD to
 
 }
 
+ParElement* ParWire::getUniqElement() {
+  if (_elements.size() != 1) return NULL;
+  return (*_elements.begin());
+}
+
 unsigned ParWireTarget::_wire_target_counter = 0;
 
 ParWireTarget::ParWireTarget(ParElement* source, ParElement* dest,
@@ -490,6 +526,8 @@ ParWireTarget::ParWireTarget(ParElement* source, ParElement* dest,
     _target_index = _wire_target_counter;
     ++_wire_target_counter;
   }
+
+
 
 
 

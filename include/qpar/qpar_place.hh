@@ -135,12 +135,13 @@ private:
 
   /*! \brief restore to previous status
    */
-  void restoreMove(COORD from_x, COORD from_y, COORD to_x, COORD to_y);
+  void restoreMove(COORD from_x, COORD from_y, COORD to_x, COORD to_y, bool is_swap);
 
   /*! \brief compute the cost for a give placement
+   *  \param bool set_wire_cost, whether to update each wire's cost
    *  \return double cost
    */
-  double computeTotalCost();
+  double computeTotalCost(bool set_wire_cost);
 
   /*! \brief get initial annealing temperature based on random experiments
    */
@@ -164,6 +165,8 @@ private:
 
   std::vector<ParElement*> _affected_elements; //!< a container to store the affected elemnts
   ParWireSet _affected_wires; //!< a container to store the affected wires
+
+  std::vector<ParGrid*> _affected_grids; //!< a container to store the affected grids
 
   double _current_total_cost; //!< to record the total cost
 
