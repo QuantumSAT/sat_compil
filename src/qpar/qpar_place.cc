@@ -35,6 +35,7 @@
 
 #include <fstream>
 #include <algorithm>
+#include <iomanip>
 #include <cmath>
 
 #if 0
@@ -64,6 +65,10 @@ void QPlace::run() {
   _placement_cost = new CongestionAwareCost;
 
   _current_total_cost = computeTotalCost(true);
+  WIRE_ITER w_iter = _netlist->wire_begin(); 
+  for (; w_iter != _netlist->wire_end(); ++w_iter) {
+    (*w_iter)->saveCost();
+  }
 
   qlog.speak("Place", "Initial placement cost is %.6f", _current_total_cost);
 
@@ -85,8 +90,25 @@ void QPlace::run() {
   int success_num = 0;
 
   qlog.speak("Place", "Start Placement");
-  qlog.speak("Place", "|=======================================================");
-  qlog.speak("Place", "|%5s|%11s|%10s |%9s  |   %7s | %10s|", "Iter", "T",  "Cost", "Succ_Swap",   "R_Limit",   "Tot Mov");
+  std::stringstream print_sep;
+  print_sep << "+";
+  print_sep << std::setfill('-') << std::setw(10) << "+";
+  print_sep << std::setfill('-') << std::setw(10) << "+";
+  print_sep << std::setfill('-') << std::setw(10) << "+";
+  print_sep << std::setfill('-') << std::setw(10) << "+";
+  print_sep << std::setfill('-') << std::setw(10) << "+";
+  print_sep << std::setfill('-') << std::setw(10) << "+";
+  qlog.speak("Place", "%s", print_sep.str().c_str());
+
+  std::stringstream print_log;
+  print_log << "|";
+  print_log << std::setw(10) << "Iter|";
+  print_log << std::setw(10) << "T|";
+  print_log << std::setw(10) << "Cost|";
+  print_log << std::setw(10) << "SuccR|";
+  print_log << std::setw(10) << "RLimit|";
+  print_log << std::setw(10) << "TotMove|";
+  qlog.speak("Place", "%s", print_log.str().c_str());
 
   while(!_annealer->shouldExit(_current_total_cost / (float)(_netlist->getWireNum()))) {
     cost_ave = 0;
@@ -123,12 +145,27 @@ void QPlace::run() {
     _annealer->updateT(success_rat);
     _annealer->updateMoveRadius(success_rat);
 
-    qlog.speak("Place","|%5d|%11.3f|%10.2f |%7d  |   %.3f | %10d|", outer_iter, _annealer->getCurrentT(), _current_total_cost, success_num, _annealer->getRLimit(), tot_iter);
+    qlog.speak("Place", "%s", print_sep.str().c_str());
+    std::stringstream place_stat;
+    place_stat << "|";
+    place_stat << std::setw(9) << outer_iter << "|";
+    place_stat << std::setw(9) << std::setprecision(4) << _annealer->getCurrentT();
+    place_stat << "|";
+    place_stat << std::setw(9) << std::setprecision(4) << _current_total_cost;
+    place_stat << "|";
+    place_stat << std::setw(9) << success_num;
+    place_stat << "|";
+    place_stat << std::setw(9) << std::setprecision(4) << _annealer->getRLimit();
+    place_stat << "|";
+    place_stat << std::setw(9) << tot_iter;
+    place_stat << "|";
+    qlog.speak("Place", "%s", place_stat.str().c_str());
 
     if (outer_iter > 105)
       break;
 
   }
+  qlog.speak("Place", "%s", print_sep.str().c_str());
 
   sanityCheck();
   ELE_ITER ele_iter = _netlist->element_begin();
@@ -144,6 +181,13 @@ void QPlace::sanityCheck() {
     ParWire* wire = *w_iter;
     QASSERT(wire->sanityCheck());
   }
+
+  ELE_ITER ele_iter = _netlist->element_begin();
+  for (; ele_iter != _netlist->element_end(); ++ele_iter) {
+    ParGrid* grid = (*ele_iter)->getCurrentGrid();
+    QASSERT(grid->getCurrentElement() == (*ele_iter));
+  }
+  //qlog.speak("Placement", "total cost %f", computeTotalCost(true));
 }
 
 double QPlace::computeTotalCost(bool set_wire_cost) {
@@ -342,13 +386,17 @@ bool QPlace::tryMove() {
     ParWire* par_wire = *w_iter;
     par_wire->saveCost();
     double new_cost = _placement_cost->computeCost(par_wire, *_used_matrix);
+    par_wire->setCost(new_cost);
     delta_cost += (new_cost - par_wire->getSavedCost());
   }
 
   bool accept = _annealer->shouldAccept(delta_cost);
   if (accept) {
     commitMove();
+    //qlog.speak("Place", "old_cost %f", _current_total_cost);
     _current_total_cost += delta_cost;
+    //qlog.speak("Place", "delta cost is %f, new_cost %f", delta_cost,
+    //    _current_total_cost);
   } else 
     restoreMove(from_x, from_y, x, y, is_swap);
 
@@ -569,20 +617,23 @@ void QPlace::dumpCurrentPlacement(std::string filename) const {
 
 
 float QPlace::getStartingT() {
+
+
   qlog.speak("Place", "Getting starting temperature...");
   const int num_move = std::max((int)_movable_elements.size(), 100);
   unsigned num_accepted = 0;
   double ave = 0.0;
   double sum_of_square = 0.0;
   for (int i = 0; i < num_move; ++i) {
-    qlog.speak("JSU_DEBUG", "Try move %d", i);
-    dumpCurrentPlacement("debug.place");
-    dumpUsedMatrix("debug.usedmatrix");
+    //qlog.speak("JSU_DEBUG", "Try move %d", i);
+    //dumpCurrentPlacement("debug.place");
+    //dumpUsedMatrix("debug.usedmatrix");
     if (tryMove()) {
       ++num_accepted;
       ave += _current_total_cost;
       sum_of_square += (_current_total_cost * _current_total_cost);
     }
+    //qlog.speak("Place", "current cost is %f", computeTotalCost(false));
 
   }
 
