@@ -109,6 +109,7 @@ void QPlace::run() {
   print_log << std::setw(10) << "RLimit|";
   print_log << std::setw(10) << "TotMove|";
   qlog.speak("Place", "%s", print_log.str().c_str());
+  qlog.speak("Place", "%s", print_sep.str().c_str());
 
   while(!_annealer->shouldExit(_current_total_cost / (float)(_netlist->getWireNum()))) {
     cost_ave = 0;
@@ -145,7 +146,6 @@ void QPlace::run() {
     _annealer->updateT(success_rat);
     _annealer->updateMoveRadius(success_rat);
 
-    qlog.speak("Place", "%s", print_sep.str().c_str());
     std::stringstream place_stat;
     place_stat << "|";
     place_stat << std::setw(9) << outer_iter << "|";
@@ -153,7 +153,7 @@ void QPlace::run() {
     place_stat << "|";
     place_stat << std::setw(9) << std::setprecision(4) << _current_total_cost;
     place_stat << "|";
-    place_stat << std::setw(9) << success_num;
+    place_stat << std::setw(9) << std::setprecision(4) << success_rat;
     place_stat << "|";
     place_stat << std::setw(9) << std::setprecision(4) << _annealer->getRLimit();
     place_stat << "|";
@@ -187,6 +187,8 @@ void QPlace::sanityCheck() {
     ParGrid* grid = (*ele_iter)->getCurrentGrid();
     QASSERT(grid->getCurrentElement() == (*ele_iter));
   }
+  
+  usedMatrixSanityCheck();
   //qlog.speak("Placement", "total cost %f", computeTotalCost(true));
 }
 
@@ -342,15 +344,15 @@ void QPlace::generateMove(ParElement* &element, COORD& x, COORD& y) {
   COORD x_range_min = std::ceil(((float)ele_x >= r_limit) ? (float)ele_x - r_limit : 0);
   COORD x_range_max = (((float)ele_x + r_limit) >= (float)_hw_target->getXLimit()) ? 
     (_hw_target->getXLimit() - 1) : std::floor(((float)ele_x + r_limit));
-  QASSERT((ele_x - x_range_min) < r_limit);
-  QASSERT((x_range_max - ele_x) < r_limit);
+  QASSERT((ele_x - x_range_min) <= r_limit);
+  QASSERT((x_range_max - ele_x) <= r_limit);
 
 
   COORD y_range_min = std::ceil(((float)ele_y >= r_limit) ? (float)ele_y - r_limit : 0);
   COORD y_range_max = (((float)ele_y + r_limit) >= (float)_hw_target->getYLimit()) ? 
     (_hw_target->getYLimit() - 1) : std::floor(((float)ele_y + r_limit));
-  QASSERT((ele_y - y_range_min) < r_limit);
-  QASSERT((y_range_max - ele_y) < r_limit);
+  QASSERT((ele_y - y_range_min) <= r_limit);
+  QASSERT((y_range_max - ele_y) <= r_limit);
 
   do {
     x = _random_gen.iRand(x_range_min, x_range_max);
@@ -360,10 +362,10 @@ void QPlace::generateMove(ParElement* &element, COORD& x, COORD& y) {
 
 
 bool QPlace::tryMove() {
-  //1) check if they placer is ready to move, this is unnecessary, only for debug
-  checkIfReadyToMove();
-  usedMatrixSanityCheck();
-  sanityCheck();
+  // check if they placer is ready to move, this is unnecessary, only for debug
+  //checkIfReadyToMove();
+  //usedMatrixSanityCheck();
+  //sanityCheck();
 
   COORD x = std::numeric_limits<COORD>::max();
   COORD y = std::numeric_limits<COORD>::max();
@@ -495,7 +497,7 @@ void QPlace::findAffectedElementsAndWires(ParElement* element, COORD dest_x, COO
 
     ////sanity check
     updateUseMatrix(from_x, from_y, to_x, to_y);
-    usedMatrixSanityCheck();
+    //usedMatrixSanityCheck();
   }
 
 
