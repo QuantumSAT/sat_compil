@@ -36,8 +36,38 @@ RoutingGraph::RoutingGraph(HW_Target_Dwave* dwave_device, ParTarget* par_target)
   createRoutingGraph();
 }
 
+RoutingGraph::~RoutingGraph() {
+
+  std::unordered_map<HW_Cell*, RoutingCell*>::iterator c_iter = _cells.begin();
+  for (; c_iter != _cells.end(); ++c_iter)
+    delete c_iter->second;
+  _cells.clear();
+
+  NODES::iterator n_iter = _nodes.begin();
+  for (; n_iter != _nodes.end(); ++n_iter) 
+    delete (*n_iter);
+  _nodes.clear();
+
+  EDGES::iterator e_iter = _edges.begin();
+  for (; e_iter != _edges.end(); ++e_iter)
+    delete (*e_iter);
+  _edges.clear();
+
+}
+
 unsigned RoutingNode::_index_counter = 0;
 unsigned RouitngEdge::_index_counter = 0;
 
 
+void RoutingGraph::createRoutingGraph() {
 
+  for (COORD x = 0; x < _par_target->getXLimit(); ++x) {
+    for (COORD y = 0; y < _par_target->getYLimit(); ++y) {
+      ParGrid* grid = _par_target->getGrid(x, y);
+      createCellRoutingGraph(grid);
+    }
+  }
+
+
+
+}

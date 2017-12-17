@@ -363,9 +363,11 @@ void QPlace::generateMove(ParElement* &element, COORD& x, COORD& y) {
 
 bool QPlace::tryMove() {
   // check if they placer is ready to move, this is unnecessary, only for debug
-  //checkIfReadyToMove();
-  //usedMatrixSanityCheck();
-  //sanityCheck();
+#ifdef SANITY_CHECK
+  checkIfReadyToMove();
+  usedMatrixSanityCheck();
+  sanityCheck();
+#endif
 
   COORD x = std::numeric_limits<COORD>::max();
   COORD y = std::numeric_limits<COORD>::max();

@@ -87,6 +87,12 @@ public:
     return _element.checkStatusSame();
   }
 
+  /*! \brief get hardware cell
+   */
+  HW_Cell* getHWCell() const {
+    return _cell;
+  }
+
 private:
 
   HW_Cell* _cell; //!< the hardware cell to create this grid
