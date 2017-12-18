@@ -22,6 +22,7 @@
 #include "qpar/qpar_tcl.hh"
 #include "qpar/qpar_netlist.hh"
 #include "qpar/qpar_system.hh"
+#include "qpar/qpar_routing_test.hh"
 
 #include "syn/blif.h"
 #include "utils/qlog.hh"
@@ -104,6 +105,27 @@ int QCOMMAND_place::execute(int argc, const char** argv, std::string& result, Cl
   ParSystem::getParSystem()->doPlacement();
 
   return TCL_OK;
+}
+
+std::string QCOMMAND_check_routing_graph::help() const {
+  const std::string msg = "check_routing_graph";
+  return msg;
+}
+
+int QCOMMAND_check_routing_graph::execute(int argc, const char** argv, std::string& result, ClientData clientData) {
+
+  result = "OK";
+
+  if (!checkOptions(argc, argv)) {
+    printHelp();
+    return TCL_OK;
+  }
+
+  RoutingTester tester(ParSystem::getParSystem());
+  tester.testRoutingGraph();
+
+  return TCL_OK;
+
 }
 
 

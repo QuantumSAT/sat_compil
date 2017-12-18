@@ -105,6 +105,12 @@ public:
     return _system;
   }
 
+
+  /* unit test related class
+   */
+  friend class RoutingTester;
+  friend class PlacementTester;
+
 private:
   static ParSystem* _system; //<! qpar system, a global data structure
  

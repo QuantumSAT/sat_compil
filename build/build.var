@@ -55,10 +55,10 @@ endif
 ifeq ($(MODULE_NAME),gui)
   ifeq ($(LBITS),64)
     #CFLAG  += -ansi -pedantic -Wall -Wno-unused-variable -Wno-reorder -W -Wcast-qual -Wwrite-strings -std=c++0x -mcmodel=medium
-    CFLAG  += -ansi -pedantic -Wall -Wno-unused-variable -Wno-reorder -W -Wcast-qual -Wwrite-strings -mcmodel=medium -std=c++0x
+    CFLAG  += -ansi -pedantic -Wall -Wno-reorder -W -Wcast-qual -Wwrite-strings -mcmodel=medium -std=c++0x
   else
 #CFLAG  += -ansi -pedantic -Wall -Wno-unused-variable -Wno-reorder -W -Wcast-qual -Wwrite-strings -std=c++0x
-    CFLAG  += -ansi -pedantic -Wall -Wno-unused-variable -Wno-reorder -W -Wcast-qual -Wwrite-strings -std=c++0x
+    CFLAG  += -ansi -pedantic -Wall -Wno-reorder -W -Wcast-qual -Wwrite-strings -std=c++0x
   endif
 else 
   ifeq ($(LBITS),64)

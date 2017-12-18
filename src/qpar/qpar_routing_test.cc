@@ -17,15 +17,18 @@
  *   License along with QSat.  If not, see <http://www.gnu.org/licenses/>.  *
  ****************************************************************************/
 
-#ifndef QPAR_TCL_HH
-#define QPAR_TCL_HH
 
-#include "tcl/tcl_command.hh"
-#include "tcl/tcl_manager.hh"
 
-TCL_COMMAND_DEFINE(QCOMMAND_build_qpar_nl)
-TCL_COMMAND_DEFINE(QCOMMAND_init_system)
-TCL_COMMAND_DEFINE(QCOMMAND_place)
-TCL_COMMAND_DEFINE(QCOMMAND_check_routing_graph)
+#include "qpar/qpar_routing_graph.hh"
+#include "qpar/qpar_system.hh"
+#include "qpar/qpar_target.hh"
+#include "qpar/qpar_routing_test.hh"
 
-#endif
+
+void RoutingTester::testRoutingGraph() {
+  HW_Target_Dwave* hw_target = _par_system->_hw_target;
+  ParTarget* par_target = _par_system->_par_target;
+
+  RoutingGraph graph(hw_target, par_target);
+
+}

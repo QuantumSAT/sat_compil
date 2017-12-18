@@ -17,15 +17,37 @@
  *   License along with QSat.  If not, see <http://www.gnu.org/licenses/>.  *
  ****************************************************************************/
 
-#ifndef QPAR_TCL_HH
-#define QPAR_TCL_HH
+#ifndef QPAR_ROUTING_TEST_HH
+#define QPAR_ROUTING_TEST_HH
 
-#include "tcl/tcl_command.hh"
-#include "tcl/tcl_manager.hh"
+/*! \file qpar_routing_test.hh
+ *  \author Juexiao SU
+ *  \date 18 Dec 2017
+ *  \brief a testing/debug facility to check basic function in routing
+ */
 
-TCL_COMMAND_DEFINE(QCOMMAND_build_qpar_nl)
-TCL_COMMAND_DEFINE(QCOMMAND_init_system)
-TCL_COMMAND_DEFINE(QCOMMAND_place)
-TCL_COMMAND_DEFINE(QCOMMAND_check_routing_graph)
+
+
+class ParSystem;
+
+class RoutingTester {
+
+public:
+  RoutingTester(ParSystem* par_system) :
+    _par_system(par_system) 
+  {
+  }
+
+  /*! \brief run basic routing graph test
+   */
+  void testRoutingGraph();
+
+private:
+
+  ParSystem* _par_system; //!< placement and routing system
+
+
+};
 
 #endif
+

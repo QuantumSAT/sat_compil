@@ -22,7 +22,9 @@
 
 
 #include <unordered_set>
+#include <unordered_map>
 #include <set>
+#include <map>
 #include <vector>
 
 #include "hw_target/hw_loc.hh"
@@ -190,6 +192,10 @@ public:
   /*! \brief get routing node2
    */
   RoutingNode* getRoutingNode2() const { return _node2; }
+
+  /*! \brief get edge index
+   */
+  unsigned getIndex() const { return _index; }
 
 private:
   RoutingNode*    _node1;

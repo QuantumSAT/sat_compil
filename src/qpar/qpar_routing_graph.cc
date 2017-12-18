@@ -35,6 +35,14 @@
 #include "hw_target/hw_loc.hh"
 #include "utils/qlog.hh"
 
+bool RoutingNodeCmp::operator()(const RoutingNode* node1, const RoutingNode* node2) const {
+  return node1->getIndex() < node2->getIndex();
+}
+
+bool RoutingEdgeCmp::operator()(const RoutingEdge* edge1, const RoutingEdge* edge2) const {
+  return edge1->getIndex() < edge2->getIndex();
+}
+
 
 RoutingGraph::RoutingGraph(HW_Target_Dwave* dwave_device, ParTarget* par_target) :
   _dwave_device(dwave_device), _par_target(par_target) 
@@ -66,6 +74,8 @@ unsigned RoutingEdge::_index_counter = 0;
 
 
 void RoutingGraph::createRoutingGraph() {
+  qlog.speak("Routing Graph", "build routing graph...");
+  qlog.speak("Routing Graph", "build local routing graph for each cell...");
   for (COORD x = 0; x < _par_target->getXLimit(); ++x) {
     for (COORD y = 0; y < _par_target->getYLimit(); ++y) {
       ParGrid* grid = _par_target->getGrid(x, y);
@@ -74,7 +84,11 @@ void RoutingGraph::createRoutingGraph() {
       _cells.insert(std::make_pair(hw_cell, cell));
     }
   }
+  qlog.speak("Routing Graph", "%lu nodes and %lu edges are created",
+      _nodes.size(),
+      _edges.size());
 
+  qlog.speak("Routing Graph", "build inter-cell routing graph...");
   HW_Target_abstract::I_ITER interac_iter = _dwave_device->inter_cell_interac_begin();
   for (; interac_iter != _dwave_device->inter_cell_interac_end(); ++interac_iter) {
     HW_Interaction* interac = interac_iter->second;
@@ -111,6 +125,9 @@ void RoutingGraph::createRoutingGraph() {
     _edges.insert(edge1);
     _edges.insert(edge2);
   }
+  qlog.speak("Routing Graph", "routing graph created %lu nodes %lu edges",
+      _nodes.size(),
+      _edges.size());
 
 }
 
@@ -145,6 +162,17 @@ RoutingNode::RoutingNode(HW_Interaction* iter) :
   _node_index = _index_counter;
   ++_index_counter;
 }
+
+RoutingNode::RoutingNode(SYN::Pin* pin) :
+  _qubit(NULL),
+  _interaction(NULL),
+  _pin(pin),
+  _isLogicalQubit(false)
+{
+  _node_index = _index_counter;
+  ++_index_counter;
+}
+
 
 RoutingEdge::RoutingEdge(RoutingNode* node1, RoutingNode* node2)
 {
