@@ -1,0 +1,10 @@
+.model 3gate
+.inputs a b
+.outputs e
+.names a b f
+11 1
+.names a b g
+11 1
+.names f g e
+11 1
+.end
