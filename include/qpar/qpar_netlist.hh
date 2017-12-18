@@ -440,6 +440,10 @@ public:
     return _element_index;
   }
 
+  /*! \brief get netlist gate
+   */
+  SYN::Gate* getSynGate() const { return _gate; }
+
 
   WIRE_ITER_V begin() { return _wires.begin(); }
   WIRE_ITER_V end() { return _wires.end(); }

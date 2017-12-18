@@ -76,6 +76,7 @@ protected:
 
 class HW_Cell : public HW_Object {
 
+public:
 typedef std::map<std::pair<COORD, COORD>, HW_Interaction*> INTERACTIONS;
 typedef std::map<COORD, HW_Qubit*> QUBITS;
 
@@ -96,6 +97,19 @@ public:
   /*! \brief get all interactions in the cell
    */
   INTERACTIONS& getInteractions() { return _interactions; }
+
+  /*! \brief get qubits owned by cell
+   */
+  QUBITS& getQubits() { return _qubits; }
+
+  /*! \brief get qubit based on local index
+   */
+  HW_Qubit* getQubit(COORD i) const {
+    if (_qubits.count(i))
+      return _qubits.at(i);
+    else
+      return NULL;
+  }
 
 private:
   INTERACTIONS _interactions; //!< a container to store all interactions belong to this cell

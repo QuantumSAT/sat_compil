@@ -25,7 +25,13 @@
 
 
 #include "qpar/qpar_graph.hh"
+#include "qpar/qpar_routing_graph.hh"
+#include "qpar/qpar_target.hh"
+#include "qpar/qpar_netlist.hh"
+#include "syn/netlist.h"
+
 #include "hw_target/hw_target.hh"
+#include "hw_target/hw_object.hh"
 #include "hw_target/hw_loc.hh"
 #include "utils/qlog.hh"
 
@@ -56,18 +62,193 @@ RoutingGraph::~RoutingGraph() {
 }
 
 unsigned RoutingNode::_index_counter = 0;
-unsigned RouitngEdge::_index_counter = 0;
+unsigned RoutingEdge::_index_counter = 0;
 
 
 void RoutingGraph::createRoutingGraph() {
-
   for (COORD x = 0; x < _par_target->getXLimit(); ++x) {
     for (COORD y = 0; y < _par_target->getYLimit(); ++y) {
       ParGrid* grid = _par_target->getGrid(x, y);
-      createCellRoutingGraph(grid);
+      RoutingCell* cell = new RoutingCell(grid, this);
+      HW_Cell* hw_cell = grid->getHWCell();
+      _cells.insert(std::make_pair(hw_cell, cell));
     }
   }
 
+  HW_Target_abstract::I_ITER interac_iter = _dwave_device->inter_cell_interac_begin();
+  for (; interac_iter != _dwave_device->inter_cell_interac_end(); ++interac_iter) {
+    HW_Interaction* interac = interac_iter->second;
+    HW_Qubit* qubit1 = interac->getFrom();
+    HW_Qubit* qubit2 = interac->getTo();
+
+    COORD x1 = qubit1->getLoc().getLocX();
+    COORD y1 = qubit1->getLoc().getLocY();
+    COORD local1 = qubit1->getLoc().getLocalIndex();
+
+    COORD x2 = qubit2->getLoc().getLocX();
+    COORD y2 = qubit2->getLoc().getLocY();
+    COORD local2 = qubit2->getLoc().getLocalIndex();
+
+    RoutingCell* cell1 = _cells[qubit1->getCell()];
+    RoutingCell* cell2 = _cells[qubit2->getCell()];
+
+    ParGrid* grid1 = _par_target->getGrid(x1, y1);
+    ParGrid* grid2 = _par_target->getGrid(x2, y2);
+
+    if (grid1->getCurrentElement())
+      local1 = local1 % 4;
+
+    if (grid2->getCurrentElement())
+      local2 = local2 % 4;
+
+    RoutingNode* inter_node = new RoutingNode(interac);
+    RoutingNode* rr_node1 = cell1->getRoutingNode(local1);
+    RoutingNode* rr_node2 = cell2->getRoutingNode(local2);
+    _nodes.insert(inter_node);
+
+    RoutingEdge* edge1 = new RoutingEdge(rr_node1, inter_node);
+    RoutingEdge* edge2 = new RoutingEdge(inter_node, rr_node2);
+    _edges.insert(edge1);
+    _edges.insert(edge2);
+  }
+
+}
 
 
+
+RoutingNode::RoutingNode() :
+  _qubit(NULL),
+  _interaction(NULL),
+  _pin(NULL),
+  _isLogicalQubit(false)
+{
+  _node_index = _index_counter;
+  ++_index_counter;
+}
+
+RoutingNode::RoutingNode(HW_Qubit* qubit, bool logical) :
+  _qubit(qubit),
+  _interaction(NULL),
+  _pin(NULL),
+  _isLogicalQubit(logical)
+{
+  _node_index = _index_counter;
+  ++_index_counter;
+}
+
+RoutingNode::RoutingNode(HW_Interaction* iter) :
+  _qubit(NULL),
+  _interaction(NULL),
+  _pin(NULL),
+  _isLogicalQubit(false)
+{
+  _node_index = _index_counter;
+  ++_index_counter;
+}
+
+RoutingEdge::RoutingEdge(RoutingNode* node1, RoutingNode* node2)
+{
+
+  if (node1->getIndex() < node2->getIndex()) {
+    _node1 = node1;
+    _node2 = node2;
+  } else {
+    _node1 = node2;
+    _node2 = node1;
+  }
+
+  _node1->addEdge(this);
+  _node2->addEdge(this);
+  
+  _index = _index_counter;
+  ++_index_counter;
+}
+
+
+RoutingCell::RoutingCell(ParGrid* grid, RoutingGraph* graph) :
+  _grid(grid),
+  _graph(graph)
+{
+  initCellRoutingGraph();
+}
+
+
+void RoutingCell::initCellRoutingGraph() {
+ 
+  typedef std::vector<SYN::Pin*>::iterator PIN_ITER;
+
+  if (_grid->getCurrentElement()) {
+    //1) build pin node
+    HW_Cell* cell = _grid->getHWCell();
+    ParElement* par_ele = _grid->getCurrentElement();
+    SYN::Gate* syn_gate = par_ele->getSynGate();
+    PIN_ITER pin_iter = syn_gate->begin();
+    for (; pin_iter != syn_gate->end(); ++pin_iter) {
+      SYN::Pin* pin = *pin_iter;
+      RoutingNode* node = new RoutingNode(pin);
+      _pin_to_node.insert(std::make_pair(pin, node));
+      _graph->_nodes.insert(node);
+    }
+
+    //2) build qubit node TODO:change hard-coded index
+    for (COORD i = 0; i < 4; ++i) {
+      HW_Qubit* qubit = cell->getQubit(i);
+      RoutingNode* node = new RoutingNode(qubit);
+      _index_to_node.insert(std::make_pair(i, node));
+      _graph->_nodes.insert(node);
+    }
+
+
+    //3) build edges
+    std::map<COORD, RoutingNode*>::iterator q_iter;
+    std::map<SYN::Pin*, RoutingNode*>::iterator p_iter;
+    for (p_iter = _pin_to_node.begin(); 
+         p_iter != _pin_to_node.end(); ++p_iter) {
+
+      q_iter = _index_to_node.begin();
+      for (; q_iter != _index_to_node.end(); ++q_iter) {
+        RoutingNode* pin_node = p_iter->second;
+        RoutingNode* qu_node = q_iter->second;
+        RoutingEdge* edge = new RoutingEdge(pin_node, qu_node);
+        _edges.push_back(edge);
+        _graph->_edges.insert(edge);
+      }
+    }
+
+  } else {
+    HW_Cell* cell = _grid->getHWCell();
+
+    //1) build qubits node
+    HW_Cell::QUBITS& qubits = cell->getQubits();
+    HW_Cell::QUBITS::iterator q_iter = qubits.begin();
+    for (; q_iter != qubits.end(); ++q_iter) {
+      HW_Qubit* qubit = q_iter->second;
+      RoutingNode* node = new RoutingNode(qubit);
+      _index_to_node.insert(std::make_pair(q_iter->first, node));
+      _graph->_nodes.insert(node);
+    }
+
+    //2) build interaction node and edges
+    HW_Cell::INTERACTIONS& interactions = cell->getInteractions();
+    HW_Cell::INTERACTIONS::iterator i_iter = interactions.begin();
+    for (; i_iter != interactions.end(); ++i_iter) {
+      HW_Interaction* interac = i_iter->second;
+      RoutingNode* node = new RoutingNode(interac);
+      _graph->_nodes.insert(node);
+      COORD qubit1_coord = HW_Loc::globalIndexToLocalIndex(i_iter->first.first);
+      COORD qubit2_coord = HW_Loc::globalIndexToLocalIndex(i_iter->first.second);
+
+      RoutingNode* node1 = _index_to_node.at(qubit1_coord);
+      RoutingNode* node2 = _index_to_node.at(qubit2_coord);
+
+      RoutingEdge* edge1 = new RoutingEdge(node1, node);
+      _edges.push_back(edge1);
+      _graph->_edges.insert(edge1);
+
+      RoutingEdge* edge2 = new RoutingEdge(node, node2);
+      _edges.push_back(edge2);
+      _graph->_edges.insert(edge2);
+    }
+
+  }
 }

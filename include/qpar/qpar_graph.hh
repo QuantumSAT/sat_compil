@@ -29,7 +29,7 @@
  */
 
 
-#include <vectro>
+#include <vector>
 #include <map>
 #include <unordered_map>
 
@@ -48,15 +48,15 @@ class vertex2edge {
 public:
   typedef std::vector<qedge> edges;
   typedef std::vector<edges> vertex2edges;
-  typedef vertex2edges::iterator edge_iter;
+  typedef edges::iterator edge_iter;
 
 private:
   vertex2edges _vertex2edges; //!< a map between vertex to its edges
 
   /*! \brief default constructor
    */
-  vertex_to_edges(const unsigned num_of_vertex) {
-    _vertex2edges.resize(num_of_vertex)
+  vertex2edge(const unsigned num_of_vertex) {
+    _vertex2edges.resize(num_of_vertex);
   }
 
   /*! \brief add a edge to its vertex
@@ -64,6 +64,10 @@ private:
   void add_edge(const qvertex v, const qedge e) {
     _vertex2edges[v].push_back(e);
   }
+
+  /*! \breif get edges
+   */
+  edges& at(const qvertex v) { return  _vertex2edges[v]; }
 
   /*! \brief get edges that connects to the vertex
    *  \param qvertex vertex
@@ -98,7 +102,7 @@ public:
    */
   qpr_graph(unsigned int num_vertex, unsigned int num_edge) : _vertex2edge(num_vertex),
   _vertex_counter(0), _edge_counter(0) {
-    _i2evertex.resize(num_veretx);
+    _i2evertex.resize(num_vertex);
     _i2eedge.resize(num_edge);
     _edge2vertex.resize(num_edge);
   }
@@ -107,7 +111,7 @@ public:
    *  \param eV external vertex
    */
   qvertex get_i_vertex(const eV e_vertex) const {
-    return e2ivertex[e_vertex];
+    return _e2ivertex[e_vertex];
   }
 
   /*! \brief add vertex in to the graph
@@ -116,7 +120,7 @@ public:
    */
   qvertex add_vertex(const eV e_vertex, const unsigned int num_edge) {
     qvertex vertex = _vertex_counter++;
-    _vertex2edge[vertex].reserve(num_edge);
+    _vertex2edge.at(vertex).reserve(num_edge);
     _i2evertex[vertex] = e_vertex;
     _e2ivertex[e_vertex] = vertex;
     return vertex;
@@ -129,12 +133,13 @@ public:
    *  \return qedge the newly created edge
    */
   qedge add_edge(const eE e_edge, const qvertex vertex1, const qvertex vertex2) {
-    qedge = _edge_counter++;
-    _i2eedge[qedge] = e_edge;
-    _e2iedge[e_edge] = qedge;
-    _edge2vertex[qedge] = std::make_pair<vertex1, vertex2>;
-    _vertex2edge.add(vertex1, qedge);
-    _vertex2edge.add(vertex2, qedge);
+    qedge edge = _edge_counter++;
+    _i2eedge[edge] = e_edge;
+    _e2iedge[e_edge] = edge;
+    _edge2vertex[edge] = std::make_pair<vertex1, vertex2>;
+    _vertex2edge.add_edge(vertex1, edge);
+    _vertex2edge.add_edge(vertex2, edge);
+    return edge;
   }
 
   /*! \brief add edge to the graph
@@ -146,7 +151,7 @@ public:
   qedge add_edge(const eE e_edge, const eV vertex1, const eV vertex2) {
     qvertex i_vertex1 = get_i_vertex(vertex1);
     qvertex i_vertex2 = get_i_vertex(vertex2);
-    return add_edge(e_edge, i_vertex1, i_virtex2);
+    return add_edge(e_edge, i_vertex1, i_vertex2);
   }
 
   /*! \brief get the internal edge
@@ -154,7 +159,7 @@ public:
    *  \return qedge internal edge
    */
   qedge get_i_edge(const eE e_edge) {
-    return e2iedge[e_edge];
+    return _e2iedge[e_edge];
   }
 
   /*! \brief get the external edge
@@ -162,14 +167,14 @@ public:
    *  \return eV external edge
    */
   eE get_e_edge(const qedge edge) {
-    return i2eedge[edge];
+    return _i2eedge[edge];
   }
 
   /*! \brief get the external vertex
    *  \param qvertex
    */
   eV get_e_vertex(const qvertex vertex) {
-    return i2evertex[vertex];
+    return _i2evertex[vertex];
   }
 
 

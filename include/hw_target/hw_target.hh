@@ -120,6 +120,12 @@ public:
    */
   virtual HW_Interaction* getInteraction(const HW_Loc& loc1, const HW_Loc& loc2) const;
 
+  /*! \brief get the interaction by its location
+   *  \param qubit1 the global index of qubit1
+   *  \param qubit2 the global index of qubit2
+   */
+  HW_Interaction* getInteraction(const COORD qubit1, const COORD qubit2) const;
+
   /*! \brief add new interation into hw target
    *  \param x coordinate global x 
    *  \param y coordinate y
@@ -149,8 +155,15 @@ public:
    */
   void initializeTarget();
 
-  C_ITER cell_begin() { return _loc_to_cell.begin(); }
-  C_ITER cell_end()   { return _loc_to_cell.end();}
+  C_ITER cell_begin()       { return _loc_to_cell.begin(); }
+  //C_ITER cell_begin() const { return _loc_to_cell.begin(); }
+  C_ITER cell_end()         { return _loc_to_cell.end();}
+  //C_ITER cell_end() const   { return _loc_to_cell.end();}
+
+  I_ITER inter_cell_interac_begin() { return _inter_cell_interaction.begin(); }
+  I_ITER inter_cell_interac_end()   { return _inter_cell_interaction.end(); }
+  //I_ITER inter_cell_interac_begin() const { return _inter_cell_interaction.begin(); }
+  //I_ITER inter_cell_interac_end()   const { return _inter_cell_interaction.end(); }
 
 
 
@@ -166,10 +179,9 @@ private:
   void buildInterCellInteractions(COORD x1, COORD y1, COORD x2, COORD y2, bool vertical);
 
   HW_Param* _hw_param;              //!< a paramter class which holds all hw info
-
   LocToCell  _loc_to_cell;          //!< a map between location and cell
-
   static HW_Target_Dwave* _self;    //!< a pointer for itself
+  LocToCellInteraction  _inter_cell_interaction;   //!< a container stores all the inter cell interaction
 
 
 };

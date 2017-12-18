@@ -76,6 +76,10 @@ void ParSystem::doPlacement() {
     qlog.speakError("Cannot run placement because target or design has not been initilized");
   }
 
+}
+
+void ParSystem::doRoute() {
+
 
 }
 
