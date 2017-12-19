@@ -245,6 +245,8 @@ public:
       return NULL;
   }
 
+  std::vector<RoutingNode*>& getNodes() { return _nodes; }
+
   
 
 private:
@@ -253,6 +255,7 @@ private:
 
   std::map<COORD, RoutingNode*>     _index_to_node;  //!< local index to node
   std::map<SYN::Pin*, RoutingNode*> _pin_to_node;   //!< netlist pin to node
+  std::vector<RoutingNode*>         _nodes;
 
   std::vector<RoutingEdge*>         _edges; //!< edges owned by this cell
 

@@ -105,6 +105,17 @@ public:
     return _system;
   }
 
+  /*! \brief get place-and-route target
+   */
+  ParTarget* getParTarget() const {
+    return _par_target;
+  }
+
+  /*! \brief get hw target
+   */
+  HW_Target_Dwave* getHWTarget() const {
+    return _hw_target;
+  }
 
   /* unit test related class
    */

@@ -216,6 +216,7 @@ void RoutingCell::initCellRoutingGraph() {
       RoutingNode* node = new RoutingNode(pin);
       _pin_to_node.insert(std::make_pair(pin, node));
       _graph->_nodes.insert(node);
+      _nodes.push_back(node);
     }
 
     //2) build qubit node TODO:change hard-coded index
@@ -224,6 +225,7 @@ void RoutingCell::initCellRoutingGraph() {
       RoutingNode* node = new RoutingNode(qubit);
       _index_to_node.insert(std::make_pair(i, node));
       _graph->_nodes.insert(node);
+      _nodes.push_back(node);
     }
 
 
@@ -254,6 +256,7 @@ void RoutingCell::initCellRoutingGraph() {
       RoutingNode* node = new RoutingNode(qubit);
       _index_to_node.insert(std::make_pair(q_iter->first, node));
       _graph->_nodes.insert(node);
+      _nodes.push_back(node);
     }
 
     //2) build interaction node and edges
@@ -262,6 +265,7 @@ void RoutingCell::initCellRoutingGraph() {
     for (; i_iter != interactions.end(); ++i_iter) {
       HW_Interaction* interac = i_iter->second;
       RoutingNode* node = new RoutingNode(interac);
+      _nodes.push_back(node);
       _graph->_nodes.insert(node);
       COORD qubit1_coord = HW_Loc::globalIndexToLocalIndex(i_iter->first.first);
       COORD qubit2_coord = HW_Loc::globalIndexToLocalIndex(i_iter->first.second);
