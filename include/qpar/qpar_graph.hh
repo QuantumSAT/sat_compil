@@ -31,6 +31,7 @@
 
 #include <vector>
 #include <map>
+#include <cassert>
 #include <unordered_map>
 
 #include "utils/qlog.hh"
@@ -134,10 +135,12 @@ public:
    *  \return qedge the newly created edge
    */
   qedge add_edge(const eE e_edge, const qvertex vertex1, const qvertex vertex2) {
+    assert(vertex1 != vertex2);
     qedge edge = _edge_counter++;
     _i2eedge[edge] = e_edge;
     _e2iedge[e_edge] = edge;
-    _edge2vertex[edge] = std::make_pair(vertex1, vertex2);
+    _edge2vertex[edge] = std::make_pair(std::min(vertex1, vertex2),
+        std::max(vertex1, vertex2));
     _vertex2edge.add_edge(vertex1, edge);
     _vertex2edge.add_edge(vertex2, edge);
     return edge;
@@ -176,6 +179,24 @@ public:
    */
   eV get_e_vertex(const qvertex vertex) {
     return _i2evertex[vertex];
+  }
+
+  /*! \brief get edges that connect to given vertex
+   */
+  std::pair<vertex2edge::edge_iter, vertex2edge::edge_iter> get_edges(const qvertex v) {
+    return _vertex2edge.get_edges(v);
+  }
+
+  /*! \brief get the other vertex by given edge
+   */
+  qvertex get_other_vertex(const qedge edge, const qvertex vertex) const {
+    std::pair<qvertex, qvertex> pair_v = _edge2vertex[edge];
+    if (pair_v.first == vertex)
+      return pair_v.second;
+    else if (pair_v.second == vertex)
+      return pair_v.first;
+    else
+      assert(0);
   }
 
   friend class RoutingTester;

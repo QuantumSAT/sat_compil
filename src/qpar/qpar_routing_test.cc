@@ -33,4 +33,21 @@ void RoutingTester::testRoutingGraph() {
   FastRoutingGraph fast_g(&graph);
   qlog.speak("Fast Graph", "node num %d, edge num %d",
       fast_g._vertex_counter, fast_g._edge_counter);
+ 
+  //check consistency between internal and external graph
+  NODES::iterator n_iter = graph._nodes.begin();
+  for (; n_iter != graph._nodes.end(); ++n_iter) {
+    RoutingNode* node = *n_iter;
+    EDGES::iterator e_iter = node->getEdges().begin();
+    for (; e_iter != node->getEdges().end(); ++e_iter) {
+      RoutingEdge* edge = *e_iter;
+      RoutingNode* other_n = edge->getOtherNode(node);
+      qvertex inode = fast_g.get_i_vertex(node);
+      qedge iedge = fast_g.get_i_edge(edge);
+      qvertex i_other_node = fast_g.get_other_vertex(iedge, inode);
+      QASSERT(fast_g.get_e_vertex(i_other_node) == other_n);
+    }
+
+  }
+  
 }

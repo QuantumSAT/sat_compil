@@ -96,6 +96,7 @@ public:
   unsigned getEdgeNum() const { return (unsigned)_edges.size(); }
 
   friend class RoutingCell;
+  friend class RoutingTester;
 
 private:
   HW_Target_Dwave* _dwave_device;
@@ -179,6 +180,10 @@ public:
   unsigned getEdgeNum() const {
     return (unsigned)_edges.size();
   }
+
+  /*! \brief get edges 
+   */
+  EDGES& getEdges() { return _edges; }
 
   /*! \brief routing graph sanity check
    */
