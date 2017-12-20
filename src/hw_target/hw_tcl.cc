@@ -30,8 +30,8 @@ std::string QCOMMAND_init_target::help() const {
 }
 
 int QCOMMAND_init_target::execute(int argc, const char** argv, std::string& result, ClientData clientData) {
-  TclManager* tcl_manager = static_cast<TclManager*>(clientData);
-  Tcl_Interp* interp = tcl_manager->getInterp();
+  //TclManager* tcl_manager = static_cast<TclManager*>(clientData);
+  //Tcl_Interp* interp = tcl_manager->getInterp();
 
   result = "OK";
 

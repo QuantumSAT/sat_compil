@@ -50,8 +50,6 @@ public:
   typedef std::vector<edges> vertex2edges;
   typedef edges::iterator edge_iter;
 
-private:
-  vertex2edges _vertex2edges; //!< a map between vertex to its edges
 
   /*! \brief default constructor
    */
@@ -77,6 +75,9 @@ private:
     QASSERT(v < int(_vertex2edges.size()));
     return std::make_pair(_vertex2edges[v].begin(), _vertex2edges[v].end());
   }
+
+private:
+  vertex2edges _vertex2edges; //!< a map between vertex to its edges
 
 };
 
@@ -111,7 +112,7 @@ public:
    *  \param eV external vertex
    */
   qvertex get_i_vertex(const eV e_vertex) const {
-    return _e2ivertex[e_vertex];
+    return _e2ivertex.at(e_vertex);
   }
 
   /*! \brief add vertex in to the graph
@@ -136,7 +137,7 @@ public:
     qedge edge = _edge_counter++;
     _i2eedge[edge] = e_edge;
     _e2iedge[e_edge] = edge;
-    _edge2vertex[edge] = std::make_pair<vertex1, vertex2>;
+    _edge2vertex[edge] = std::make_pair(vertex1, vertex2);
     _vertex2edge.add_edge(vertex1, edge);
     _vertex2edge.add_edge(vertex2, edge);
     return edge;
@@ -177,7 +178,7 @@ public:
     return _i2evertex[vertex];
   }
 
-
+  friend class RoutingTester;
 
 private:
   qvertex _vertex_counter;    //!< vertex counter

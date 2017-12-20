@@ -70,7 +70,7 @@ void HW_Target_Dwave::initializeTarget() {
     }
   }
 
-  qlog.speak("HW_Target", "Target has been initialized with %d x %d cells, %lu qubits and %u interactions",
+  qlog.speak("HW_Target", "Target has been initialized with %ld x %ld cells, %lu qubits and %lu interactions",
      _maxX, _maxY, _loc_to_qubit.size(), _loc_to_interaction.size());
 
 }

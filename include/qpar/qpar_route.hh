@@ -17,20 +17,34 @@
  *   License along with QSat.  If not, see <http://www.gnu.org/licenses/>.  *
  ****************************************************************************/
 
+#ifndef QPAR_ROUTE_HH
+#define QPAR_ROUTE_HH
+
+/*!
+ * \file qpar_route.hh
+ * \author Juexiao Su
+ * \date 18 Dec 2017
+ * \brief routing
+ */
+
+#include "qpar_graph.hh"
+
+class RoutingNode;
+class RoutingEdge;
+class RoutingGraph;
 
 
-#include "qpar/qpar_routing_graph.hh"
-#include "qpar/qpar_system.hh"
-#include "qpar/qpar_target.hh"
-#include "qpar/qpar_routing_test.hh"
-#include "qpar/qpar_route.hh"
+class FastRoutingGraph : public qpr_graph<RoutingNode*, RoutingEdge*> {
+typedef qpr_graph<RoutingNode*, RoutingEdge*> SUPER;
+
+public:
+  FastRoutingGraph(RoutingGraph* graph);
+  friend class RoutingTester;
+
+};
 
 
-void RoutingTester::testRoutingGraph() {
-  HW_Target_Dwave* hw_target = _par_system->_hw_target;
-  ParTarget* par_target = _par_system->_par_target;
-  RoutingGraph graph(hw_target, par_target);
-  FastRoutingGraph fast_g(&graph);
-  qlog.speak("Fast Graph", "node num %d, edge num %d",
-      fast_g._vertex_counter, fast_g._edge_counter);
-}
+
+
+#endif
+

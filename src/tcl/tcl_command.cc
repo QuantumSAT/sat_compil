@@ -129,7 +129,7 @@ bool QTclCommand::getIntOption(const int argc, const char** argv, const char* op
       qlog.speak("TCL", "An integer value is expected after %s", option_name);
       return false;
     } else {
-      if (Tcl_GetInt(NULL, Tcl_GetString(Tcl_NewStringObj(argv[i+1], strlen(argv[i+1]))), &value) == TCL_OK) {
+      if (Tcl_GetInt(NULL, Tcl_GetString(Tcl_NewStringObj(argv[i+1], (int)strlen(argv[i+1]))), &value) == TCL_OK) {
         return true;
       } else {
         qlog.speak("TCL", "An integer value is expected after %s", option_name);

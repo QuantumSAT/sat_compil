@@ -35,6 +35,8 @@
 #include "hw_target/hw_loc.hh"
 #include "utils/qlog.hh"
 
+#include <sstream>
+
 bool RoutingNodeCmp::operator()(const RoutingNode* node1, const RoutingNode* node2) const {
   return node1->getIndex() < node2->getIndex();
 }
@@ -89,9 +91,14 @@ void RoutingGraph::createRoutingGraph() {
       _edges.size());
 
   qlog.speak("Routing Graph", "build inter-cell routing graph...");
+  
+
   HW_Target_abstract::I_ITER interac_iter = _dwave_device->inter_cell_interac_begin();
   for (; interac_iter != _dwave_device->inter_cell_interac_end(); ++interac_iter) {
     HW_Interaction* interac = interac_iter->second;
+    //std::stringstream ss;
+    //ss << interac->getLoc();
+    //qlog.speak("JSU_DEBUG", "%s", ss.str().c_str());
     HW_Qubit* qubit1 = interac->getFrom();
     HW_Qubit* qubit2 = interac->getTo();
 
@@ -129,8 +136,17 @@ void RoutingGraph::createRoutingGraph() {
       _nodes.size(),
       _edges.size());
 
+  //sanityCheck();
 }
 
+
+void RoutingGraph::sanityCheck() const {
+  NODES::iterator n_iter = _nodes.begin();
+  for (; n_iter != _nodes.end(); ++n_iter) {
+    RoutingNode* node = *n_iter;
+    node->sanityCheck();
+  }
+}
 
 
 RoutingNode::RoutingNode() :
@@ -155,7 +171,7 @@ RoutingNode::RoutingNode(HW_Qubit* qubit, bool logical) :
 
 RoutingNode::RoutingNode(HW_Interaction* iter) :
   _qubit(NULL),
-  _interaction(NULL),
+  _interaction(iter),
   _pin(NULL),
   _isLogicalQubit(false)
 {
@@ -174,8 +190,56 @@ RoutingNode::RoutingNode(SYN::Pin* pin) :
 }
 
 
+void RoutingNode::sanityCheck() const {
+  std::stringstream ss;
+  ss << "Node Type:: ";
+  if      (isQubit()) {
+    ss << "Qubit ";
+    ss << "Logic: " << (_isLogicalQubit ? "true " : "false ");
+    ss << "Loc: " << _qubit->getLoc();
+  }
+  else if (isInteraction()) {
+    ss << "Interaction ";
+    ss << "Loc: " << _interaction->getLoc();
+  }
+  else if (isPin()) {
+    ss << "Pin ";
+  }
+  else QASSERT(0);
+
+  qlog.speak("Routing Node", "%s| has %lu neighbors: ", ss.str().c_str(),
+      _edges.size());
+
+  EDGES::iterator e_iter = _edges.begin();
+  for (; e_iter != _edges.end(); ++e_iter) {
+    RoutingEdge* edge = *e_iter;
+    RoutingNode* dnode = edge->getOtherNode(this);
+    QASSERT(edge->getOtherNode(dnode) == this);
+    std::stringstream ss1;
+    if      (dnode->isQubit()) {
+      ss1 << "Qubit ";
+      ss1 << "Logic: " << (dnode->_isLogicalQubit ? "true " : "false ");
+      ss1 << "Loc: " << dnode->_qubit->getLoc();
+    }
+    else if (dnode->isInteraction()) {
+      ss1 << "Interaction ";
+      ss1 << "Loc: " << dnode->_interaction->getLoc();
+    }
+    else if (dnode->isPin()) {
+      ss1 << "Pin ";
+    }
+    else QASSERT(0);
+    qlog.speak("Routing Node", "    %s", ss1.str().c_str());
+  }
+}
+
+
+
+
 RoutingEdge::RoutingEdge(RoutingNode* node1, RoutingNode* node2)
 {
+  _index = _index_counter;
+  ++_index_counter;
 
   if (node1->getIndex() < node2->getIndex()) {
     _node1 = node1;
@@ -188,8 +252,6 @@ RoutingEdge::RoutingEdge(RoutingNode* node1, RoutingNode* node2)
   _node1->addEdge(this);
   _node2->addEdge(this);
   
-  _index = _index_counter;
-  ++_index_counter;
 }
 
 
@@ -283,4 +345,7 @@ void RoutingCell::initCellRoutingGraph() {
     }
 
   }
+
+  
+
 }

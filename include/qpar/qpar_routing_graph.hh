@@ -81,6 +81,20 @@ public:
    */
   ~RoutingGraph();
 
+  NODES::iterator node_begin() { return _nodes.begin(); }
+  NODES::iterator node_end() { return _nodes.end(); }
+
+  EDGES::iterator edge_begin() { return _edges.begin(); }
+  EDGES::iterator edge_end() { return _edges.end(); }
+
+  /*! \brief get node number
+   */
+  unsigned getNodeNum() const { return (unsigned)_nodes.size(); }
+
+  /*! \brief get edge number
+   */
+  unsigned getEdgeNum() const { return (unsigned)_edges.size(); }
+
   friend class RoutingCell;
 
 private:
@@ -107,10 +121,9 @@ private:
    */
   void createInterCellRoutingGraph(ParGrid* grid1, ParGrid* grid2, bool vertical);
 
-  /*! \brief build fast access routing graph
+  /*! \brief routing graph sanity check
    */
-  void buildFastRoutingGraph();
-
+  void sanityCheck() const;
 };
 
 
@@ -135,15 +148,21 @@ public:
 
   /*! \brief check if the routing node is a qubit
    */
-  bool isQubit();
+  bool isQubit() const {
+    return _qubit;
+  }
 
   /*! \brief check if the routing node is a interaction
    */
-  bool isInteraction();
+  bool isInteraction() const {
+    return _interaction;
+  }
 
   /*! \brief check if the routing node is a pin(pseudo node)
    */
-  bool isPin();
+  bool isPin() const {
+    return _pin;
+  }
 
   /*! \brief get node index
    */
@@ -154,6 +173,16 @@ public:
   void addEdge(RoutingEdge* edge) {
     _edges.insert(edge);
   }
+
+  /*! \brief get number of edge that connects to this node
+   */
+  unsigned getEdgeNum() const {
+    return (unsigned)_edges.size();
+  }
+
+  /*! \brief routing graph sanity check
+   */
+  void sanityCheck() const;
 
 private:
 
@@ -196,6 +225,14 @@ public:
   /*! \brief get edge index
    */
   unsigned getIndex() const { return _index; }
+
+
+  RoutingNode* getOtherNode(const RoutingNode* node) const {
+    if (node == _node1) return _node2;
+    else if (node == _node2) return _node1;
+    else
+      QASSERT(0);
+  }
 
 private:
   RoutingNode*    _node1;

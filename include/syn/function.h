@@ -273,7 +273,7 @@ namespace SYN {
     }
 
     void print(FILE* fp) {
-      fprintf(fp, "--- cvt of %u input ---\n", getNumIn());
+      fprintf(fp, "--- cvt of %d input ---\n", (int)getNumIn());
       for (size_t i = 0; i < getNumCube(); ++i) {
         Cube& cube = getCube(i);
         cube.print(fp);

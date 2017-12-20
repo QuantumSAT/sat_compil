@@ -167,7 +167,7 @@ namespace SYN {
       PIN_ITER_CONST pitr = begin();
       ++pitr;
       Pin* pin = nullptr;
-      assert(index < numSink());
+      assert((int)index < numSink());
       for (unsigned i = 0; i < index; ++i) {
         ++pitr;
       }
@@ -542,7 +542,7 @@ namespace SYN {
     }
     ELEM_ITER elem_begin() {return _elem_list.begin();}
     ELEM_ITER elem_end() {return _elem_list.end();}
-    int getNumElem() const {return _elem_list.size();}
+    unsigned getNumElem() const {return (unsigned)_elem_list.size();}
 #if 0
     void erase(NET_ITER itr) {_net_list.erase(itr);}
     void erase(Net* net) {_net_list.erase(net);}
@@ -556,7 +556,7 @@ namespace SYN {
     void add(Pin* pin);
     PORT_ITER port_begin() {return _io_list.begin();}
     PORT_ITER port_end() {return _io_list.end();}
-    int getNumPort() const {return _io_list.size();}
+    unsigned getNumPort() const {return (unsigned)_io_list.size();}
 
     void mapToGeneric();
 
@@ -571,7 +571,7 @@ namespace SYN {
     void getNetListFromElem();
     NET_ITER net_begin() {return _net_list.begin();}
     NET_ITER net_end() {return _net_list.end();}
-    int getNumNets() const {return _net_list.size();}
+    unsigned getNumNets() const {return (unsigned)_net_list.size();}
 
     std::vector<Gate*> getModelGates();
     std::vector<Pin*> getModelIOs();

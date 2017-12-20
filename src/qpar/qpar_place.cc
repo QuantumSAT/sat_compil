@@ -72,11 +72,11 @@ void QPlace::run() {
 
   qlog.speak("Place", "Initial placement cost is %.6f", _current_total_cost);
 
-  const int num_move = std::max((int)_movable_elements.size(), 100);
-  const int move_limit = ((float)4*std::pow(_movable_elements.size(), (float)1.333));
+  //const int num_move = std::max((int)_movable_elements.size(), 100);
+  const int move_limit = (int)((float)4*std::pow((float)_movable_elements.size(), (float)1.333));
   _annealer->setRLimit((float)(std::max(_hw_target->getXLimit(), _hw_target->getYLimit())));
 
-  const float final_limit = 1.0;
+  //const float final_limit = 1.0;
   const float init_t = getStartingT();
   _annealer->setInitT(init_t);
   _annealer->setCurrentT(init_t);
@@ -111,13 +111,13 @@ void QPlace::run() {
   qlog.speak("Place", "%s", print_log.str().c_str());
   qlog.speak("Place", "%s", print_sep.str().c_str());
 
-  while(!_annealer->shouldExit(_current_total_cost / (float)(_netlist->getWireNum()))) {
+  while(!_annealer->shouldExit((float)_current_total_cost / (float)(_netlist->getWireNum()))) {
     cost_ave = 0;
     sum_of_square = 0.0;
     success_num = 0;
     ++outer_iter;
 
-    for (unsigned inner_iter = 0; inner_iter < move_limit; ++inner_iter) {
+    for (int inner_iter = 0; inner_iter < move_limit; ++inner_iter) {
       if (tryMove()) {
         ++success_num;
         cost_ave += _current_total_cost;
@@ -127,8 +127,8 @@ void QPlace::run() {
 
     move_since_recompute += move_limit;
     if (move_since_recompute > 50000) {
-      float new_cost = computeTotalCost(true);
-      float delta = new_cost - _current_total_cost;
+      float new_cost = (float)computeTotalCost(true);
+      float delta = new_cost - (float)_current_total_cost;
       qlog.speak("Place", "Recompute cost delta is %f", delta);
       _current_total_cost = new_cost;
       move_since_recompute = 0;
@@ -141,8 +141,11 @@ void QPlace::run() {
     else 
       cost_ave = _current_total_cost;
 
-    double std_dev = getStdDev(success_num, cost_ave, sum_of_square);
-    float old_t = _annealer->getCurrentT();
+    if (0) {
+      qlog.speak("Place", "sum of square is %f", sum_of_square);
+    }
+    //double std_dev = getStdDev(success_num, cost_ave, sum_of_square);
+    //float old_t = _annealer->getCurrentT();
     _annealer->updateT(success_rat);
     _annealer->updateMoveRadius(success_rat);
 
@@ -167,7 +170,7 @@ void QPlace::run() {
   }
   qlog.speak("Place", "%s", print_sep.str().c_str());
 
-  sanityCheck();
+  //sanityCheck();
   ELE_ITER ele_iter = _netlist->element_begin();
   for (; ele_iter != _netlist->element_end(); ++ele_iter) {
     ParElement* element = *ele_iter;
@@ -209,7 +212,7 @@ double QPlace::computeTotalCost(bool set_wire_cost) {
 void QPlace::initializePlacement() {
 
   // initialize annealer
-  float max_r = std::max(_hw_target->getXLimit(), _hw_target->getYLimit());
+  float max_r = (float)std::max(_hw_target->getXLimit(), _hw_target->getYLimit());
   _annealer = new Annealer(100.0, 1.0, max_r);
 
   ParGridContainer& grids = _hw_target->getGrids();
@@ -249,7 +252,7 @@ void QPlace::initializePlacement() {
   COORD x_limit = _hw_target->getXLimit();
 
   QASSERT(y_limit);QASSERT(x_limit);
-  _used_matrix = new qpr_matrix<unsigned>(x_limit, y_limit);
+  _used_matrix = new qpr_matrix<unsigned>((unsigned)x_limit, (unsigned)y_limit);
 
   // initilize grid utilization matrix
   if (_hw_target->getGrid(0,0)->getCurrentElement())
@@ -259,20 +262,20 @@ void QPlace::initializePlacement() {
 
   for (COORD y = 1; y < y_limit; ++y) {
     if (_hw_target->getGrid(0,y)->getCurrentElement())
-      _used_matrix->cell(0,y) = _used_matrix->cell(0,y-1) + 1;
+      _used_matrix->cell(0,(unsigned)y) = _used_matrix->cell(0,(unsigned)(y-1)) + 1;
     else
-      _used_matrix->cell(0,y) = _used_matrix->cell(0,y-1);
+      _used_matrix->cell(0,(unsigned)y) = _used_matrix->cell(0,(unsigned)(y-1));
   }
 
   for (COORD x = 1; x < x_limit; ++x) {
     if (_hw_target->getGrid(x, 0)->getCurrentElement())
-      _used_matrix->cell(x, 0) = _used_matrix->cell(x-1,0) + 1;
+      _used_matrix->cell((unsigned)x, 0) = _used_matrix->cell((unsigned)(x-1),0) + 1;
     else
-      _used_matrix->cell(x, 0) = _used_matrix->cell(x-1,0);
+      _used_matrix->cell((unsigned)x, 0) = _used_matrix->cell((unsigned)(x-1),0);
   }
 
-  for (COORD x = 1; x < x_limit; ++x) {
-    for (COORD y = 1; y < y_limit; ++y) {
+  for (unsigned x = 1; x < (unsigned)x_limit; ++x) {
+    for (unsigned y = 1; y < (unsigned)y_limit; ++y) {
       unsigned used_element = 
         _used_matrix->cell(x-1, y) +
         _used_matrix->cell(x, y-1) -
@@ -333,7 +336,7 @@ void QPlace::checkIfReadyToMove() {
 }
 
 void QPlace::generateMove(ParElement* &element, COORD& x, COORD& y) {
-  unsigned ele_i = _random_gen.uRand(0, _movable_elements.size()-1);
+  unsigned ele_i = _random_gen.uRand(0, (int)_movable_elements.size()-1);
   element = _movable_elements[ele_i];
 
   COORD ele_x = element->getX();
@@ -341,22 +344,22 @@ void QPlace::generateMove(ParElement* &element, COORD& x, COORD& y) {
 
   float r_limit = _annealer->getRLimit();
 
-  COORD x_range_min = std::ceil(((float)ele_x >= r_limit) ? (float)ele_x - r_limit : 0);
-  COORD x_range_max = (((float)ele_x + r_limit) >= (float)_hw_target->getXLimit()) ? 
-    (_hw_target->getXLimit() - 1) : std::floor(((float)ele_x + r_limit));
+  COORD x_range_min = (COORD)std::ceil(((float)ele_x >= r_limit) ? (float)ele_x - r_limit : 0);
+  COORD x_range_max = (COORD)((((float)ele_x + r_limit) >= (float)_hw_target->getXLimit()) ? 
+    (_hw_target->getXLimit() - 1) : (COORD)std::floor(((float)ele_x + r_limit)));
   QASSERT((ele_x - x_range_min) <= r_limit);
   QASSERT((x_range_max - ele_x) <= r_limit);
 
 
-  COORD y_range_min = std::ceil(((float)ele_y >= r_limit) ? (float)ele_y - r_limit : 0);
-  COORD y_range_max = (((float)ele_y + r_limit) >= (float)_hw_target->getYLimit()) ? 
-    (_hw_target->getYLimit() - 1) : std::floor(((float)ele_y + r_limit));
+  COORD y_range_min = (COORD)std::ceil(((float)ele_y >= r_limit) ? (float)ele_y - r_limit : 0);
+  COORD y_range_max = (COORD)((((float)ele_y + r_limit) >= (float)_hw_target->getYLimit()) ? 
+    (_hw_target->getYLimit() - 1) : (COORD)std::floor(((float)ele_y + r_limit)));
   QASSERT((ele_y - y_range_min) <= r_limit);
   QASSERT((y_range_max - ele_y) <= r_limit);
 
   do {
-    x = _random_gen.iRand(x_range_min, x_range_max);
-    y = _random_gen.iRand(y_range_min, y_range_max);
+    x = (COORD)_random_gen.iRand((int)x_range_min, (int)x_range_max);
+    y = (COORD)_random_gen.iRand((int)y_range_min, (int)y_range_max);
   } while( x == ele_x && y == ele_y );
 }
 

@@ -36,6 +36,7 @@ class PlacementCost {
 public:
   static const float cross_count[50];
   virtual double computeCost(ParWire* wire, const qpr_matrix<unsigned>& used_matrix) = 0;
+  virtual ~PlacementCost() {}
 };
 
 class BoundingBoxCost : public PlacementCost {
@@ -46,6 +47,9 @@ public:
 class CongestionAwareCost : public PlacementCost {
 public:
   virtual double computeCost(ParWire* wire, const qpr_matrix<unsigned>& used_matrix);
+  double computeCostTest();
+
+  virtual ~CongestionAwareCost() {}
 };
 
 

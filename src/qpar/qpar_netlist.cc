@@ -216,7 +216,7 @@ std::vector<ParWireTarget*>& ParWire::buildWireTarget(
   QASSERT(source);
   std::vector<SYN::Pin*> sink;
   QASSERT(_net->numSink());
-  for (unsigned i = 0; i <  _net->numSink(); ++i)
+  for (unsigned i = 0; i <  (unsigned)_net->numSink(); ++i)
     sink.push_back(_net->getSink(i));
   
   bool src_is_model_pin = source->isModelPin();
@@ -245,7 +245,7 @@ std::vector<ParWireTarget*>& ParWire::buildWireTarget(
 
         if (sk->isModelPin()) {
           ParElement* src_ele = gate_to_par_element.at(gate1->getGate());
-          ParWireTarget* target = new ParWireTarget(NULL, NULL, source, sk);
+          ParWireTarget* target = new ParWireTarget(src_ele, NULL, source, sk);
           target->setDontRoute(true);
           _targets.push_back(target);
         } else {
@@ -302,28 +302,28 @@ void ParWire::recomputeBoundingBox() {
     COORD coordY = ele->getY();
 
     if (coordX < xl) {
-      xl = coordX;
+      xl = (int)coordX;
       xle = 1;
     } else if (coordX == xl) {
       ++xle;
     }
 
     if (coordX > xr) {
-      xr = coordX;
+      xr = (int)coordX;
       xre = 1;
     } else if (coordX == xr) {
       ++xre;
     }
 
     if (coordY > yb) {
-      yb = coordY;
+      yb = (int)coordY;
       ybe = 1;
     } else if (coordY == yb) {
       ++ybe;
     }
 
     if (coordY < yt) {
-      yt = coordY;
+      yt = (int)coordY;
       yte = 1;
     } else if (coordY == yt) {
       ++yte;
@@ -377,28 +377,28 @@ bool ParWire::sanityCheck() {
     COORD coordY = ele->getY();
 
     if (coordX < xl) {
-      xl = coordX;
+      xl = (int)coordX;
       xle = 1;
     } else if (coordX == xl) {
       ++xle;
     }
 
     if (coordX > xr) {
-      xr = coordX;
+      xr = (int)coordX;
       xre = 1;
     } else if (coordX == xr) {
       ++xre;
     }
 
     if (coordY > yb) {
-      yb = coordY;
+      yb = (int)coordY;
       ybe = 1;
     } else if (coordY == yb) {
       ++ybe;
     }
 
     if (coordY < yt) {
-      yt = coordY;
+      yt = (int)coordY;
       yte = 1;
     } else if (coordY == yt) {
       ++yte;
@@ -448,7 +448,7 @@ void ParWire::updateBoundingBox(COORD from_x, COORD from_y, COORD to_x, COORD to
   bool recal = false ;
 
   if (to_x < bbox.xl()) {
-    bbox.set_xl(to_x) ;
+    bbox.set_xl((int)to_x) ;
     ebox.set_xl(1) ;
   } else if (to_x == bbox.xl()) {
     ebox.incr_xl() ;
@@ -462,7 +462,7 @@ void ParWire::updateBoundingBox(COORD from_x, COORD from_y, COORD to_x, COORD to
   }
 
   if (to_x > bbox.xr()) {
-    bbox.set_xr(to_x) ;
+    bbox.set_xr((int)to_x) ;
     ebox.set_xr(1) ;
   } else if (to_x == bbox.xr()) {
     ebox.incr_xr() ;
@@ -476,7 +476,7 @@ void ParWire::updateBoundingBox(COORD from_x, COORD from_y, COORD to_x, COORD to
   }
 
   if (to_y < bbox.yt()) {
-    bbox.set_yt(to_y) ;
+    bbox.set_yt((int)to_y) ;
     ebox.set_yt(1) ;
   } else if (to_y == bbox.yt()) {
     ebox.incr_yt() ;
@@ -491,7 +491,7 @@ void ParWire::updateBoundingBox(COORD from_x, COORD from_y, COORD to_x, COORD to
 
 
   if (to_y > bbox.yb()) {
-    bbox.set_yb(to_y) ;
+    bbox.set_yb((int)to_y) ;
     ebox.set_yb(1) ;
   } else if (to_y == bbox.yb()) {
     ebox.incr_yb() ;

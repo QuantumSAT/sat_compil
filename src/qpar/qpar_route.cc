@@ -18,19 +18,27 @@
  ****************************************************************************/
 
 
-
-#include "qpar/qpar_routing_graph.hh"
-#include "qpar/qpar_system.hh"
-#include "qpar/qpar_target.hh"
-#include "qpar/qpar_routing_test.hh"
 #include "qpar/qpar_route.hh"
+#include "qpar/qpar_routing_graph.hh"
+#include "utils/qlog.hh"
 
 
-void RoutingTester::testRoutingGraph() {
-  HW_Target_Dwave* hw_target = _par_system->_hw_target;
-  ParTarget* par_target = _par_system->_par_target;
-  RoutingGraph graph(hw_target, par_target);
-  FastRoutingGraph fast_g(&graph);
-  qlog.speak("Fast Graph", "node num %d, edge num %d",
-      fast_g._vertex_counter, fast_g._edge_counter);
+FastRoutingGraph::FastRoutingGraph(RoutingGraph* graph) :
+SUPER(graph->getNodeNum(), graph->getEdgeNum()){
+  NODES::iterator n_iter = graph->node_begin();
+  for (; n_iter != graph->node_end(); ++n_iter) {
+    RoutingNode* node = *n_iter;
+    unsigned num_edge = node->getEdgeNum();
+    add_vertex(node, num_edge);
+  }
+
+  EDGES::iterator e_iter = graph->edge_begin();
+  for (; e_iter != graph->edge_end(); ++e_iter) {
+    RoutingEdge* edge = *e_iter;
+    RoutingNode* node1 = edge->getRoutingNode1();
+    RoutingNode* node2 = edge->getRoutingNode2();
+    add_edge(edge, node1, node2);
+  }
+
+
 }

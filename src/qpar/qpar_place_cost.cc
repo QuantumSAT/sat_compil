@@ -49,7 +49,7 @@ double CongestionAwareCost::computeCost(ParWire* wire, const qpr_matrix<unsigned
 
   BoundingBox current_bb = wire->getCurrentBoundingBox();
   Box bbox = current_bb.getBoundBox();
-  Box ebox = current_bb.getEdgeBox();
+  //Box ebox = current_bb.getEdgeBox();
 
   unsigned width = bbox.xr() - bbox.xl() + 1;
   unsigned hight = bbox.yb() - bbox.yt() + 1;
@@ -71,14 +71,14 @@ double CongestionAwareCost::computeCost(ParWire* wire, const qpr_matrix<unsigned
   QASSERT(fill_rate <= 1.0);
 
   fill_rate = std::pow(fill_rate, 1.3);
-  unsigned number_of_ele = wire->getElementNumber();
+  unsigned number_of_ele = (unsigned)wire->getElementNumber();
 
   if (number_of_ele <= 49)
     fill_rate = fill_rate * PlacementCost::cross_count[number_of_ele];
   else
     fill_rate = fill_rate * static_cast<float>(2.7933 + 0.02616 * (number_of_ele - 50));
 
-  double cost = fill_rate * (width + hight);
+  double cost = (width + hight)/(1-fill_rate);
 
   return cost;
 
