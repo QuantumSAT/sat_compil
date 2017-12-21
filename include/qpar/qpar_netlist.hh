@@ -49,6 +49,7 @@ class ParWireTarget;
 class ParElement;
 
 class ParGrid;
+class Route;
 
 /*! \brief used in wire set to have deterministic behavior
  */
@@ -178,6 +179,10 @@ public:
    */
   static SELF* getTopNetlist() { return _top_netlist; }
 
+  /*! \brief get all wire targets
+   */
+  std::vector<ParWireTarget*>& getTargets() { return _all_targets; }
+
 
 private:
   /*! \brief build netlist for placement and routing
@@ -231,6 +236,43 @@ public:
   unsigned getUniqId() const {
     return _target_index; 
   }
+
+  /*! \brief get target slack
+   */
+  double getSlack() const;
+
+  /*! \brief get source element
+   */
+  ParElement* getSourceElement() const {
+    return _source;
+  }
+
+  /*! \brief get target element
+   */
+  ParElement* getTargetElement() const {
+    return _target;
+  }
+
+  /*! \brief get pin name
+   */
+  std::string getName() const;
+
+  /*! \brief get source pin
+   */
+  SYN::Pin* getSourcePin() const {
+    return _src_pin;
+  }
+
+  /*! \brief get target pin
+   */
+  SYN::Pin* getTargetPin() const {
+    return _tgt_pin;
+  }
+
+  /*! \brief ripup existing route of target
+   */
+  void ripupTarget();
+
 private:
   ParElement* _source; //<! source element
   ParElement* _target; //<! target element
@@ -241,6 +283,8 @@ private:
   bool _dontRoute; //<! an indicator to decide wheterh it needs routing
   unsigned _target_index; //<! target index
   static unsigned _wire_target_counter; //!< index counter
+
+  Route* _route; //<! current route of the target;
 
 
 };
@@ -286,6 +330,8 @@ public:
   /*! \brief sanity check to check if the wire ready to move
    */
   bool isReadyToMove() const { return _bounding_box.checkStatusSame(); };
+
+  std::string getName() const;
 
   /*! \brief incrementally update bounding box
    */
@@ -342,7 +388,28 @@ public:
   /*! \brief get the only element
    */
   ParElement* getUniqElement();
-  
+
+
+  /*! \brief get slack
+   */
+  double getSlack() const { return _slack; }
+
+  /*! \brief set slack
+   */
+  void setSlack(double slack) { _slack = slack; }
+
+
+  /*! \brief mark the used routing resource on the routing graph
+   */
+  void markUsedRoutingResource();
+
+  /*! \brief get all used routing nodes
+   */
+  std::unordered_set<RoutingNode*>& getUsedRoutingNodes() { return _routing_nodes; }
+
+  /*! \brief get wire length
+   */
+  double getWireLength() const { return (double)(_routing_nodes.size()); }
 
 private:
   /*! \brief re-compute bouding box
@@ -360,6 +427,12 @@ private:
   unsigned int _wire_index; //!< uniq index for each wire
   ParSaveAndLoadObject<BoundingBox> _bounding_box; //!< bounding box 
   ParSaveAndLoadObject<double> _cost; //!< cost of the wire
+
+
+  //routing related data
+  double _slack; //!< the wire slack
+  std::unordered_map<RoutingNode*, unsigned> _routing_node_usage; //!< a record of routing node usage
+  std::unordered_set<RoutingNode*> _routing_nodes; //!< all used routing nodes
 
 
 

@@ -153,7 +153,9 @@ RoutingNode::RoutingNode() :
   _qubit(NULL),
   _interaction(NULL),
   _pin(NULL),
-  _isLogicalQubit(false)
+  _isLogicalQubit(false),
+  _load(0),
+  _capacity(0)
 {
   _node_index = _index_counter;
   ++_index_counter;
@@ -163,7 +165,9 @@ RoutingNode::RoutingNode(HW_Qubit* qubit, bool logical) :
   _qubit(qubit),
   _interaction(NULL),
   _pin(NULL),
-  _isLogicalQubit(logical)
+  _isLogicalQubit(logical),
+  _load(0),
+  _capacity(0)
 {
   _node_index = _index_counter;
   ++_index_counter;
@@ -173,7 +177,9 @@ RoutingNode::RoutingNode(HW_Interaction* iter) :
   _qubit(NULL),
   _interaction(iter),
   _pin(NULL),
-  _isLogicalQubit(false)
+  _isLogicalQubit(false),
+  _load(0),
+  _capacity(0)
 {
   _node_index = _index_counter;
   ++_index_counter;

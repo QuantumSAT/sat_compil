@@ -12,7 +12,7 @@ puts "\n"
 puts "#########################################"
 puts "#     initialize hardware target        #"
 puts "#########################################"
-init_target -row 2 -col 2 -local 8
+init_target -row 3 -col 3 -local 8
 write_blif 3gate_dwave.blif
 puts "\n"
 

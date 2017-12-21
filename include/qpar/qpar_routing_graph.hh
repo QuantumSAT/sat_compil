@@ -95,6 +95,11 @@ public:
    */
   unsigned getEdgeNum() const { return (unsigned)_edges.size(); }
 
+
+  /*! \brief find routing node by given element and pin
+   */
+  RoutingNode* getRoutingNode(ParElement* element, SYN::Pin* pin) const;
+
   friend class RoutingCell;
   friend class RoutingTester;
 
@@ -205,8 +210,11 @@ private:
 
   RoutingCell*       _rr_cell;        //!< the routing cell that owns this node
   EDGES              _edges;          //!< edges that connect to this node
-
   bool               _isLogicalQubit;  //!< indicates if the qubit is combined with two physical qubits
+
+  unsigned           _load;           //!< number of load
+  unsigned           _capacity;       //!< capacity of each routing node
+  bool               _is_currently_used  //!< multi target wire with shared routing node
 
 };
 
