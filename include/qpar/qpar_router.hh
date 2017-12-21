@@ -21,12 +21,19 @@
 #define QPAR_ROUTER_HH
 
 
+#include "qpar/qpar_graph.hh"
+
+#include <unordered_set>
+#include <priority_queue>
+#include <vector>
+#include <algorithm>
+
+
 class FastRoutingGraph;
 class RoutingCost;
 class RoutingNode;
 class ParWireTarget;
 
-#include <unordered_set>
 
 /*!
  * \file qpar_router.hh
@@ -35,23 +42,103 @@ class ParWireTarget;
  * \brief router which implements shortest path algorithm
  */
 
+
+/*! \brief customized priority queue that helps to store more information
+ */
+
+/*! \brief priority element, will keep track current length 
+ */
+typedef std::pair<double, qvertex> QElement;
+
+/*! \breif priority queue element
+ */
+typedef std::pair<double, QElement> PElement;
+
+struct PQCompare {
+
+  bool operator()(PElement& e1, PElement& e2) {
+    if (e1.first < e2.first)
+      return false;
+    else if (e1.first > e2.first)
+      return true;
+    else
+      return e1.second.second > e2.second.second; //break tie by qvertex
+  }
+
+};
+
+
+class QPriorityQueue : public std::priority_queue<PElement, std::vector<PElement>, PQCompare> {
+
+public:
+  typedef std::priority_queue<PElement, std::vector<PElement>, PQCompare> SUPER;
+
+public:
+  /*! \brief copy the internal vector
+   */
+  std::vector<PElement> getVector() {
+    std::vector<PElement> re(this->c.begin(), this->c.end());
+    std::sort(re.begin(), re.end(), this->comp);
+    std::reverse(re.begin(), re.end());
+  }
+
+  /*! \brief push element into priority queue
+   */
+  void push(double p, const QElement& ele) {
+    SUPER::push(std::make_pair(p, ele));
+  }
+
+  /*! \brief pop the top of the pqueue
+   */
+  std::pair<double, QElement> pop() {
+    if (this->size() == 0)
+      qlog.speakError("priority queue", "Cannot pop an empty queue!");
+    PElement top_ele = SUPER::top();
+    SUPER::pop();
+    return top_ele;
+  }
+
+};
+
 class ParRouter {
 
 
 public:
+
+  /*! \brief default constructor
+   */
   ParRouter(FastRoutingGraph& graph, RoutingCost& cost) :
-    _graph(graph), _cost(cost) {}
+    _graph(graph), _cost(cost) {
+      _visited_node.resize(graph.get_vertex_num());
+    }
 
-
-
-  /*! route target
+  /*! \brief route target
    */
   bool route(RoutingNode* src, RoutingNode* tgt, double slack, std::unordered_set<RoutingNode*>& used, ParWireTarget* target);
+
+  /*! \brief back trace to find the path
+   */
+  void buildRoutePath(std::list<RoutingNode*>& path);
+
 
 private:
   FastRoutingGraph& _graph; //!< routing graph;
   RoutingCost& _cost; //!< routing cost;
 
+  /*! \brief add all routed resource to current routing tree, so that
+   *         new route will branch out from existing tree, note that
+   *         a route is always a tree
+   */
+  void pushRoutedNodes(std::unordered_set<RoutingNode*>& used);
+
+  void expandNeighbors(QPriorityQueue* pqueue, qvertex current_vertex, double real_length, double slack, ParWireTarget* target);
+
+  qvertex popBestVertex(QPriorityQueue* pqueue, double& current_cost, double& real_cost);
+
+  std::vector<double> _visisted_node;
+  std::vector<qedge> _from_edge;
+  qvertex _source;
+  qvertex _target;
 
 };
 

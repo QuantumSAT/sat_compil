@@ -1,0 +1,116 @@
+/****************************************************************************
+ * Copyright (C) 2017 by Juexiao Su                                         *
+ *                                                                          *
+ * This file is part of QSat.                                               *
+ *                                                                          *
+ *   QSat is free software: you can redistribute it and/or modify it        *
+ *   under the terms of the GNU Lesser General Public License as published  *
+ *   by the Free Software Foundation, either version 3 of the License, or   *
+ *   (at your option) any later version.                                    *
+ *                                                                          *
+ *   QSat is distributed in the hope that it will be useful,                *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of         *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the          *
+ *   GNU Lesser General Public License for more details.                    *
+ *                                                                          *
+ *   You should have received a copy of the GNU Lesser General Public       *
+ *   License along with QSat.  If not, see <http://www.gnu.org/licenses/>.  *
+ ****************************************************************************/
+
+#include "qpar_router.hh"
+
+
+#include <limits>
+
+bool ParRouter::route(RoutingNode* src, RoutingNode* tgt, double slack, std::unordered_set<RoutingNode*>& used, ParWireTarget* target) {
+
+  _from_edge.clear();
+  _source = _graph.get_i_vertex(src);
+  _target = _graph.get_i_vertex(tgt);
+
+  if (_source == _target) {
+    qlog.spaek("Router", "Find ParWireTarget with same source and target");
+    return true;
+  }
+
+  for (size_t i = 0; i < _visisted_node.size(); ++i)
+    _visited_node[i] = std::numeric_limits<double>::infinity();
+
+  QPriorityQueue* pqueue = new QPriorityQueue;
+  _visited_node[_source] = 0.0;
+
+  qvertex cur_vertex = _source;
+  double real_cost = 0.0;
+  double current_cost = 0.0;
+
+
+  expandNeighbors(pqueue, cur_vertex, real_cost, slack, target);
+
+  if (pqueue->empty()) {
+    qlog.speak("Router", "Cannot find route for %s:%s", target->getWire()->getName().c_str(),
+        target->getName().c_str());
+    delete pqueue;
+    return false;
+  }
+
+  do {
+    cur_vertex = popBestVertex(pqueue, current_cost, real_cost);
+    expandNeighbors(pqueue, cur_vertex, real_cost, slack, target);
+
+    if (pqueue->empty() || cur_vertex == _target) {
+      if (cur_vertex == _target) {
+        delete pqueue;
+        return true;
+      } else {
+        qlog.error("Priority queue is empty, cannot find path");
+      }
+    }
+
+  } while (true);
+
+  delete pqueue;
+  return false;
+
+}
+
+void ParRouter::expandNeighbors(QPriorityQueue* pqueue, qvertex current_vertex, double real_length, double slack, ParWireTarget* target) {
+
+  std::pair<vertex2edge::edge_iter , vertex2edge::edge_iter> edge_iter_pair = _graph.get_edges(current_vertex);
+  vertex2edge::edge_iter e_iter = edge_iter_pair.begin();
+  for (; e_iter != edge_iter_pair.end(); ++e_iter) {
+
+    qedge cur_edge = *e_iter;
+    qvertex target_vertex = _graph.get_other_vertex(cur_edge, current_vertex);
+
+    RoutingNode* e_target_vertex = _graph.get_e_vertex(target_vertex);
+    double cost = _cost->compute_cost(e_target_vertex, target, slack, real_length);
+
+    double new_real_length = real_length + 1; //proceed one node
+    double new_cost = cost + _visisted_node[current_vertex];
+
+    if (_visisted_node[target_vertex] <= new_cost) continue;
+
+    pqueue->push(new_cost, std::make_pair(new_real_length, target_vertex));
+    _visited_node[target_vertex] = new_cost;
+    _from_edge[target_vertex] = cur_edge;
+  }
+
+}
+
+void ParRouter::buildRoutePath(std::list<RoutingNode*>& path) {
+  path.clear();
+  qvertex current_vertex = _target;
+  while (current_vertex != _source) {
+    RoutingNode* node = _graph.get_e_vertex(current_vertex);
+    path.push_front(node);
+
+    qedge from_edge = _from_edge[current_vertex];
+    current_vertex = _graph.get_other_vertex(from_edge, current_vertex);
+  }
+
+  RoutingNode* node = _graph.get_e_vertex(current_vertex);
+  path.push_front(node);
+}
+
+
+

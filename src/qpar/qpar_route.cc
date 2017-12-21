@@ -109,7 +109,7 @@ void QRoute::routeAllTarget(std::vector<ParWireTarget*>& targets, unsigned iter)
   std::vector<ParWireTarget*>::iterator tgt_iter = targets.begin();
   for (; tgt_iter != targets.end(); ++tgt_iter) {
     ParWireTarget* tgt = *tgt_iter;
-    routerTarget(tgt);
+    routeTarget(tgt);
   }
 
   updateWireSlack();
@@ -164,6 +164,8 @@ void QRoute::routeTarget(ParWireTarget* target, ParRoute* router) {
         wire->getName().c_str(),
         target->getName().c_str());
   }
+
+  wire->unmarkUsedRoutingResource();
 
 }
 

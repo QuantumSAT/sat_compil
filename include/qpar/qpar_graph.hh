@@ -98,6 +98,7 @@ public:
 
   typedef std::vector<std::pair<qvertex, qvertex> > edge2vertex;
 
+
   /*! \brief default constructor 
    *  \param num_vertex num of vertices in the original graph
    *  \param num_edge num of edges in the original graph
@@ -107,6 +108,19 @@ public:
     _i2evertex.resize(num_vertex);
     _i2eedge.resize(num_edge);
     _edge2vertex.resize(num_edge);
+  }
+
+
+  /*! \brief get vertex number in the graph
+   */
+  unsigned get_vertex_num() const {
+    return _i2evertex.size();
+  }
+
+  /*! \brief get edge number in the graph
+   */
+  unsigned get_edge_num() const {
+    return _edge2vertex.size();
   }
 
   /*! \brief get the internal vertex
