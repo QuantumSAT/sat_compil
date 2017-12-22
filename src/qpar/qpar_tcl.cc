@@ -128,4 +128,24 @@ int QCOMMAND_check_routing_graph::execute(int argc, const char** argv, std::stri
 
 }
 
+std::string QCOMMAND_route::help() const {
+  const std::string msg = "route";
+  return msg;
+}
+
+int QCOMMAND_route::execute(int argc, const char** argv, std::string& result, ClientData clientData) {
+
+  result = "OK";
+
+  if (!checkOptions(argc, argv)) {
+    printHelp();
+    return TCL_OK;
+  }
+
+  ParSystem::getParSystem()->doRoute();
+
+  return TCL_OK;
+
+}
+
 

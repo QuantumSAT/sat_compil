@@ -139,7 +139,7 @@ private:
   qvertex popBestVertex(QPriorityQueue* pqueue, double& current_cost, double& real_cost);
 
   std::vector<double> _visited_node;
-  std::vector<qedge> _from_edge;
+  std::unordered_map<qvertex, qedge> _from_edge;
   qvertex _source;
   qvertex _target;
 

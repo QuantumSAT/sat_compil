@@ -87,7 +87,11 @@ void QRoute::run() {
   const unsigned int nbr_max_iter = 30;
   unsigned int N = 1;
 
-  qlog.speak("ROUTE", " +------------+-------------+------------+-----------------+----------------+---------------------+");
+  bool routing_suc = false;
+
+  qlog.speak("ROUTE", " +----------+----------------+----------+-------------+-----------------+-------------+");
+  qlog.speak("ROUTE", " |  status  |    strategy    |   iter   |longest chain| overflow ration |  overflow   |");
+  qlog.speak("ROUTE", " +----------+----------------+----------+-------------+-----------------+-------------+");
   for (; N <= nbr_max_iter; ++N) {
 
     routeAllTarget(targets, N);
@@ -97,16 +101,23 @@ void QRoute::run() {
     //updateWireSlack();
 
     if (valid) {
-      qlog.speak("ROUTE", " |   valid  |  negotiating   |  %4u    |    %6u  |    %3.2f   |     %4u    |",
+      qlog.speak("ROUTE", " |   valid  |  negotiating   |  %4u    |    %6u   |      %5.2f      |     %4u    |",
           N, (unsigned)_longest_wire_length, ((double)overflow/(double)_rr_graph->getNodeNum()), (unsigned)overflow);
+      routing_suc = true;
       break;
     } else {
-      qlog.speak("ROUTE", " |  invalid |  negotiating   |  %4u    |    %6u  |    %3.2f   |     %4u    |",
+      qlog.speak("ROUTE", " |  invalid |  negotiating   |  %4u    |    %6u   |      %5.2f      |     %4u    |",
           N, (unsigned)_longest_wire_length, ((double)overflow/(double)_rr_graph->getNodeNum()), (unsigned)overflow);
 
     }
 
   }
+  qlog.speak("ROUTE", " +----------+----------------+----------+-------------+-----------------+-------------+");
+
+  if (!routing_suc)
+    qlog.speakError("Routing Failed");
+
+  qlog.speak("ROUTE", " successfully route netlist");
 
 }
 
@@ -132,6 +143,8 @@ bool QRoute::isRoutingValid(std::vector<ParWireTarget*>& targets, unsigned& over
   for (size_t i = 0; i < targets.size(); ++i) {
     ParWireTarget* target = targets[i];
 
+    if (target->getDontRoute()) continue;
+
     RoutePath* path = target->getRoutePath();
 
     for (size_t i = 0; i < path->size(); ++i) {
@@ -154,7 +167,7 @@ bool QRoute::isRoutingValid(std::vector<ParWireTarget*>& targets, unsigned& over
   QASSERT(invalid_nodes2.size() == invalid_nodes1.size());
 
   overflow = (unsigned)invalid_nodes1.size();
-  return (overflow >= 1);
+  return (overflow == 0);
 }
 
 void QRoute::initializeRouting() {
@@ -219,6 +232,7 @@ void QRoute::updateWireSlack() {
 
 void QRoute::routeTarget(ParWireTarget* target, ParRouter* router) {
 
+  if (target->getDontRoute()) return;
 
   target->ripupTarget();
   ParWire* wire = target->getWire();
@@ -231,10 +245,13 @@ void QRoute::routeTarget(ParWireTarget* target, ParRouter* router) {
   ParElement* target_ele = target->getTargetElement();
 
   SYN::Pin* src_pin = target->getSourcePin();
-  SYN::Pin* tgt_pin = target->getSourcePin();
+  SYN::Pin* tgt_pin = target->getTargetPin();
 
   RoutingNode* src_node = _rr_graph->getRoutingNode(source_ele, src_pin);
   RoutingNode* tgt_node = _rr_graph->getRoutingNode(target_ele, tgt_pin);
+
+  QASSERT(src_node);
+  QASSERT(tgt_node);
 
   std::unordered_set<RoutingNode*> used = wire->getUsedRoutingNodes();
 

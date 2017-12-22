@@ -123,8 +123,8 @@ REFERENCE_INC = -I$(ROOT)/reference/readline/inc \
                 -I$(ROOT)/reference/liberty_parser/inc \
                 -I$(ROOT)/reference/sapi
 
-REFERENCE_LIB = -L$(ROOT)/reference/readline/lib$(LBITS) -lreadline -lhistory -ltermcap 
-#-L$(ROOT)/reference/syn/lib$(LBITS) -lsyn
+REFERENCE_LIB = -L$(ROOT)/reference/readline/lib$(LBITS) -lreadline -lhistory -ltermcap \
+                -L$(ROOT)/reference/syn/lib$(LBITS) -lsyn
 #               -L$(ROOT)/reference/sapi -ldwave_sapi
 #                -L$(ROOT)/reference/liberty_parser/lib$(LBITS) -lsi2dr_liberty
 

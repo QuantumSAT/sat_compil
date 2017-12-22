@@ -22,6 +22,8 @@ warn
 dwave
 dwave-debug
 
+src/syn
+
 tags
 time.cc.bak
 obj/

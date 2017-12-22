@@ -41,6 +41,7 @@ namespace SYN {
   };
 
   class Pin {
+    static unsigned int _pin_counter;
   public:
     friend class Model;
     enum DIR {INPUT, OUTPUT, BIDIR};
@@ -49,10 +50,17 @@ namespace SYN {
 
     Pin(const char* name, Element* owner, DIR dir, FUNC func = DATA) 
       : _name(name), _dir(dir), _type(GPIN), _func(func), _net(0), 
-        _element(owner), _index(-1), _level(-1), pin_id_(0) {}
+        _element(owner), _index(-1), _level(-1), pin_id_(0) {
+        _index = _pin_counter;
+        ++_pin_counter; }
+
+
     Pin(const char* name, Model* owner, DIR dir, FUNC func = DATA) 
       : _name(name), _dir(dir), _type(MPIN), _func(func), _net(0), 
-        _model(owner), _index(-1), _level(-1), pin_id_(0) {}
+        _model(owner), _index(-1), _level(-1), pin_id_(0) {
+        _index = _pin_counter;
+        ++_pin_counter;
+        }
     ~Pin();
 
     const std::string& getName() const {return _name;}

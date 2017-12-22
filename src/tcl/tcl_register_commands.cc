@@ -53,6 +53,7 @@ void registerAllCommands() {
   tcl_manager->registerCommand(new QCOMMAND_init_system("init_system", ""));
   tcl_manager->registerCommand(new QCOMMAND_place("place", ""));
   tcl_manager->registerCommand(new QCOMMAND_check_routing_graph("check_routing_graph", ""));
+  tcl_manager->registerCommand(new QCOMMAND_route("route", ""));
 
 
 }

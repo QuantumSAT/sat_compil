@@ -451,6 +451,11 @@ public:
    */
   void updateWireRoute(RoutePath* route);
 
+
+  /*! \brief print self
+   */
+  void printSelf() const;
+
 private:
   /*! \brief re-compute bouding box
    */

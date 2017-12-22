@@ -161,6 +161,11 @@ void ParNetlist::buildParNetlist() {
       (unsigned)gate_to_par_element.size()
       );
 
+  WIRE_ITER wi_iter = wire_begin();
+  for (; wi_iter != wire_end(); ++wi_iter)
+    (*wi_iter)->printSelf();
+
+
 }
 
 unsigned int ParElement::_element_index_counter = 0;
@@ -259,7 +264,7 @@ std::vector<ParWireTarget*>& ParWire::buildWireTarget(
         } else {
           ParElement* src_ele = gate_to_par_element.at(gate1->getGate());
           ParElement* tgt_ele = gate_to_par_element.at(sk->getGate());
-          ParWireTarget* target = new ParWireTarget(src_ele, tgt_ele, source, sk, this);
+          ParWireTarget* target = new ParWireTarget(src_ele, tgt_ele, gate1, sk, this);
           _targets.push_back(target);
         }
       }
@@ -568,6 +573,16 @@ void ParWire::unmarkUsedRoutingResource() {
   }
 }
 
+void ParWire::printSelf() const {
+  std::stringstream ss;
+  for (size_t i = 0; i < _targets.size(); ++i)
+    ss << _targets[i]->getName() << " | ";
+
+  qlog.speak("WIRE", "Name:%s, Targets: %s",
+      getName().c_str(),
+      ss.str().c_str());
+}
+
 
 
 unsigned ParWireTarget::_wire_target_counter = 0;
@@ -603,7 +618,10 @@ double ParWireTarget::getSlack() const {
 }
 
 std::string ParWireTarget::getName() const {
-  return _tgt_pin->getName();
+  if (_tgt_pin->isModelPin())
+    return _tgt_pin->getName();
+  else
+    return _tgt_pin->getGate()->getName() + "." + _tgt_pin->getName();
 }
 
 

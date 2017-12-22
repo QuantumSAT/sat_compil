@@ -10,7 +10,7 @@ PLATFORM = $(SYSNAME)_$(LBITS)
 
 PURIFY		  =
 IFLAG       =
-CFLAG		    = -c -Werror
+CFLAG		    = -c
 CFLAG      += -Wno-unused-parameter -Wno-conversion
 LFLAG       = 
 LFLAG2      = 

@@ -34,9 +34,9 @@ namespace SYN {
     bool speedDecomp(Gate*, size_t in_bound);
     bool andOrDecomp(Gate*, size_t in_bound);
     bool simpleGateDecomp(Gate*, size_t in_bound);
-    void speedUp();
-    bool speedUp(Gate*, Delay);
-    bool formCone(Gate*, Delay, std::vector<Gate*>&, int, int);
+    //void speedUp();
+    //bool speedUp(Gate*, Delay);
+    //bool formCone(Gate*, Delay, std::vector<Gate*>&, int, int);
     void deleteCone(Gate*);
 
     int getOpinIndex(Pin* pin) {

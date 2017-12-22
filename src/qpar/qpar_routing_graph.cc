@@ -175,7 +175,7 @@ RoutingNode::RoutingNode() :
   _isLogicalQubit(false),
   _load(0),
   _history_cost(0.0),
-  _capacity(0)
+  _capacity(1)
 {
   _node_index = _index_counter;
   ++_index_counter;
@@ -188,7 +188,7 @@ RoutingNode::RoutingNode(HW_Qubit* qubit, bool logical) :
   _isLogicalQubit(logical),
   _load(0),
   _history_cost(0.0),
-  _capacity(0)
+  _capacity(1)
 {
   _node_index = _index_counter;
   ++_index_counter;
@@ -201,7 +201,7 @@ RoutingNode::RoutingNode(HW_Interaction* iter) :
   _isLogicalQubit(false),
   _load(0),
   _history_cost(0.0),
-  _capacity(0)
+  _capacity(1)
 {
   _node_index = _index_counter;
   ++_index_counter;
@@ -212,7 +212,8 @@ RoutingNode::RoutingNode(SYN::Pin* pin) :
   _interaction(NULL),
   _pin(pin),
   _history_cost(0.0),
-  _isLogicalQubit(false)
+  _isLogicalQubit(false),
+  _capacity(1)
 {
   _node_index = _index_counter;
   ++_index_counter;

@@ -227,7 +227,7 @@ public:
   /*! \brief check if the load is overflow
    */
   bool isOverFlow() const {
-    return _load <= _capacity;
+    return _load > _capacity;
   }
 
   /*! \brief get node load
