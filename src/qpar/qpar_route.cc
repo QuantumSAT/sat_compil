@@ -19,6 +19,7 @@
 
 
 #include "qpar/qpar_route.hh"
+#include "qpar/qpar_router.hh"
 #include "qpar/qpar_netlist.hh"
 #include "qpar/qpar_routing_graph.hh"
 #include "qpar/qpar_routing_cost.hh"
@@ -48,8 +49,27 @@ SUPER(graph->getNodeNum(), graph->getEdgeNum()){
 
 }
 
-bool TargetSlackCmp::operator()(const ParWireTarget* tgt1, ParWireTarget* tgt2) const {
+
+RoutePath::RoutePath(const std::list<RoutingNode*>& nodes, const std::list<RoutingEdge*>& edges) {
+  SUPER::resize(nodes.size());
+  _edges.resize(edges.size());
+  std::copy(nodes.begin(), nodes.end(), SUPER::begin());
+  std::copy(edges.begin(), edges.end(), _edges.begin());
+}
+
+bool TargetSlackCmp::operator()(const ParWireTarget* tgt1, const ParWireTarget* tgt2) const {
   return tgt1->getSlack() < tgt2->getSlack();
+}
+
+QRoute::~QRoute() {
+  if (_cost) delete _cost;
+  _cost = NULL;
+
+  if (_f_graph) delete _f_graph;
+  _f_graph = NULL;
+
+  if (_rr_graph) delete _rr_graph;
+  _rr_graph = NULL;
 }
 
 
@@ -61,21 +81,83 @@ void QRoute::run() {
   std::vector<ParWireTarget*> targets = _netlist->getTargets();
 
   // sort based on slack of the target
-  std::sort(targets.begin(), targets.end(), TargetSlackCmp);
+  TargetSlackCmp cmp;
+  std::sort(targets.begin(), targets.end(), cmp);
 
-  bool route_success = false;
   const unsigned int nbr_max_iter = 30;
   unsigned int N = 1;
+
+  qlog.speak("ROUTE", " +------------+-------------+------------+-----------------+----------------+---------------------+");
   for (; N <= nbr_max_iter; ++N) {
-    if (shouldExit()) {
-      route_success = true;
+
+    routeAllTarget(targets, N);
+  
+    unsigned overflow;
+    bool valid = isRoutingValid(targets, overflow);
+    //updateWireSlack();
+
+    if (valid) {
+      qlog.speak("ROUTE", " |   valid  |  negotiating   |  %4u    |    %6u  |    %3.2f   |     %4u    |",
+          N, (unsigned)_longest_wire_length, ((double)overflow/(double)_rr_graph->getNodeNum()), (unsigned)overflow);
       break;
+    } else {
+      qlog.speak("ROUTE", " |  invalid |  negotiating   |  %4u    |    %6u  |    %3.2f   |     %4u    |",
+          N, (unsigned)_longest_wire_length, ((double)overflow/(double)_rr_graph->getNodeNum()), (unsigned)overflow);
+
     }
+
   }
 
 }
 
-void QRoute::initiallizeRouting() {
+
+bool QRoute::isTargetOverFlow(ParWireTarget* target) {
+
+  RoutePath* path = target->getRoutePath();
+
+  for (size_t i = 0; i < path->size(); ++i) {
+    RoutingNode* node = path->at(i);
+    if (node->isOverFlow())
+      return true;
+  }
+
+  return false;
+
+}
+
+bool QRoute::isRoutingValid(std::vector<ParWireTarget*>& targets, unsigned& overflow) {
+
+  //1) first method iterator all targets;
+  std::set<RoutingNode*> invalid_nodes1;
+  for (size_t i = 0; i < targets.size(); ++i) {
+    ParWireTarget* target = targets[i];
+
+    RoutePath* path = target->getRoutePath();
+
+    for (size_t i = 0; i < path->size(); ++i) {
+      RoutingNode* node = path->at(i);
+      if (node->isOverFlow()) {
+        invalid_nodes1.insert(node);
+        node->setHistoryCost(3 + node->getHistoryCost());
+      }
+    }
+  }
+
+  std::set<RoutingNode*> invalid_nodes2;
+  NODES::iterator node_iter = _rr_graph->node_begin();
+  for (; node_iter != _rr_graph->node_end(); ++node_iter) {
+    RoutingNode* node = *node_iter;
+    if (node->isOverFlow())
+      invalid_nodes2.insert(node);
+  }
+
+  QASSERT(invalid_nodes2.size() == invalid_nodes1.size());
+
+  overflow = (unsigned)invalid_nodes1.size();
+  return (overflow >= 1);
+}
+
+void QRoute::initializeRouting() {
 
   buildRoutingGraph();
 
@@ -99,7 +181,7 @@ void QRoute::initializeWireSlack() {
 }
 
 void QRoute::buildRoutingGraph() {
-  _rr_graph = new RoutingGraph(_dwave_target, par_target);
+  _rr_graph = new RoutingGraph(_dwave_target, _par_target);
   _f_graph = new FastRoutingGraph(_rr_graph);
 }
 
@@ -109,12 +191,11 @@ void QRoute::routeAllTarget(std::vector<ParWireTarget*>& targets, unsigned iter)
   std::vector<ParWireTarget*>::iterator tgt_iter = targets.begin();
   for (; tgt_iter != targets.end(); ++tgt_iter) {
     ParWireTarget* tgt = *tgt_iter;
-    routeTarget(tgt);
+    routeTarget(tgt, router);
   }
 
   updateWireSlack();
-  updateHistoryCost(N);
-
+  RoutingNode::setCongestionCost(RoutingNode::getCongestionCost() + 4);
 }
 
 void QRoute::updateWireSlack() {
@@ -136,7 +217,7 @@ void QRoute::updateWireSlack() {
 
 }
 
-void QRoute::routeTarget(ParWireTarget* target, ParRoute* router) {
+void QRoute::routeTarget(ParWireTarget* target, ParRouter* router) {
 
 
   target->ripupTarget();
@@ -155,18 +236,32 @@ void QRoute::routeTarget(ParWireTarget* target, ParRoute* router) {
   RoutingNode* src_node = _rr_graph->getRoutingNode(source_ele, src_pin);
   RoutingNode* tgt_node = _rr_graph->getRoutingNode(target_ele, tgt_pin);
 
-  std::<unordered_set> used = wire->getUsedRoutingNodes();
+  std::unordered_set<RoutingNode*> used = wire->getUsedRoutingNodes();
 
   if (router->route(src_node, tgt_node, slack, used, target)) {
     updateRoute(target, slack, router);
   } else {
-    qlog.spakeError("Cannot find route for %s wire %s pin",
+    qlog.speakError("Cannot find route for %s wire %s pin",
         wire->getName().c_str(),
         target->getName().c_str());
   }
 
   wire->unmarkUsedRoutingResource();
 
+}
+
+void QRoute::updateRoute(ParWireTarget* target, double& slack, ParRouter* router) {
+  std::list<RoutingNode*> nodes;
+  std::list<RoutingEdge*> edges;
+  router->buildRoutePath(nodes, edges);
+
+  RoutePath* old_route = target->getRoutePath();
+  if (old_route)
+    delete old_route;
+
+  RoutePath* new_route = new RoutePath(nodes, edges);
+  target->setRoutePath(new_route);
+  target->getWire()->updateWireRoute(new_route);
 }
 
 

@@ -48,8 +48,10 @@ class ParWire;
 class ParWireTarget;
 class ParElement;
 
+class RoutingNode;
+
 class ParGrid;
-class Route;
+class RoutePath;
 
 /*! \brief used in wire set to have deterministic behavior
  */
@@ -215,7 +217,7 @@ public:
   /*! \brief default constructor
    */
   ParWireTarget(ParElement* source, ParElement* dest, 
-      SYN::Pin* src_pin, SYN::Pin* tgt_pin);
+      SYN::Pin* src_pin, SYN::Pin* tgt_pin, ParWire* wire);
 
   /*! \brief default destructor
    */
@@ -273,6 +275,24 @@ public:
    */
   void ripupTarget();
 
+  /*! \brief get route path
+   */
+  RoutePath* getRoutePath() const {
+    return _route;
+  }
+
+  /*! \brief set route path
+   */
+  void setRoutePath(RoutePath* route) {
+    _route = route;
+  }
+
+  /*! \brief get wire
+   */
+  ParWire* getWire() const {
+    return _wire;
+  }
+
 private:
   ParElement* _source; //<! source element
   ParElement* _target; //<! target element
@@ -280,11 +300,13 @@ private:
   SYN::Pin* _src_pin; //<! source pin
   SYN::Pin* _tgt_pin; //<! target pin
 
+  ParWire* _wire; //!< wire that owns this target
+
   bool _dontRoute; //<! an indicator to decide wheterh it needs routing
   unsigned _target_index; //<! target index
   static unsigned _wire_target_counter; //!< index counter
 
-  Route* _route; //<! current route of the target;
+  RoutePath* _route; //<! current route of the target;
 
 
 };
@@ -403,13 +425,31 @@ public:
    */
   void markUsedRoutingResource();
 
+  /*! \brief unmark the used routing resource
+   */
+  void unmarkUsedRoutingResource();
+
   /*! \brief get all used routing nodes
    */
-  std::unordered_set<RoutingNode*>& getUsedRoutingNodes() { return _routing_nodes; }
+  const std::unordered_set<RoutingNode*>& getUsedRoutingNodes() { return _routing_nodes; }
+
+  /*! \brief get routing node usage info
+   */
+  const std::unordered_map<RoutingNode*, unsigned>& getRoutingNodeUsage() {
+    return _routing_node_usage;
+  }
+
+  /*! \brief populate removal information to wire
+   */
+  void removeUsedRoutingNode(RoutingNode* node);
 
   /*! \brief get wire length
    */
   double getWireLength() const { return (double)(_routing_nodes.size()); }
+
+  /*! \brief update wire related route info
+   */
+  void updateWireRoute(RoutePath* route);
 
 private:
   /*! \brief re-compute bouding box

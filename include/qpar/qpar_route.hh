@@ -28,16 +28,19 @@
  */
 
 #include "qpar_graph.hh"
+#include <list>
 
 class RoutingNode;
 class RoutingEdge;
 class RoutingGraph;
 class HW_Target_Dwave;
 
-class ParNetlist;
 class ParTarget;
+class ParNetlist;
+class ParWireTarget;
 
 class ParRouter;
+class RoutingCost;
 
 
 class FastRoutingGraph : public qpr_graph<RoutingNode*, RoutingEdge*> {
@@ -49,18 +52,33 @@ public:
 
 };
 
+/*! \brief this class records the route path
+ */
+class RoutePath : public std::vector<RoutingNode*> {
+
+  typedef std::vector<RoutingNode*> SUPER;
+public:
+  RoutePath(const std::list<RoutingNode*>& nodes, const std::list<RoutingEdge*>& edges);
+
+
+private:
+  std::vector<RoutingEdge*> _edges;
+
+
+};
+
 
 struct TargetSlackCmp {
 
   bool operator()(const ParWireTarget* tgt1, const ParWireTarget* tgt2) const;
 
-}
+};
 
 class QRoute {
 public:
   /*! \brief defualt constructor for Routing
    *  \param ParNetlist* netlist used in placement and routing
-   *  \param ParTarget* hardware target to describe device
+   *  \param ParWireTarget* hardware target to describe device
    *  \param HW_Target_Dwave* hardware target
    */
 
@@ -75,16 +93,7 @@ public:
 
   /*! \brief default destructor
    */
-  ~QRoute() {
-    if (_cost) delete _cost;
-    _cost = NULL;
-
-    if (_f_graph) delete _f_graph;
-    _f_graph = NULL;
-
-    if (_rr_graph) delete _rr_graph;
-    _rr_graph = NULL;
-  }
+  ~QRoute();
 
 
   /*! \brief execute routing
@@ -140,11 +149,20 @@ private:
 
   /*! \brief route single target
    */
-  void routeTarget(ParWireTarget* target);
+  void routeTarget(ParWireTarget* target, ParRouter* router);
 
   /*! \brief build routing path and update the routing graph accordingly
    */
-  void updateRoute(ParTarget* target, double &slack, ParRouter* router);
+  void updateRoute(ParWireTarget* target, double &slack, ParRouter* router);
+
+  /*! \brief check if the current routing is a valid solution
+   */
+  bool isRoutingValid(std::vector<ParWireTarget*>& targets, unsigned& overflow);
+
+
+  /*! \brief check if a given target is overflow
+   */
+  bool isTargetOverFlow(ParWireTarget* target);
 
 
 };

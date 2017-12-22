@@ -22,9 +22,11 @@
 
 
 #include "qpar/qpar_graph.hh"
+#include "qpar/qpar_route.hh"
 
 #include <unordered_set>
-#include <priority_queue>
+#include <list>
+#include <queue>
 #include <vector>
 #include <algorithm>
 
@@ -56,7 +58,7 @@ typedef std::pair<double, QElement> PElement;
 
 struct PQCompare {
 
-  bool operator()(PElement& e1, PElement& e2) {
+  bool operator()(const PElement& e1, const PElement& e2) const {
     if (e1.first < e2.first)
       return false;
     else if (e1.first > e2.first)
@@ -80,6 +82,7 @@ public:
     std::vector<PElement> re(this->c.begin(), this->c.end());
     std::sort(re.begin(), re.end(), this->comp);
     std::reverse(re.begin(), re.end());
+    return re;
   }
 
   /*! \brief push element into priority queue
@@ -92,7 +95,7 @@ public:
    */
   std::pair<double, QElement> pop() {
     if (this->size() == 0)
-      qlog.speakError("priority queue", "Cannot pop an empty queue!");
+      qlog.speakError("Cannot pop an empty queue!");
     PElement top_ele = SUPER::top();
     SUPER::pop();
     return top_ele;
@@ -118,7 +121,7 @@ public:
 
   /*! \brief back trace to find the path
    */
-  void buildRoutePath(std::list<RoutingNode*>& path);
+  void buildRoutePath(std::list<RoutingNode*>& path, std::list<RoutingEdge*>& edges);
 
 
 private:
@@ -135,7 +138,7 @@ private:
 
   qvertex popBestVertex(QPriorityQueue* pqueue, double& current_cost, double& real_cost);
 
-  std::vector<double> _visisted_node;
+  std::vector<double> _visited_node;
   std::vector<qedge> _from_edge;
   qvertex _source;
   qvertex _target;

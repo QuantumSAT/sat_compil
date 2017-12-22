@@ -130,6 +130,11 @@ private:
   /*! \brief routing graph sanity check
    */
   void sanityCheck() const;
+
+
+  /*! \brief check if node are marked as currently used
+   */
+  void checkRoutingGraphCurrentUsage() const;
 };
 
 
@@ -194,6 +199,73 @@ public:
    */
   void sanityCheck() const;
 
+  /*! \brief check if the node is currently used by other target on the same wire
+   */
+  bool getCurrentlyUsed() const {
+    return _is_currently_used;
+  }
+
+  /*! \brief set currently used
+   */
+  void setCurrentlyUsed(bool val) {
+    _is_currently_used = val;
+  }
+
+  /*! \brief add load on the routing node
+   */
+  void addLoad(unsigned i) {
+    _load += i;
+  }
+
+  /*! \brief sub load on the routing node
+   */
+  void subLoad(unsigned i) {
+    QASSERT(_load >= i);
+    _load -= i;
+  }
+
+  /*! \brief check if the load is overflow
+   */
+  bool isOverFlow() const {
+    return _load <= _capacity;
+  }
+
+  /*! \brief get node load
+   */
+  unsigned getLoad() const {
+    return _load;
+  }
+
+  /*! \brief get node capcity, 
+   */
+  unsigned getCapacity() const {
+    return _capacity;
+  }
+
+  /*! \brief get congestion cost which is shared by the entire design
+   */
+  static double getCongestionCost() {
+    return _congestion_cost;
+  }
+
+  /*! \brief set congestion cost
+   */
+  static void setCongestionCost(double val) {
+    _congestion_cost = val;
+  }
+
+  /*! \brief get history cost
+   */
+  double getHistoryCost()  const {
+    return _history_cost;
+  }
+
+  /*! \brief set history cost
+   */
+  void setHistoryCost(double val) {
+    _history_cost = val;
+  }
+
 private:
 
   /*! \brief default constructor
@@ -214,7 +286,11 @@ private:
 
   unsigned           _load;           //!< number of load
   unsigned           _capacity;       //!< capacity of each routing node
-  bool               _is_currently_used  //!< multi target wire with shared routing node
+  bool               _is_currently_used;  //!< multi target wire with shared routing node
+
+  static double   _congestion_cost;   //!< congestion factor used in NBR algorithm
+  double          _history_cost;      //!< history cost used in NBR algorithm
+
 
 };
 

@@ -73,6 +73,25 @@ RoutingGraph::~RoutingGraph() {
 
 unsigned RoutingNode::_index_counter = 0;
 unsigned RoutingEdge::_index_counter = 0;
+double RoutingNode::_congestion_cost = 0.0;
+
+void RoutingGraph::checkRoutingGraphCurrentUsage() const {
+
+  NODES::iterator node_iter = _nodes.begin();
+  for (; node_iter != _nodes.end(); ++node_iter) {
+    RoutingNode* node = *node_iter;
+    if (node->getCurrentlyUsed())
+      qlog.speakError("found node is marked as currently used!");
+  }
+
+}
+
+
+RoutingNode* RoutingGraph::getRoutingNode(ParElement* element, SYN::Pin* pin) const {
+  HW_Cell* cell = element->getCurrentGrid()->getHWCell();
+  RoutingCell* r_cell = _cells.at(cell);
+  return r_cell->getRoutingNode(pin);
+}
 
 
 void RoutingGraph::createRoutingGraph() {
@@ -155,6 +174,7 @@ RoutingNode::RoutingNode() :
   _pin(NULL),
   _isLogicalQubit(false),
   _load(0),
+  _history_cost(0.0),
   _capacity(0)
 {
   _node_index = _index_counter;
@@ -167,6 +187,7 @@ RoutingNode::RoutingNode(HW_Qubit* qubit, bool logical) :
   _pin(NULL),
   _isLogicalQubit(logical),
   _load(0),
+  _history_cost(0.0),
   _capacity(0)
 {
   _node_index = _index_counter;
@@ -179,6 +200,7 @@ RoutingNode::RoutingNode(HW_Interaction* iter) :
   _pin(NULL),
   _isLogicalQubit(false),
   _load(0),
+  _history_cost(0.0),
   _capacity(0)
 {
   _node_index = _index_counter;
@@ -189,6 +211,7 @@ RoutingNode::RoutingNode(SYN::Pin* pin) :
   _qubit(NULL),
   _interaction(NULL),
   _pin(pin),
+  _history_cost(0.0),
   _isLogicalQubit(false)
 {
   _node_index = _index_counter;

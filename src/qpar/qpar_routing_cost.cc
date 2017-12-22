@@ -17,57 +17,45 @@
  *   License along with QSat.  If not, see <http://www.gnu.org/licenses/>.  *
  ****************************************************************************/
 
-#ifndef QPAR_ROUTING_COST_HH
-#define QPAR_ROUTING_COST_HH
-
-
-class RoutingNode;
-class ParWireTarget;
-
-class RoutingCost {
-
-public:
-  RoutingCost() {}
-  virtual ~RoutingCost() {}
-  virtual double compute_cost(RoutingNode* node,
-                              ParWireTarget* tgt,
-                              double slack,
-                              double current_length
-                              ) = 0;
-
-
-};
-
-/*! \brief negotiation based routing cost
- */
-class RoutingCostNBR : public RoutingCost {
-public:
-  RoutingCostNBR() {}
-  virtual ~RoutingCostNBR() {}
-  virtual double compute_cost(RoutingNode* node,
-                              ParWireTarget* tgt,
-                              double slack,
-                              double current_length);
-
-  double getCongestionCost(unsigned load, unsigned capacity);
-
-
-};
-
-/*! \brief each node will have 1 cost
- */
-class RoutingCostSimple : public RoutingCost {
-public:
-  RoutingCostSimple() {}
-  virtual ~RoutingCostSimple() {}
-  virtual double compute_cost(RoutingNode* node,
-                              ParWireTarget* tgt,
-                              double slack,
-                              double current_length);
-};
+#include "qpar/qpar_routing_cost.hh"
+#include "qpar/qpar_routing_graph.hh"
 
 
 
-#endif
+double RoutingCostNBR::compute_cost(RoutingNode* node, ParWireTarget* tgt, double slack, double current_length) {
+  unsigned load = node->getLoad();
+  unsigned capacity = node->getCapacity();
 
+  bool used = node->getCurrentlyUsed();
+  unsigned try_add_load = 0;
+  if (used) {
+    try_add_load = load;
+  } else {
+    try_add_load = load + 1;
+  }
 
+  double base_delay = 1.0;
+  double congestion_cost = getCongestionCost(try_add_load, capacity);
+  double history_cost = node->getHistoryCost();
+
+  double cost = base_delay * (1 - slack) + slack * (base_delay + history_cost + congestion_cost);
+
+  return cost;
+
+}
+
+double RoutingCostNBR::getCongestionCost(unsigned load, unsigned capacity) {
+
+  if (load <= capacity) return 0.0;
+
+  unsigned overflow = capacity - load;
+
+  double cost = overflow * RoutingNode::getCongestionCost();
+
+  return cost;
+
+}
+
+double RoutingCostSimple::compute_cost(RoutingNode* node, ParWireTarget* tgt, double slack, double current_length) {
+  return 1.0;
+}

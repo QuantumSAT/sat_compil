@@ -28,6 +28,7 @@
 #include "qpar/qpar_system.hh"
 #include "qpar/qpar_target.hh"
 #include "qpar/qpar_place.hh"
+#include "qpar/qpar_route.hh"
 #include "utils/qlog.hh"
 
 ParSystem* ParSystem::_system = NULL;
@@ -72,6 +73,7 @@ void ParSystem::doPlacement() {
     QPlace placer(_par_netlist, _par_target);
     placer.run();
     placer.dumpCurrentPlacement();
+    _status.hasPlaced = true;
   } else {
     qlog.speakError("Cannot run placement because target or design has not been initilized");
   }
@@ -79,8 +81,12 @@ void ParSystem::doPlacement() {
 }
 
 void ParSystem::doRoute() {
-
-
+  if (_status.hasPlaced) {
+    QRoute router(_hw_target, _par_netlist, _par_target);
+    router.run();
+  } else {
+    qlog.speakError("Cannot run routing because netlist has not been placed");
+  }
 }
 
 

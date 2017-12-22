@@ -21,6 +21,8 @@
 #include "qpar/qpar_netlist.hh"
 #include "qpar/qpar_target.hh"
 #include "qpar/qpar_utils.hh"
+#include "qpar/qpar_routing_graph.hh"
+#include "qpar/qpar_route.hh"
 
 #include "syn/netlist.h"
 #include "utils/qlog.hh"
@@ -203,10 +205,16 @@ _source(NULL) {
   ++_wire_index_counter;
 }
 
+
 ParWire::~ParWire() {
   for (unsigned i = 0; i < _targets.size(); ++i) {
     delete _targets[i];
   }
+}
+
+
+std::string ParWire::getName() const {
+  return _net->name();
 }
 
 std::vector<ParWireTarget*>& ParWire::buildWireTarget(
@@ -237,7 +245,7 @@ std::vector<ParWireTarget*>& ParWire::buildWireTarget(
         SYN::Pin* sk = sink[i];
         if (sk == gate1) {
           ParElement* src_ele = gate_to_par_element.at(gate1->getGate());
-          ParWireTarget* target = new ParWireTarget(src_ele, src_ele, source, sk);
+          ParWireTarget* target = new ParWireTarget(src_ele, src_ele, source, sk, this);
           target->setDontRoute(true);
           _targets.push_back(target);
           continue;
@@ -245,20 +253,20 @@ std::vector<ParWireTarget*>& ParWire::buildWireTarget(
 
         if (sk->isModelPin()) {
           ParElement* src_ele = gate_to_par_element.at(gate1->getGate());
-          ParWireTarget* target = new ParWireTarget(src_ele, NULL, source, sk);
+          ParWireTarget* target = new ParWireTarget(src_ele, NULL, source, sk, this);
           target->setDontRoute(true);
           _targets.push_back(target);
         } else {
           ParElement* src_ele = gate_to_par_element.at(gate1->getGate());
           ParElement* tgt_ele = gate_to_par_element.at(sk->getGate());
-          ParWireTarget* target = new ParWireTarget(src_ele, tgt_ele, source, sk);
+          ParWireTarget* target = new ParWireTarget(src_ele, tgt_ele, source, sk, this);
           _targets.push_back(target);
         }
       }
     } else {
       for (unsigned i = 0; i < sink.size(); ++i) {
         SYN::Pin* sk = sink[i];
-        ParWireTarget* target = new ParWireTarget(NULL, NULL, source, sk);
+        ParWireTarget* target = new ParWireTarget(NULL, NULL, source, sk, this);
         target->setDontRoute(true);
         _targets.push_back(target);
       }
@@ -268,12 +276,12 @@ std::vector<ParWireTarget*>& ParWire::buildWireTarget(
       SYN::Pin* sk = sink[i];
       ParElement* src_ele = gate_to_par_element.at(source->getGate());
       if (sk->isModelPin()) {
-        ParWireTarget* target = new ParWireTarget(src_ele, NULL, source, sk);
+        ParWireTarget* target = new ParWireTarget(src_ele, NULL, source, sk, this);
         target->setDontRoute(true);
         _targets.push_back(target);
       } else {
         ParElement* tgt_ele = gate_to_par_element.at(sk->getGate());
-        ParWireTarget* target = new ParWireTarget(src_ele, tgt_ele, source, sk);
+        ParWireTarget* target = new ParWireTarget(src_ele, tgt_ele, source, sk, this);
         _targets.push_back(target);
       }
     }
@@ -514,18 +522,89 @@ ParElement* ParWire::getUniqElement() {
   return (*_elements.begin());
 }
 
+
+void ParWire::updateWireRoute(RoutePath* route) {
+
+  for (size_t i = 0; i < route->size(); ++i) {
+    RoutingNode* node = route->at(i);
+    if (!node->getCurrentlyUsed()) {
+      node->addLoad(1);
+      node->setCurrentlyUsed(true);
+    }
+
+    if (_routing_nodes.count(node))
+      ++_routing_node_usage[node];
+    else {
+      _routing_nodes.insert(node);
+      _routing_node_usage[node] = 1;
+    }
+  }
+
+}
+
+void ParWire::removeUsedRoutingNode(RoutingNode* node) {
+  QASSERT(_routing_nodes.count(node));
+  if (_routing_node_usage[node] == 1) {
+    _routing_node_usage.erase(node);
+    _routing_nodes.erase(node);
+  } else
+    --_routing_node_usage[node];
+}
+
+void ParWire::markUsedRoutingResource() {
+  std::unordered_set<RoutingNode*>::iterator node_iter = _routing_nodes.begin();
+  for (; node_iter != _routing_nodes.end(); ++node_iter) {
+    RoutingNode* node = *node_iter;
+    node->setCurrentlyUsed(true);
+  }
+
+}
+
+void ParWire::unmarkUsedRoutingResource() {
+  std::unordered_set<RoutingNode*>::iterator node_iter = _routing_nodes.begin();
+  for (; node_iter != _routing_nodes.end(); ++node_iter) {
+    RoutingNode* node = *node_iter;
+    node->setCurrentlyUsed(false);
+  }
+}
+
+
+
 unsigned ParWireTarget::_wire_target_counter = 0;
 
 ParWireTarget::ParWireTarget(ParElement* source, ParElement* dest,
-    SYN::Pin* src_pin, SYN::Pin* tgt_pin) :
+    SYN::Pin* src_pin, SYN::Pin* tgt_pin, ParWire* wire) :
   _source(source),
   _target(dest),
   _src_pin(src_pin),
   _tgt_pin(tgt_pin),
-  _dontRoute(false) {
+  _wire(wire),
+  _dontRoute(false),
+  _route(NULL) {
     _target_index = _wire_target_counter;
     ++_wire_target_counter;
   }
+
+void ParWireTarget::ripupTarget() {
+  if (!_route) return;
+
+  for (size_t i = 0; i < _route->size(); ++i) {
+    RoutingNode* node = _route->at(i);
+    if (_wire->getRoutingNodeUsage().at(node) == 1) {
+      node->subLoad(1);
+      node->setCurrentlyUsed(false);
+      _wire->removeUsedRoutingNode(node);
+    }
+  }
+}
+
+double ParWireTarget::getSlack() const {
+  return _wire->getSlack();
+}
+
+std::string ParWireTarget::getName() const {
+  return _tgt_pin->getName();
+}
 
 
 
