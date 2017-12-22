@@ -72,7 +72,7 @@ void ParSystem::doPlacement() {
   if (_status.hasTargetInit && _status.hasDesignInit) {
     QPlace placer(_par_netlist, _par_target);
     placer.run();
-    placer.dumpCurrentPlacement();
+    placer.dumpCurrentPlacement("final.place");
     _status.hasPlaced = true;
   } else {
     qlog.speakError("Cannot run placement because target or design has not been initilized");

@@ -4,7 +4,7 @@
 puts "#########################################"
 puts "#        read blif netlist              #"
 puts "#########################################"
-set design 3gate.blif
+set design 3gate1.blif
 read_blif $design
 gen_dwave_nl
 puts "\n"
