@@ -27,6 +27,7 @@
 
 #include "qpar/qpar_system.hh"
 #include "qpar/qpar_target.hh"
+#include "qpar/qpar_routing_graph.hh"
 #include "qpar/qpar_place.hh"
 #include "qpar/qpar_route.hh"
 #include "utils/qlog.hh"
@@ -35,10 +36,14 @@ ParSystem* ParSystem::_system = NULL;
 
 ParSystem::~ParSystem() {
 
+  if (_fast_routing_graph) delete _fast_routing_graph;
+  if (_routing_graph) delete _routing_graph;
   if (_par_netlist) delete _par_netlist;
   if (_par_target) delete _par_target;
   if (_rand_gen) delete _rand_gen;
 
+  _fast_routing_graph = NULL;
+  _routing_graph = NULL;
   _par_netlist = NULL;
   _par_target = NULL;
   _rand_gen = NULL;
@@ -82,8 +87,11 @@ void ParSystem::doPlacement() {
 
 void ParSystem::doRoute() {
   if (_status.hasPlaced) {
-    QRoute router(_hw_target, _par_netlist, _par_target);
+    _routing_graph = new RoutingGraph(_hw_target, _par_target);
+    _fast_routing_graph = new FastRoutingGraph(_routing_graph);
+    QRoute router(_par_netlist, _routing_graph, _fast_routing_graph);
     router.run();
+    router.printAllRoute("final.route");
   } else {
     qlog.speakError("Cannot run routing because netlist has not been placed");
   }

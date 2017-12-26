@@ -23,6 +23,7 @@
 #include <vector>
 #include <unordered_set>
 #include <unordered_map>
+#include <fstream>
 #include <set>
 
 #include "qpar/qpar_sl_object.hh"
@@ -169,6 +170,10 @@ public:
   WIRE_ITER wire_begin() { return _wires.begin(); }
   WIRE_ITER wire_end() { return _wires.end(); }
 
+
+  WIRE_ITER model_wire_begin() { return _model_wires.begin(); }
+  WIRE_ITER model_wire_end() { return _model_wires.end(); }
+
   /*! \brief get number of wires in the netlist
    */
   size_t getWireNum() const { return _wires.size(); }
@@ -293,6 +298,10 @@ public:
     return _wire;
   }
 
+  /*! \brief print route;
+   */
+  void printRoute(std::ostream& out) const;
+
 private:
   ParElement* _source; //<! source element
   ParElement* _target; //<! target element
@@ -343,7 +352,8 @@ public:
    *  \return std::vector<ParWireTarget*> return target vector
    */
   std::vector<ParWireTarget*>& buildWireTarget(
-      const std::unordered_map<SYN::Gate*, ParElement*>& gate_to_par_element);
+      const std::unordered_map<SYN::Gate*, ParElement*>& gate_to_par_element,
+      ParElementSet& elements);
 
   /*! \brief initialize bounding box based on the placement
    */
@@ -456,6 +466,10 @@ public:
    */
   void printSelf() const;
 
+  /*! \brief for model wire get its only gate Pin
+   */
+  SYN::Pin* getUniqElementPin() const;
+
 private:
   /*! \brief re-compute bouding box
    */
@@ -494,6 +508,7 @@ public:
   /*! \brief default constructor
    */
   ParElement(SYN::Gate* gate);
+  ParElement(SYN::Pin* pin);
 
   /*! \brief add wire that connects to this element
    *  \function addWire(ParWire* wire)
@@ -513,6 +528,7 @@ public:
   /*! \brief set the grid that will have this element
    */
   void setGrid(ParGrid* grid);
+
 
   /*1 \brief get current grid
    */
@@ -562,12 +578,17 @@ public:
    */
   SYN::Gate* getSynGate() const { return _gate; }
 
+  /*! \brief get netlist pin
+   */
+  SYN::Pin* getPin() const { return _pin; }
+
 
   WIRE_ITER_V begin() { return _wires.begin(); }
   WIRE_ITER_V end() { return _wires.end(); }
 
 private:
   SYN::Gate* _gate; //!< gate form synthesis model
+  SYN::Pin* _pin; //!< pin from nelist model pin
 
   std::vector<ParWire*> _wires; //!< wire container that stores all wires connect to this element
   ParWire* _sink; //!< the wire that driven by this element. not used

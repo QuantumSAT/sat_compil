@@ -30,6 +30,8 @@ namespace SYN {
 class ParNetlist;
 class ParTarget;
 class HW_Target_Dwave;
+class RoutingGraph;
+class FastRoutingGraph;
 
 /*! \brief a status struct to inidcate the Par status
  */
@@ -134,6 +136,8 @@ private:
 
   ParNetlist* _par_netlist; //!< light weigh netlist used in placement and routing
   ParTarget* _par_target; //!< hardware file used in placement and routing
+  RoutingGraph* _routing_graph; //!< routing graph
+  FastRoutingGraph* _fast_routing_graph; //!< fast routing graph
 
   ParStatus _status; //!< system status indicates the the initializing procedure
   RandomGenerator* _rand_gen; //!< a random number generator used across entire qpar system

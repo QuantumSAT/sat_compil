@@ -113,112 +113,147 @@ void CellGen::configInteraction(COORD local1, COORD local2, double val) {
 
 }
 
+void CellGen::assignPin(SYN::Pin* pin) {
+
+  std::set<COORD> locs;
+  for (COORD i = 0; i < 4; ++i)
+    locs.insert(i);
+
+
+  std::unordered_map<SYN::Pin*, COORD>::iterator pin_iter = _pin_to_loc.begin();
+  for (; pin_iter != _pin_to_loc.end(); ++pin_iter) {
+    QASSERT(locs.count(pin_iter->second));
+    locs.erase(pin_iter->second);
+  }
+
+  QASSERT(locs.size());
+  _pin_to_loc.insert(std::make_pair(pin, *(locs.begin())));
+
+}
+
 void CellGen::generateConfig(DeviceGen* device) {
   ParElement* element = _grid->getCurrentElement();
 
   QASSERT(element);
   SYN::Gate* gate = element->getSynGate();
-  QASSERT(gate->getNumIn() <= 2);
+  SYN::Pin* syn_pin = element->getPin();
 
-  switch(gate->getDwaveType()) {
-    case SYN::Gate::OR:
-      {
-        SYN::Pin* pin1 = gate->getInpin(0);
-        SYN::Pin* pin2 = gate->getInpin(1);
-        SYN::Pin* opin = gate->getOpin();
-        SYN::Gate::PHASE in1_phase = gate->getPinPhase(pin1);
-        SYN::Gate::PHASE in2_phase = gate->getPinPhase(pin2);
-        QASSERT(gate->getNumOut() == 1);
-        QASSERT(_pin_to_loc.count(pin1) && _pin_to_loc.count(pin2));
-        QASSERT(_pin_to_loc.count(opin));
-        COORD pos1 = _pin_to_loc.at(pin1);
-        COORD pos2 = _pin_to_loc.at(pin2);
-        COORD pos3 = _pin_to_loc.at(opin);
+  if (gate) {
+    QASSERT(gate->getNumIn() <= 2);
+    switch(gate->getDwaveType()) {
+      case SYN::Gate::OR:
+        {
+          SYN::Pin* pin1 = gate->getInpin(0);
+          SYN::Pin* pin2 = gate->getInpin(1);
+          SYN::Pin* opin = gate->getOpin();
+          SYN::Gate::PHASE in1_phase = gate->getPinPhase(pin1);
+          SYN::Gate::PHASE in2_phase = gate->getPinPhase(pin2);
+          QASSERT(gate->getNumOut() == 1);
+          QASSERT(_pin_to_loc.count(pin1) && _pin_to_loc.count(pin2));
+          QASSERT(_pin_to_loc.count(opin));
+          COORD pos1 = _pin_to_loc.at(pin1);
+          COORD pos2 = _pin_to_loc.at(pin2);
+          COORD pos3 = _pin_to_loc.at(opin);
 
-        if (in1_phase == SYN::Gate::POS_UNATE && in2_phase == SYN::Gate::POS_UNATE) {
-          configSpin(pos1, 0.5);
-          configSpin(pos2, 0.5);
-          configSpin(pos3, -1.0);
-          configInteraction(pos1, pos2, 0.5);
-          configInteraction(pos1, pos3, -1.0);
-          configInteraction(pos2, pos3, -1.0);
-        } else if (in1_phase == SYN::Gate::POS_UNATE && in2_phase == SYN::Gate::NEG_UNATE) {
-          configSpin(pos1, 0.5);
-          configSpin(pos2, -0.5);
-          configSpin(pos3, -1.0);
-          configInteraction(pos1, pos2, -0.5);
-          configInteraction(pos1, pos3, -1.0);
-          configInteraction(pos2, pos3, 1.0);
-        } else if (in1_phase == SYN::Gate::NEG_UNATE && in2_phase == SYN::Gate::POS_UNATE) {
-          configSpin(pos1, -0.5);
-          configSpin(pos2, 0.5);
-          configSpin(pos3, -1.0);
-          configInteraction(pos1, pos2, -0.5);
-          configInteraction(pos1, pos3, 1.0);
-          configInteraction(pos2, pos3, -1.0);
-        } else if (in1_phase == SYN::Gate::NEG_UNATE && in2_phase == SYN::Gate::NEG_UNATE) {
-          configSpin(pos1, -0.5);
-          configSpin(pos2, -0.5);
-          configSpin(pos3, -1.0);
-          configInteraction(pos1, pos2, 0.5);
-          configInteraction(pos1, pos3, 1.0);
-          configInteraction(pos2, pos3, 1.0);
-        } else {
-          assert(0);
+          if (in1_phase == SYN::Gate::POS_UNATE && in2_phase == SYN::Gate::POS_UNATE) {
+            configSpin(pos1, 0.5);
+            configSpin(pos2, 0.5);
+            configSpin(pos3, -1.0);
+            configInteraction(pos1, pos2, 0.5);
+            configInteraction(pos1, pos3, -1.0);
+            configInteraction(pos2, pos3, -1.0);
+          } else if (in1_phase == SYN::Gate::POS_UNATE && in2_phase == SYN::Gate::NEG_UNATE) {
+            configSpin(pos1, 0.5);
+            configSpin(pos2, -0.5);
+            configSpin(pos3, -1.0);
+            configInteraction(pos1, pos2, -0.5);
+            configInteraction(pos1, pos3, -1.0);
+            configInteraction(pos2, pos3, 1.0);
+          } else if (in1_phase == SYN::Gate::NEG_UNATE && in2_phase == SYN::Gate::POS_UNATE) {
+            configSpin(pos1, -0.5);
+            configSpin(pos2, 0.5);
+            configSpin(pos3, -1.0);
+            configInteraction(pos1, pos2, -0.5);
+            configInteraction(pos1, pos3, 1.0);
+            configInteraction(pos2, pos3, -1.0);
+          } else if (in1_phase == SYN::Gate::NEG_UNATE && in2_phase == SYN::Gate::NEG_UNATE) {
+            configSpin(pos1, -0.5);
+            configSpin(pos2, -0.5);
+            configSpin(pos3, -1.0);
+            configInteraction(pos1, pos2, 0.5);
+            configInteraction(pos1, pos3, 1.0);
+            configInteraction(pos2, pos3, 1.0);
+          } else {
+            assert(0);
+          }
+          break;
         }
-        break;
-      }
-    case SYN::Gate::AND:
-      {
-        SYN::Pin* pin1 = gate->getInpin(0);
-        SYN::Pin* pin2 = gate->getInpin(1);
-        SYN::Pin* opin = gate->getOpin();
-        SYN::Gate::PHASE in1_phase = gate->getPinPhase(pin1);
-        SYN::Gate::PHASE in2_phase = gate->getPinPhase(pin2);
-        QASSERT(gate->getNumOut() == 1);
-        QASSERT(_pin_to_loc.count(pin1) && _pin_to_loc.count(pin2));
-        QASSERT(_pin_to_loc.count(opin));
-        COORD pos1 = _pin_to_loc.at(pin1);
-        COORD pos2 = _pin_to_loc.at(pin2);
-        COORD pos3 = _pin_to_loc.at(opin);
-        if (in1_phase == SYN::Gate::POS_UNATE && in2_phase == SYN::Gate::POS_UNATE) {
-          configSpin(pos1, -0.5);
-          configSpin(pos2, -0.5);
-          configSpin(pos3, 1.0);
-          configInteraction(pos1, pos2, 0.5);
-          configInteraction(pos1, pos3, -1.0);
-          configInteraction(pos2, pos3, -1.0);
-        } else if (in1_phase == SYN::Gate::POS_UNATE && in2_phase == SYN::Gate::NEG_UNATE) {
-          configSpin(pos1, -0.5);
-          configSpin(pos2, 0.5);
-          configSpin(pos3, 1.0);
-          configInteraction(pos1, pos2, -0.5);
-          configInteraction(pos1, pos3, -1.0);
-          configInteraction(pos2, pos3, 1.0);
-        } else if (in1_phase == SYN::Gate::NEG_UNATE && in2_phase == SYN::Gate::POS_UNATE) {
-          configSpin(pos1, 0.5);
-          configSpin(pos2, -0.5);
-          configSpin(pos3, 1.0);
-          configInteraction(pos1, pos2, -0.5);
-          configInteraction(pos1, pos3, 1.0);
-          configInteraction(pos2, pos3, -1.0);
-        } else if (in1_phase == SYN::Gate::NEG_UNATE && in2_phase == SYN::Gate::NEG_UNATE) {
-          configSpin(pos1, 0.5);
-          configSpin(pos2, 0.5);
-          configSpin(pos3, 1.0);
-          configInteraction(pos1, pos2, 0.5);
-          configInteraction(pos1, pos3, 1.0);
-          configInteraction(pos2, pos3, 1.0);
-        } else {
-          assert(0);
+      case SYN::Gate::AND:
+        {
+          SYN::Pin* pin1 = gate->getInpin(0);
+          SYN::Pin* pin2 = gate->getInpin(1);
+          SYN::Pin* opin = gate->getOpin();
+          SYN::Gate::PHASE in1_phase = gate->getPinPhase(pin1);
+          SYN::Gate::PHASE in2_phase = gate->getPinPhase(pin2);
+          QASSERT(gate->getNumOut() == 1);
+          QASSERT(_pin_to_loc.count(pin1) && _pin_to_loc.count(pin2));
+          QASSERT(_pin_to_loc.count(opin));
+          COORD pos1 = _pin_to_loc.at(pin1);
+          COORD pos2 = _pin_to_loc.at(pin2);
+          COORD pos3 = _pin_to_loc.at(opin);
+          if (in1_phase == SYN::Gate::POS_UNATE && in2_phase == SYN::Gate::POS_UNATE) {
+            configSpin(pos1, -0.5);
+            configSpin(pos2, -0.5);
+            configSpin(pos3, 1.0);
+            configInteraction(pos1, pos2, 0.5);
+            configInteraction(pos1, pos3, -1.0);
+            configInteraction(pos2, pos3, -1.0);
+          } else if (in1_phase == SYN::Gate::POS_UNATE && in2_phase == SYN::Gate::NEG_UNATE) {
+            configSpin(pos1, -0.5);
+            configSpin(pos2, 0.5);
+            configSpin(pos3, 1.0);
+            configInteraction(pos1, pos2, -0.5);
+            configInteraction(pos1, pos3, -1.0);
+            configInteraction(pos2, pos3, 1.0);
+          } else if (in1_phase == SYN::Gate::NEG_UNATE && in2_phase == SYN::Gate::POS_UNATE) {
+            configSpin(pos1, 0.5);
+            configSpin(pos2, -0.5);
+            configSpin(pos3, 1.0);
+            configInteraction(pos1, pos2, -0.5);
+            configInteraction(pos1, pos3, 1.0);
+            configInteraction(pos2, pos3, -1.0);
+          } else if (in1_phase == SYN::Gate::NEG_UNATE && in2_phase == SYN::Gate::NEG_UNATE) {
+            configSpin(pos1, 0.5);
+            configSpin(pos2, 0.5);
+            configSpin(pos3, 1.0);
+            configInteraction(pos1, pos2, 0.5);
+            configInteraction(pos1, pos3, 1.0);
+            configInteraction(pos2, pos3, 1.0);
+          } else {
+            assert(0);
+          }
+          break;
         }
-        break;
-      }
-    case SYN::Gate::BUF:
-      {
-        QASSERT(0);
-      }
-    default:QASSERT(0);
+      case SYN::Gate::BUF:
+        {
+          QASSERT(0);
+        }
+      default:QASSERT(0);
+    }
+  } else if (syn_pin) {
+    QASSERT(_pin_to_loc.count(syn_pin));
+    COORD pos = _pin_to_loc.at(syn_pin);
+    COORD x_coord = element->getX();
+    COORD y_coord = element->getY();
+    HW_Loc loc_phy1_1(x_coord, y_coord, pos);
+    HW_Loc loc_phy1_2(x_coord, y_coord, pos + 4);
+
+    HW_Loc inter_1(loc_phy1_1.getGlobalIndex(), loc_phy1_2.getGlobalIndex());
+    ConfigElement inter;
+    inter.loc = inter_1;
+    inter.value = -1.0;
+    _inter_configs.insert(std::make_pair(std::make_pair(loc_phy1_1.getGlobalIndex(), loc_phy1_2.getGlobalIndex()), inter));
+
   }
 
   QubitConfigs::iterator q_iter = _qubit_configs.begin();
@@ -238,11 +273,11 @@ void DeviceGen::dumpDwaveConfiguration(std::string filename) {
   std::ofstream outfile;
   outfile.open(filename.c_str());
   size_t line_num = _qubits.size() + _interactions.size();
-  outfile << line_num << std::endl;
+  outfile << 2048 << " " << line_num << std::endl;
   
   QubitConfigs::iterator q_iter = _qubits.begin();
   for (; q_iter != _qubits.end(); ++q_iter) {
-    outfile << q_iter->first << " " << q_iter->second.value << std::endl;
+    outfile << q_iter->first << " " << q_iter->first << " " << q_iter->second.value << std::endl;
   }
 
   InteractionConfigs::iterator i_iter = _interactions.begin();
@@ -303,6 +338,9 @@ void DeviceGen::doGenerate() {
   std::vector<ParWireTarget*>& targets = _par_netlist->getTargets();
   for (size_t i = 0; i < targets.size(); ++i) {
     ParWireTarget* target = targets[i];
+    
+    if (target->getDontRoute()) continue;
+
     RoutePath* route = target->getRoutePath();
 
 
@@ -341,6 +379,21 @@ void DeviceGen::doGenerate() {
     InteractionGen* interac = new InteractionGen(wire);
     _v_interactions.push_back(interac);
     interac->generateConfig(this);
+  }
+
+  w_iter = _par_netlist->model_wire_begin();
+  for (; w_iter != _par_netlist->model_wire_end(); ++w_iter) {
+    ParWire* wire = *w_iter;
+    if (wire->getElementNumber() == 0) continue;
+    SYN::Pin* u_pin = wire->getUniqElementPin();
+    QASSERT(u_pin);
+    ParElement* element = wire->getUniqElement();
+    ParGrid* grid = element->getCurrentGrid();
+    QASSERT(grid);
+    COORD x_index = grid->getLoc().getLocX();
+    COORD y_index = grid->getLoc().getLocY();
+    CellGen*  cellgen = _loc_to_cellgen.at(std::make_pair(x_index, y_index));
+    cellgen->assignPin(u_pin);
   }
  
   qlog.speak("Generate", "Generate cell configuration");

@@ -1,0 +1,5 @@
+Wire: g (g.O)(2,6,1, is_logic)->(2,7,1, is_logic)(e.I1)
+Wire: b (f.I1)(3,6,2, is_logic)->(2,6,2, is_logic)(g.I1)
+Wire: e (e.O)(2,7,2, is_logic)->(1,7,6)->(1,7,0)->(1,8,0)->(1,9,0, is_logic)(model.e)
+Wire: a (f.I0)(3,6,3, is_logic)->(2,6,3, is_logic)(g.I0)
+Wire: f (f.O)(3,6,1, is_logic)->(3,7,1)->(3,7,7)->(2,7,3, is_logic)(e.I0)

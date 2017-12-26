@@ -1,0 +1,4 @@
+Gate: f 0 12
+Gate: g 8 11
+Gate: e 4 12
+Gate: e.(model pin) 0 14

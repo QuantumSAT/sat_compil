@@ -79,6 +79,7 @@ double CongestionAwareCost::computeCost(ParWire* wire, const qpr_matrix<unsigned
     fill_rate = fill_rate * static_cast<float>(2.7933 + 0.02616 * (number_of_ele - 50));
 
   fill_rate = std::min(fill_rate, 0.95);
+  fill_rate = 0;
 
   double cost = (width + hight)/(1-fill_rate);
 

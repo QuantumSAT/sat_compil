@@ -27,6 +27,7 @@
 #include "utils/qlog.hh"
 
 #include <algorithm>
+#include <fstream>
 
 
 FastRoutingGraph::FastRoutingGraph(RoutingGraph* graph) :
@@ -65,11 +66,15 @@ QRoute::~QRoute() {
   if (_cost) delete _cost;
   _cost = NULL;
 
-  if (_f_graph) delete _f_graph;
-  _f_graph = NULL;
+  if (_cost_simple) delete _cost_simple;
+  _cost_simple = NULL;
 
-  if (_rr_graph) delete _rr_graph;
-  _rr_graph = NULL;
+  if (_router) delete _router;
+  _router = NULL;
+
+  if (_first_router) delete _first_router;
+  _first_router = NULL;
+
 }
 
 
@@ -172,8 +177,6 @@ bool QRoute::isRoutingValid(std::vector<ParWireTarget*>& targets, unsigned& over
 
 void QRoute::initializeRouting() {
 
-  buildRoutingGraph();
-
   _cost = new RoutingCostNBR();
   _router = new ParRouter(*_f_graph, *_cost);
 
@@ -191,11 +194,6 @@ void QRoute::initializeWireSlack() {
     wire->setSlack(1.0);
   }
 
-}
-
-void QRoute::buildRoutingGraph() {
-  _rr_graph = new RoutingGraph(_dwave_target, _par_target);
-  _f_graph = new FastRoutingGraph(_rr_graph);
 }
 
 void QRoute::routeAllTarget(std::vector<ParWireTarget*>& targets, unsigned iter) {
@@ -279,6 +277,17 @@ void QRoute::updateRoute(ParWireTarget* target, double& slack, ParRouter* router
   RoutePath* new_route = new RoutePath(nodes, edges);
   target->setRoutePath(new_route);
   target->getWire()->updateWireRoute(new_route);
+}
+
+void QRoute::printAllRoute(std::string filename) {
+
+  std::ofstream outfile;
+  outfile.open(filename.c_str());
+  std::vector<ParWireTarget*> targets = _netlist->getTargets();
+  for (size_t i = 0; i < targets.size(); ++i) {
+    targets[i]->printRoute(outfile);
+  }
+  outfile.close();
 }
 
 

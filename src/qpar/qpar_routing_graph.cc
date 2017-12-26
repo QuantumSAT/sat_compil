@@ -155,7 +155,7 @@ void RoutingGraph::createRoutingGraph() {
       _nodes.size(),
       _edges.size());
 
-  //sanityCheck();
+  sanityCheck();
 }
 
 
@@ -175,6 +175,7 @@ RoutingNode::RoutingNode() :
   _isLogicalQubit(false),
   _load(0),
   _history_cost(0.0),
+  _is_currently_used(false),
   _capacity(1)
 {
   _node_index = _index_counter;
@@ -188,6 +189,7 @@ RoutingNode::RoutingNode(HW_Qubit* qubit, bool logical) :
   _isLogicalQubit(logical),
   _load(0),
   _history_cost(0.0),
+  _is_currently_used(false),
   _capacity(1)
 {
   _node_index = _index_counter;
@@ -201,6 +203,7 @@ RoutingNode::RoutingNode(HW_Interaction* iter) :
   _isLogicalQubit(false),
   _load(0),
   _history_cost(0.0),
+  _is_currently_used(false),
   _capacity(1)
 {
   _node_index = _index_counter;
@@ -212,7 +215,9 @@ RoutingNode::RoutingNode(SYN::Pin* pin) :
   _interaction(NULL),
   _pin(pin),
   _history_cost(0.0),
+  _is_currently_used(false),
   _isLogicalQubit(false),
+  _load(0),
   _capacity(1)
 {
   _node_index = _index_counter;
@@ -222,7 +227,8 @@ RoutingNode::RoutingNode(SYN::Pin* pin) :
 
 void RoutingNode::sanityCheck() const {
   std::stringstream ss;
-  ss << "Node Type:: ";
+  ss << "Index: " << _node_index;
+  ss << " Node Type:: ";
   if      (isQubit()) {
     ss << "Qubit ";
     ss << "Logic: " << (_isLogicalQubit ? "true " : "false ");
@@ -302,41 +308,73 @@ void RoutingCell::initCellRoutingGraph() {
     HW_Cell* cell = _grid->getHWCell();
     ParElement* par_ele = _grid->getCurrentElement();
     SYN::Gate* syn_gate = par_ele->getSynGate();
-    PIN_ITER pin_iter = syn_gate->begin();
-    for (; pin_iter != syn_gate->end(); ++pin_iter) {
-      SYN::Pin* pin = *pin_iter;
-      RoutingNode* node = new RoutingNode(pin);
-      _pin_to_node.insert(std::make_pair(pin, node));
-      _graph->_nodes.insert(node);
-      _nodes.push_back(node);
-    }
+    SYN::Pin* syn_pin = par_ele->getPin();
 
-    //2) build qubit node TODO:change hard-coded index
-    for (COORD i = 0; i < 4; ++i) {
-      HW_Qubit* qubit = cell->getQubit(i);
-      RoutingNode* node = new RoutingNode(qubit, true);
-      _index_to_node.insert(std::make_pair(i, node));
-      _graph->_nodes.insert(node);
-      _nodes.push_back(node);
-    }
-
-
-    //3) build edges
-    std::map<COORD, RoutingNode*>::iterator q_iter;
-    std::map<SYN::Pin*, RoutingNode*>::iterator p_iter;
-    for (p_iter = _pin_to_node.begin(); 
-         p_iter != _pin_to_node.end(); ++p_iter) {
-
-      q_iter = _index_to_node.begin();
-      for (; q_iter != _index_to_node.end(); ++q_iter) {
-        RoutingNode* pin_node = p_iter->second;
-        RoutingNode* qu_node = q_iter->second;
-        RoutingEdge* edge = new RoutingEdge(pin_node, qu_node);
-        _edges.push_back(edge);
-        _graph->_edges.insert(edge);
+    if (syn_gate) {
+      PIN_ITER pin_iter = syn_gate->begin();
+      for (; pin_iter != syn_gate->end(); ++pin_iter) {
+        SYN::Pin* pin = *pin_iter;
+        RoutingNode* node = new RoutingNode(pin);
+        _pin_to_node.insert(std::make_pair(pin, node));
+        _graph->_nodes.insert(node);
+        _nodes.push_back(node);
       }
-    }
 
+      //2) build qubit node TODO:change hard-coded index
+      for (COORD i = 0; i < 4; ++i) {
+        HW_Qubit* qubit = cell->getQubit(i);
+        RoutingNode* node = new RoutingNode(qubit, true);
+        _index_to_node.insert(std::make_pair(i, node));
+        _graph->_nodes.insert(node);
+        _nodes.push_back(node);
+      }
+
+
+      //3) build edges
+      std::map<COORD, RoutingNode*>::iterator q_iter;
+      std::map<SYN::Pin*, RoutingNode*>::iterator p_iter;
+      for (p_iter = _pin_to_node.begin(); 
+          p_iter != _pin_to_node.end(); ++p_iter) {
+
+        q_iter = _index_to_node.begin();
+        for (; q_iter != _index_to_node.end(); ++q_iter) {
+          RoutingNode* pin_node = p_iter->second;
+          RoutingNode* qu_node = q_iter->second;
+          RoutingEdge* edge = new RoutingEdge(pin_node, qu_node);
+          _edges.push_back(edge);
+          _graph->_edges.insert(edge);
+        }
+      }
+    } else if (syn_pin) {
+      RoutingNode* node = new RoutingNode(syn_pin);
+      _pin_to_node.insert(std::make_pair(syn_pin, node));
+      _graph->_nodes.insert(node);
+      _nodes.push_back(node);
+
+      for (COORD i = 0; i < 4; ++i) {
+        HW_Qubit* qubit = cell->getQubit(i);
+        RoutingNode* node = new RoutingNode(qubit, true);
+        _index_to_node.insert(std::make_pair(i, node));
+        _graph->_nodes.insert(node);
+        _nodes.push_back(node);
+      }
+
+      //3) build edges
+      std::map<COORD, RoutingNode*>::iterator q_iter;
+      std::map<SYN::Pin*, RoutingNode*>::iterator p_iter;
+      for (p_iter = _pin_to_node.begin(); 
+          p_iter != _pin_to_node.end(); ++p_iter) {
+
+        q_iter = _index_to_node.begin();
+        for (; q_iter != _index_to_node.end(); ++q_iter) {
+          RoutingNode* pin_node = p_iter->second;
+          RoutingNode* qu_node = q_iter->second;
+          RoutingEdge* edge = new RoutingEdge(pin_node, qu_node);
+          _edges.push_back(edge);
+          _graph->_edges.insert(edge);
+        }
+      }
+    } else QASSERT(0);
   } else {
     HW_Cell* cell = _grid->getHWCell();
 
@@ -375,7 +413,5 @@ void RoutingCell::initCellRoutingGraph() {
     }
 
   }
-
-  
 
 }

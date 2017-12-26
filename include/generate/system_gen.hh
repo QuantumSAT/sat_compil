@@ -72,6 +72,10 @@ public:
    */
   void assignPin(SYN::Pin* pin, COORD);
 
+  /*! \brief assign pin to first avaible localtion
+   */
+  void assignPin(SYN::Pin*);
+
   /*! \brief config spin value
    */
   void configSpin(COORD local, double val);

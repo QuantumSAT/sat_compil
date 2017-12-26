@@ -86,12 +86,11 @@ public:
    *  \param HW_Target_Dwave* hardware target
    */
 
-  QRoute(HW_Target_Dwave* dwave, ParNetlist* netlist, ParTarget* target) :
-    _dwave_target(dwave),
+  QRoute(ParNetlist* netlist,
+      RoutingGraph* rr_graph, FastRoutingGraph* f_graph) :
     _netlist(netlist),
-    _par_target(target),
-    _rr_graph(NULL),
-    _f_graph(NULL)
+    _rr_graph(rr_graph),
+    _f_graph(f_graph)
   {
   }
 
@@ -104,10 +103,18 @@ public:
    */
   void run();
 
+  /*! \brief get routing graph
+   */ 
+  RoutingGraph* getRoutingGraph() const {
+    return _rr_graph;
+  }
+
+  /*! \brief print route of each target
+   */
+  void printAllRoute(std::string filename);
+
 private:
-  HW_Target_Dwave* _dwave_target; //!< hardware target
   ParNetlist* _netlist; //!< netlist infomation
-  ParTarget* _par_target; //!< placement and routing target
 
   RoutingGraph* _rr_graph; //!< routing graph
   FastRoutingGraph* _f_graph; //!< fast routing graph

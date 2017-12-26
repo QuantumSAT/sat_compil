@@ -24,6 +24,8 @@
 #include "qpar/qpar_routing_graph.hh"
 #include "qpar/qpar_route.hh"
 
+#include "hw_target/hw_object.hh"
+
 #include "syn/netlist.h"
 #include "utils/qlog.hh"
 
@@ -107,6 +109,7 @@ void ParNetlist::buildParNetlist() {
     ParElement* element = new ParElement(syn_gate);
     gate_to_par_element.insert(std::make_pair(syn_gate, element));
     _elements.insert(element);
+    qlog.speak("debug", "insert %lu", _elements.size());
   }
 
   typedef std::vector<SYN::Pin*>::iterator PIN_ITER;
@@ -142,7 +145,7 @@ void ParNetlist::buildParNetlist() {
   std::unordered_map<SYN::Net*, ParWire*>::iterator w_iter = net_to_par_wire.begin();
   for (; w_iter != net_to_par_wire.end(); ++w_iter) {
     ParWire* wire = w_iter->second;
-    std::vector<ParWireTarget*> targets = wire->buildWireTarget(gate_to_par_element);
+    std::vector<ParWireTarget*> targets = wire->buildWireTarget(gate_to_par_element, _elements);
     _all_targets.insert(_all_targets.end(), targets.begin(), targets.end());
     if (wire->getElementNumber() <= 1) {
       _model_wires.insert(wire);
@@ -152,13 +155,14 @@ void ParNetlist::buildParNetlist() {
     else
       _wires.insert(wire);
   }
+  qlog.speak("debug", "size %lu", _elements.size());
 
 
 
   qlog.speak("Design", "%u wires, %u model wires, %u elements has been constructed",
       (unsigned)_wires.size(),
       (unsigned)_model_wires.size(),
-      (unsigned)gate_to_par_element.size()
+      (unsigned)_elements.size()
       );
 
   WIRE_ITER wi_iter = wire_begin();
@@ -171,8 +175,22 @@ void ParNetlist::buildParNetlist() {
 unsigned int ParElement::_element_index_counter = 0;
 ParElement::ParElement(SYN::Gate* gate) : 
 _gate(gate),
+_pin(NULL),
 _sink(NULL),
-_movable(true) {
+_movable(true)
+{
+  qlog.speak("debug", "new gate %u", _element_index_counter);
+  _element_index = _element_index_counter;
+  ++_element_index_counter;
+}
+
+ParElement::ParElement(SYN::Pin* pin) :
+_gate(NULL),
+_pin(pin),
+_sink(NULL),
+_movable(true)
+{
+  qlog.speak("debug", "new pin %u", _element_index_counter);
   _element_index = _element_index_counter;
   ++_element_index_counter;
 }
@@ -199,7 +217,11 @@ void ParElement::updatePlacement() {
 }
 
 std::string ParElement::getName() const {
-  return _gate->getName();
+  if (_gate)
+    return _gate->getName();
+  else if (_pin)
+    return _pin->getName() + ".(model pin)";
+  QASSERT(0);
 }
 
 unsigned int ParWire::_wire_index_counter = 0;
@@ -223,7 +245,8 @@ std::string ParWire::getName() const {
 }
 
 std::vector<ParWireTarget*>& ParWire::buildWireTarget(
-    const std::unordered_map<SYN::Gate*, ParElement*>& gate_to_par_element) {
+    const std::unordered_map<SYN::Gate*, ParElement*>& gate_to_par_element,
+    ParElementSet& elements) {
  _targets.clear();
   SYN::Pin* source = _net->uniqSource();
   QASSERT(source);
@@ -281,8 +304,10 @@ std::vector<ParWireTarget*>& ParWire::buildWireTarget(
       SYN::Pin* sk = sink[i];
       ParElement* src_ele = gate_to_par_element.at(source->getGate());
       if (sk->isModelPin()) {
-        ParWireTarget* target = new ParWireTarget(src_ele, NULL, source, sk, this);
-        target->setDontRoute(true);
+        ParElement* element = new ParElement(sk);
+        element->addWire(this);
+        ParWireTarget* target = new ParWireTarget(src_ele, element, source, sk, this);
+        elements.insert(element);
         _targets.push_back(target);
       } else {
         ParElement* tgt_ele = gate_to_par_element.at(sk->getGate());
@@ -290,7 +315,6 @@ std::vector<ParWireTarget*>& ParWire::buildWireTarget(
         _targets.push_back(target);
       }
     }
-
   }
 
   return _targets;
@@ -527,6 +551,21 @@ ParElement* ParWire::getUniqElement() {
   return (*_elements.begin());
 }
 
+SYN::Pin* ParWire::getUniqElementPin() const {
+  SYN::Pin* pin = NULL;
+  SYN::Net::PIN_ITER_CONST pin_iter = _net->begin();
+  for (; pin_iter != _net->end(); ++pin_iter) {
+    SYN::Pin* pin_t = *pin_iter;
+    if (pin_t->isGatePin() && pin == NULL)
+      pin = pin_t;
+    else if (pin_t->isGatePin() && pin)
+      QASSERT(0);
+    else continue;
+  }
+
+  return pin;
+}
+
 
 void ParWire::updateWireRoute(RoutePath* route) {
 
@@ -622,6 +661,50 @@ std::string ParWireTarget::getName() const {
     return _tgt_pin->getName();
   else
     return _tgt_pin->getGate()->getName() + "." + _tgt_pin->getName();
+}
+
+void ParWireTarget::printRoute(std::ostream& out) const {
+  if (getDontRoute()) return;
+
+  out << "Wire: " << _wire->getName() << " ";
+
+  for (size_t i = 0; i < _route->size(); ++i) {
+    RoutingNode* node = _route->at(i);
+
+    if (node->isPin()) {
+      out << "(";
+      if (node->getPin()->isModelPin())
+        out << "model." + node->getPin()->getName();
+      else
+        out << node->getPin()->getGate()->getName() + "." + node->getPin()->getName();
+      out << ")";
+      continue;
+    }
+
+    if (node->isInteraction()) {
+      out << "->";
+      continue;
+    }
+
+    if (node->isQubit() && node->isLogic()) {
+      out << "(";
+      out << node->getQubit()->getLoc().getLocX() << ",";
+      out << node->getQubit()->getLoc().getLocY() << ",";
+      out << node->getQubit()->getLoc().getLocalIndex() << ", is_logic)";
+      continue;
+    }
+
+    if (node->isQubit() && !node->isLogic()) {
+      out << "(";
+      out << node->getQubit()->getLoc().getLocX() << ",";
+      out << node->getQubit()->getLoc().getLocY() << ",";
+      out << node->getQubit()->getLoc().getLocalIndex() << ")";
+      continue;
+    }
+
+  }
+
+  out << std::endl;
 }
 
 

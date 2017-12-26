@@ -33,6 +33,7 @@ lib/
 .ycm_extra_conf.pyc
 *.pyc
 *.matrix
+*.config
 
 */*/Makefile
 
