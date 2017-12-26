@@ -17,48 +17,15 @@
  *   License along with QSat.  If not, see <http://www.gnu.org/licenses/>.  *
  ****************************************************************************/
 
-/*!
- * \file tcl_register_commands.cc
- * \author Juexiao Su
- * \date 21 Jul 2017
- * \brief register all tcl commands
- */
+#ifndef GEN_TCL_HH
+#define GEN_TCL_HH
 
-#include "tcl/tcl_manager.hh"
 #include "tcl/tcl_command.hh"
-#include "tcl/tcl_basic_command.hh"
+#include "tcl/tcl_manager.hh"
 
-#include "syn/syn_tcl.hh"
-#include "hw_target/hw_tcl.hh"
-#include "qpar/qpar_tcl.hh"
-#include "generate/gen_tcl.hh"
+TCL_COMMAND_DEFINE(QCOMMAND_generate)
 
 
-void registerAllCommands() {
 
-  TclManager* tcl_manager = TclManager::getOrCreate();
-
-  tcl_manager->registerCommand(new QCOMMAND_source("source", "<string>"));
-  tcl_manager->registerCommand(new QCOMMAND_hello("hello",""));
-
-  //netlist related
-  tcl_manager->registerCommand(new QCOMMAND_read_blif("read_blif","<string>"));
-  tcl_manager->registerCommand(new QCOMMAND_write_blif("write_blif","<string>"));
-
-  //hardware related
-  tcl_manager->registerCommand(new QCOMMAND_init_target("init_target","-row <int> -col <int> -local <int>"));
-  tcl_manager->registerCommand(new QCOMMAND_gen_dwave_nl("gen_dwave_nl",""));
-
-  //placement and routing related
-  tcl_manager->registerCommand(new QCOMMAND_build_qpar_nl("build_qpar_nl", ""));
-  tcl_manager->registerCommand(new QCOMMAND_init_system("init_system", ""));
-  tcl_manager->registerCommand(new QCOMMAND_place("place", ""));
-  tcl_manager->registerCommand(new QCOMMAND_check_routing_graph("check_routing_graph", ""));
-  tcl_manager->registerCommand(new QCOMMAND_route("route", ""));
-
-  //genrate config
-  tcl_manager->registerCommand(new QCOMMAND_generate("generate", ""));
-
-
-}
+#endif
 

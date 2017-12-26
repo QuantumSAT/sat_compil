@@ -117,6 +117,10 @@ public:
     return _hw_target;
   }
 
+  ParNetlist* getParNetlist() const {
+    return _par_netlist;
+  }
+
   /* unit test related class
    */
   friend class RoutingTester;

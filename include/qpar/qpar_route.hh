@@ -60,9 +60,13 @@ class RoutePath : public std::vector<RoutingNode*> {
 public:
   RoutePath(const std::list<RoutingNode*>& nodes, const std::list<RoutingEdge*>& edges);
 
+  /*! get edges in the path
+   */
+  std::vector<RoutingEdge*>& getEdges() { return _edges; }
+
 
 private:
-  std::vector<RoutingEdge*> _edges;
+  std::vector<RoutingEdge*> _edges; //!< edges in between every routing nodes in the path
 
 
 };

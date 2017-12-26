@@ -163,15 +163,39 @@ public:
     return _qubit;
   }
 
+  /*! \brief get qubit 
+   */
+  HW_Qubit* getQubit() const {
+    return _qubit;
+  }
+
   /*! \brief check if the routing node is a interaction
    */
   bool isInteraction() const {
     return _interaction;
   }
 
+  /*! \brief get interaction
+   */
+  HW_Interaction* getInteraction() const {
+    return _interaction;
+  }
+
+  /*! \brief check if the routing node is a logic qubit
+   */
+  bool isLogic() const {
+    return _isLogicalQubit;
+  }
+
   /*! \brief check if the routing node is a pin(pseudo node)
    */
   bool isPin() const {
+    return _pin;
+  }
+
+  /*! \brief get netlist pin
+   */
+  SYN::Pin* getPin() const {
     return _pin;
   }
 

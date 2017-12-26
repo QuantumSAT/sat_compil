@@ -314,7 +314,7 @@ void RoutingCell::initCellRoutingGraph() {
     //2) build qubit node TODO:change hard-coded index
     for (COORD i = 0; i < 4; ++i) {
       HW_Qubit* qubit = cell->getQubit(i);
-      RoutingNode* node = new RoutingNode(qubit);
+      RoutingNode* node = new RoutingNode(qubit, true);
       _index_to_node.insert(std::make_pair(i, node));
       _graph->_nodes.insert(node);
       _nodes.push_back(node);

@@ -133,6 +133,12 @@ public:
    */
   COORD getGlobalIndex() const { return _global_index; }
 
+  /*! \brief get interaction coord pair
+   */
+  std::pair<COORD, COORD> getInteractionIndex() const {
+    return _interaction_index;
+  }
+
 
   /*  \brief convert local index to global index
    *  \param x 
