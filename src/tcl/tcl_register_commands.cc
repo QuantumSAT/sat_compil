@@ -32,6 +32,7 @@
 #include "hw_target/hw_tcl.hh"
 #include "qpar/qpar_tcl.hh"
 #include "generate/gen_tcl.hh"
+#include "cnf2blif/cnf_tcl.hh"
 
 
 void registerAllCommands() {
@@ -41,6 +42,7 @@ void registerAllCommands() {
   tcl_manager->registerCommand(new QCOMMAND_source("source", "<string>"));
   tcl_manager->registerCommand(new QCOMMAND_hello("hello",""));
 
+  tcl_manager->registerCommand(new QCOMMAND_cnf2blif("cnf2blif", "<string> <string>"));
   //netlist related
   tcl_manager->registerCommand(new QCOMMAND_read_blif("read_blif","<string>"));
   tcl_manager->registerCommand(new QCOMMAND_write_blif("write_blif","<string>"));

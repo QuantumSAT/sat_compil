@@ -23,7 +23,8 @@ dwave
 dwave-debug
 
 src/syn
-
+regression/
+unit_test/cnf2blif
 tags
 time.cc.bak
 obj/
