@@ -32,6 +32,7 @@
 #include <boost/functional/hash.hpp>
 
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
 class ParGrid;
@@ -72,7 +73,7 @@ public:
    */
   void assignPin(SYN::Pin* pin, COORD);
 
-  /*! \brief assign pin to first avaible localtion
+  /*! \brief assign pin to first avaible location
    */
   void assignPin(SYN::Pin*);
 
@@ -90,6 +91,8 @@ private:
   ParGrid* _grid;  //!< placement and routing grid
 
   std::unordered_map<SYN::Pin*, COORD> _pin_to_loc; //!< netlist pin to its local location
+  std::unordered_set<COORD> _used_qubit;
+  std::vector<std::pair<COORD, COORD> > _incell_chains;
 
   QubitConfigs _qubit_configs; //!< qubit configs
   InteractionConfigs _inter_configs; //!< interaction configs

@@ -50,10 +50,17 @@ DeviceGen::~DeviceGen() {
 }
 
 void CellGen::assignPin(SYN::Pin* pin, COORD loc) {
-  if (_pin_to_loc.count(pin))
-    QASSERT(_pin_to_loc.at(pin) == loc);
-  else
+  if (_pin_to_loc.count(pin)) {
+    if (_pin_to_loc.at(pin) == loc) return;
+
+    if (_used_qubit.count(loc)) QASSERT(0);
+    COORD loc1 = _pin_to_loc.at(pin);
+    _incell_chains.push_back(std::make_pair(loc1, loc));
+  }
+  else {
     _pin_to_loc.insert(std::make_pair(pin, loc));
+    _used_qubit.insert(loc);
+  }
 }
 
 void CellGen::configSpin(COORD local, double val) {
@@ -240,6 +247,13 @@ void CellGen::generateConfig(DeviceGen* device) {
         }
       default:QASSERT(0);
     }
+
+    for (size_t i = 0; i < _incell_chains.size(); ++i) {
+      COORD pos1 = _incell_chains[i].first;
+      COORD pos2 = _incell_chains[i].second;
+      configInteraction(pos1, pos2, -2.0);
+    }
+
   } else if (syn_pin) {
     QASSERT(_pin_to_loc.count(syn_pin));
     COORD pos = _pin_to_loc.at(syn_pin);
