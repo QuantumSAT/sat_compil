@@ -114,7 +114,9 @@ void RoutingGraph::createRoutingGraph() {
 
   HW_Target_abstract::I_ITER interac_iter = _dwave_device->inter_cell_interac_begin();
   for (; interac_iter != _dwave_device->inter_cell_interac_end(); ++interac_iter) {
+
     HW_Interaction* interac = interac_iter->second;
+    if (!interac->isEnabled()) continue;
     //std::stringstream ss;
     //ss << interac->getLoc();
     //qlog.speak("JSU_DEBUG", "%s", ss.str().c_str());
@@ -383,6 +385,8 @@ void RoutingCell::initCellRoutingGraph() {
     HW_Cell::QUBITS::iterator q_iter = qubits.begin();
     for (; q_iter != qubits.end(); ++q_iter) {
       HW_Qubit* qubit = q_iter->second;
+      if (!qubit->isEnabled()) continue;
+
       RoutingNode* node = new RoutingNode(qubit);
       _index_to_node.insert(std::make_pair(q_iter->first, node));
       _graph->_nodes.insert(node);
@@ -394,6 +398,8 @@ void RoutingCell::initCellRoutingGraph() {
     HW_Cell::INTERACTIONS::iterator i_iter = interactions.begin();
     for (; i_iter != interactions.end(); ++i_iter) {
       HW_Interaction* interac = i_iter->second;
+      if (!interac->isEnabled()) continue;
+
       RoutingNode* node = new RoutingNode(interac);
       _nodes.push_back(node);
       _graph->_nodes.insert(node);
