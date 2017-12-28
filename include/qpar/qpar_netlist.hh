@@ -190,6 +190,10 @@ public:
    */
   std::vector<ParWireTarget*>& getTargets() { return _all_targets; }
 
+  /*! \brief get total number element in the netlist
+   */
+  size_t getElementNumber() const { return _elements.size(); }
+
 
 private:
   /*! \brief build netlist for placement and routing
@@ -441,7 +445,7 @@ public:
 
   /*! \brief get all used routing nodes
    */
-  const std::unordered_set<RoutingNode*>& getUsedRoutingNodes() { return _routing_nodes; }
+  std::unordered_set<RoutingNode*>& getUsedRoutingNodes() { return _routing_nodes; }
 
   /*! \brief get routing node usage info
    */

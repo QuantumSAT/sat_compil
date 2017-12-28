@@ -219,6 +219,11 @@ void QPlace::initializePlacement() {
   grids.shuffle();
   unsigned grid_index = 0;
 
+  if (grids.size() < _netlist->getElementNumber())
+    qlog.speakError("Placement Failed available grids %lu < elements %lu",
+        grids.size(),
+        _netlist->getElementNumber());
+
   ELE_ITER ele_iter = _netlist->element_begin();
   for (; ele_iter != _netlist->element_end(); ++ele_iter) {
     ParElement* element = *ele_iter;

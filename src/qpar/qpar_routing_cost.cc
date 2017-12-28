@@ -38,7 +38,11 @@ double RoutingCostNBR::compute_cost(RoutingNode* node, ParWireTarget* tgt, doubl
   double congestion_cost = getCongestionCost(try_add_load, capacity);
   double history_cost = node->getHistoryCost();
 
+  slack = std::min(slack, 0.95);
+
   double cost = base_delay * (1 - slack) + slack * (base_delay + history_cost + congestion_cost);
+  //qlog.speak("ROUTE COST", "base delay %f, history_cost %f, congestion cost %f",
+  //    base_delay, history_cost, congestion_cost);
 
   return cost;
 
@@ -48,7 +52,7 @@ double RoutingCostNBR::getCongestionCost(unsigned load, unsigned capacity) {
 
   if (load <= capacity) return 0.0;
 
-  unsigned overflow = capacity - load;
+  unsigned overflow = load - capacity;
 
   double cost = overflow * RoutingNode::getCongestionCost();
 

@@ -129,6 +129,8 @@ void QRoute::run() {
 
 bool QRoute::isTargetOverFlow(ParWireTarget* target) {
 
+  if (target->getDontRoute()) return false;
+  
   RoutePath* path = target->getRoutePath();
 
   for (size_t i = 0; i < path->size(); ++i) {
@@ -155,8 +157,9 @@ bool QRoute::isRoutingValid(std::vector<ParWireTarget*>& targets, unsigned& over
     for (size_t i = 0; i < path->size(); ++i) {
       RoutingNode* node = path->at(i);
       if (node->isOverFlow()) {
+        if (!invalid_nodes1.count(node))
+          node->setHistoryCost(3 + node->getHistoryCost());
         invalid_nodes1.insert(node);
-        node->setHistoryCost(3 + node->getHistoryCost());
       }
     }
   }
@@ -184,6 +187,7 @@ void QRoute::initializeRouting() {
   _first_router = new ParRouter(*_f_graph, *_cost_simple);
 
   initializeWireSlack(); 
+  RoutingNode::setCongestionCost(0.001);
 
 }
 
@@ -202,11 +206,17 @@ void QRoute::routeAllTarget(std::vector<ParWireTarget*>& targets, unsigned iter)
   std::vector<ParWireTarget*>::iterator tgt_iter = targets.begin();
   for (; tgt_iter != targets.end(); ++tgt_iter) {
     ParWireTarget* tgt = *tgt_iter;
+
+    if (iter > 10 ) {
+      if (!isTargetOverFlow(tgt)) continue;
+    }
+    //checkLoad();
     routeTarget(tgt, router);
+    //checkLoad();
   }
 
   updateWireSlack();
-  RoutingNode::setCongestionCost(RoutingNode::getCongestionCost() + 4);
+  RoutingNode::setCongestionCost(RoutingNode::getCongestionCost() + 200);
 }
 
 void QRoute::updateWireSlack() {
@@ -276,10 +286,10 @@ void QRoute::checkLoad() {
 
   std::unordered_map<RoutingNode*, unsigned> node_usage;
 
-  WIRE_ITER w_iter = _netlist->wire_begin();
+  w_iter = _netlist->wire_begin();
   for (; w_iter != _netlist->wire_end(); ++w_iter) {
     ParWire* wire = *w_iter;
-    std::unordered_set<RoutingNode*>& routing_nodes = getUsedRoutingNodes();
+    std::unordered_set<RoutingNode*>& routing_nodes = wire->getUsedRoutingNodes();
     std::unordered_set<RoutingNode*>::iterator n_iter = routing_nodes.begin();
     for (; n_iter != routing_nodes.end(); ++n_iter) {
       RoutingNode* node = *n_iter;

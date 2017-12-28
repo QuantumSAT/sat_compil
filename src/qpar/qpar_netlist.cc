@@ -631,7 +631,7 @@ void ParWire::checkRoutingNodeUsage() {
     ParWireTarget* target = _targets[i];
     RoutePath* route = target->getRoutePath();
     if (!route) continue;
-    for (size_t i = 0; i < route->size() ++i) {
+    for (size_t i = 0; i < route->size(); ++i) {
       RoutingNode* node = route->at(i);
       if (routing_node_usage.count(node))
         ++routing_node_usage[node];
@@ -671,8 +671,8 @@ void ParWireTarget::ripupTarget() {
     if (_wire->getRoutingNodeUsage().at(node) == 1) {
       node->subLoad(1);
       node->setCurrentlyUsed(false);
-      _wire->removeUsedRoutingNode(node);
     }
+    _wire->removeUsedRoutingNode(node);
   }
 }
 
