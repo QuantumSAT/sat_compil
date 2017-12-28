@@ -175,6 +175,10 @@ private:
    */
   bool isTargetOverFlow(ParWireTarget* target);
 
+  /*! \brief check if the load on route and routing graph matches
+   */
+  void checkLoad();
+
 
 };
 

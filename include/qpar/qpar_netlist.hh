@@ -470,6 +470,10 @@ public:
    */
   SYN::Pin* getUniqElementPin() const;
 
+  /*! \brief check if routing node usage match each route of targets
+   */
+  void checkRoutingNodeUsage();
+
 private:
   /*! \brief re-compute bouding box
    */

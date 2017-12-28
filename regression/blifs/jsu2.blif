@@ -1,0 +1,10 @@
+.model jsu2
+.inputs a c
+.outputs d e
+.names b
+1
+.names a b d
+11 1
+.names a c e
+11 1
+.end

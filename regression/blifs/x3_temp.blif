@@ -1,0 +1,4652 @@
+.model x3.blif
+.inputs b c d e f g h i j k l m n o p q r s t u v w x y z a0 b0 c0 d0 e0 f0 g0 h0 i0 j0 k0 l0 m0 n0 o0 r0 s0 t0 u0 v0 w0 x0 y0 z0 a1 b1 c1 d1 e1 f1 g1 h1 i1 j1 k1 l1 m1 n1 o1 p1 q1 r1 s1 t1 u1 v1 w1 x1 y1 z1 a2 b2 c2 d2 e2 f2 g2 h2 i2 j2 k2 l2 m2 n2 o2 p2 q2 r2 s2 t2 u2 v2 w2 x2 y2 z2 a3 b3 c3 d3 e3 f3 g3 h3 i3 j3 k3 l3 m3 n3 o3 p3 q3 r3 s3 t3 u3 v3 w3 x3 y3 z3 a4 b4 c4 d4 e4 f4 g4 h4
+.outputs i4 j4 k4 l4 m4 n4 o4 p4 q4 r4 s4 t4 u4 v4 w4 x4 y4 z4 a5 b5 c5 d5 e5 f5 g5 h5 i5 j5 k5 l5 m5 n5 o5 p5 q5 r5 s5 t5 u5 v5 w5 x5 y5 z5 a6 b6 c6 d6 e6 f6 g6 h6 i6 j6 k6 l6 m6 n6 o6 p6 q6 r6 s6 t6 u6 v6 w6 x6 y6 z6 a7 b7 c7 d7 e7 f7 g7 h7 i7 j7 k7 l7 m7 n7 o7 p7 q7 r7 s7 t7 u7 v7 w7 x7 y7 z7 a8 b8 c8
+.names c12 o0 elem2
+00 1
+.names x1 k3 elem582
+11 1
+.names p21 elem574
+0 1
+.names elem1502 elem1503 elem578
+11 1
+.names a2 x1 i4
+1- 1
+-0 1
+.names n2 elem7
+0 1
+.names e d y11
+1- 1
+-1 1
+.names y1 elem4
+1 1
+.names n0 c2 elem67
+01 1
+.names y1 elem20 i12
+1- 1
+-0 1
+.names elem882 elem883 j12
+1- 1
+-1 1
+.names i2 elem24
+0 1
+.names a2 y1 l12
+1- 1
+-1 1
+.names elem856 elem857 elem50
+11 1
+.names elem62 elem63
+0 1
+.names i r0 elem70
+00 1
+.names y1 elem74 m4
+00 1
+.names i s0 elem75
+00 1
+.names y1 elem79 n4
+00 1
+.names i t0 elem80
+00 1
+.names y1 elem84 o4
+00 1
+.names i u0 elem85
+00 1
+.names y1 elem89 p4
+00 1
+.names i v0 elem90
+00 1
+.names y1 elem94 q4
+00 1
+.names i w0 elem95
+00 1
+.names y1 elem99 r4
+00 1
+.names i x0 elem100
+00 1
+.names y1 elem104 s4
+00 1
+.names i y0 elem105
+00 1
+.names y1 elem109 t4
+00 1
+.names i z0 elem110
+00 1
+.names y1 elem114 u4
+00 1
+.names i a1 elem115
+00 1
+.names y1 elem119 v4
+00 1
+.names i b1 elem120
+00 1
+.names y1 elem124 w4
+00 1
+.names i c1 elem125
+00 1
+.names y1 elem129 x4
+00 1
+.names i d1 elem130
+00 1
+.names y1 elem134 y4
+00 1
+.names i e1 elem135
+00 1
+.names y1 elem139 z4
+00 1
+.names i f1 elem140
+00 1
+.names y1 elem144 a5
+00 1
+.names i g1 elem145
+00 1
+.names y1 elem149 b5
+00 1
+.names s h1 elem150
+00 1
+.names y1 elem154 c5
+00 1
+.names s i1 elem155
+00 1
+.names y1 elem159 d5
+00 1
+.names s j1 elem160
+00 1
+.names y1 elem164 e5
+00 1
+.names s k1 elem165
+00 1
+.names y1 elem169 f5
+00 1
+.names s l1 elem170
+00 1
+.names y1 elem174 g5
+00 1
+.names s m1 elem175
+00 1
+.names y1 elem179 h5
+00 1
+.names s n1 elem180
+00 1
+.names y1 elem184 i5
+00 1
+.names s o1 elem185
+00 1
+.names y1 elem189 j5
+00 1
+.names s p1 elem190
+00 1
+.names y1 elem194 k5
+00 1
+.names s q1 elem195
+00 1
+.names y1 elem199 l5
+00 1
+.names s r1 elem200
+00 1
+.names y1 elem204 m5
+00 1
+.names s s1 elem205
+00 1
+.names y1 elem209 n5
+00 1
+.names s t1 elem210
+00 1
+.names y1 elem214 o5
+00 1
+.names s u1 elem215
+00 1
+.names y1 elem219 p5
+00 1
+.names s v1 elem220
+00 1
+.names y1 elem224 q5
+00 1
+.names s w1 elem225
+00 1
+.names y1 elem229 r5
+00 1
+.names y1 elem230
+1 1
+.names n0 elem233
+1 1
+.names x1 e c16
+0- 1
+-1 1
+.names i2 elem236
+0 1
+.names r2 q2 d16
+0- 1
+-0 1
+.names elem1151 elem1152 elem278
+11 1
+.names z1 y1 f16
+1- 1
+-1 1
+.names elem1065 elem1066 i16
+1- 1
+-1 1
+.names y1 elem303 v5
+00 1
+.names elem1187 elem1188 elem304
+11 1
+.names elem1222 elem1223 elem311
+11 1
+.names elem1185 elem1186 c17
+11 1
+.names elem1189 elem1190 d17
+11 1
+.names elem1193 elem1194 e17
+11 1
+.names elem1203 elem1204 g17
+1- 1
+-1 1
+.names n0 l0 h17
+1- 1
+-1 1
+.names n0 elem314
+1 1
+.names elem1216 elem1217 u17
+1- 1
+-1 1
+.names elem1218 elem1219 v17
+1- 1
+-1 1
+.names elem1220 elem1221 w17
+1- 1
+-1 1
+.names c2 n0 x17
+0- 1
+-1 1
+.names elem1230 elem1231 y17
+11 1
+.names h4 y16 elem321
+10 1
+.names h2 elem317 elem318
+00 1
+.names a2 elem331
+1 1
+.names e2 a2 f18
+0- 1
+-1 1
+.names elem1242 elem1243 elem324
+11 1
+.names elem1240 elem1241 elem328
+11 1
+.names elem1262 elem1263 elem342
+11 1
+.names f2 a2 o18
+0- 1
+-1 1
+.names f2 e2 p18
+1- 1
+-0 1
+.names r18 elem338
+0 1
+.names elem1252 elem1253 r18
+1- 1
+-1 1
+.names h2 n0 b6
+10 1
+.names n0 l0 c6
+01 1
+.names elem1274 elem1275 elem352
+11 1
+.names y1 i2 elem349
+01 1
+.names elem1292 elem1293 elem369
+11 1
+.names j2 elem365 elem366
+10 1
+.names elem1306 elem1307 elem379
+11 1
+.names k2 elem375 elem376
+10 1
+.names y1 elem382
+1 1
+.names elem1308 elem1309 a19
+1- 1
+-1 1
+.names elem1304 elem1305 b19
+11 1
+.names n19 elem390
+0 1
+.names elem1316 elem1317 elem385
+11 1
+.names r19 elem400
+0 1
+.names n2 m2 j19
+11 1
+.names elem1326 elem1327 elem393
+11 1
+.names l2 elem410
+0 1
+.names elem1347 elem1348 o19
+11 1
+.names elem1345 elem1346 elem403
+11 1
+.names y1 elem421
+1 1
+.names m2 l2 n19
+11 1
+.names elem1370 elem1371 s19
+11 1
+.names elem1368 elem1369 elem414
+11 1
+.names x1 elem429
+1 1
+.names i2 elem348 v19
+1- 1
+-1 1
+.names q2 elem424 elem425
+00 1
+.names y1 elem440
+1 1
+.names r2 q2 c12
+11 1
+.names elem1397 elem1398 elem433
+11 1
+.names y1 elem447
+1 1
+.names s2 elem443 elem444
+10 1
+.names y1 elem454
+1 1
+.names t2 elem450 elem451
+10 1
+.names y1 elem461
+1 1
+.names u2 elem457 elem458
+10 1
+.names y1 elem468
+1 1
+.names v2 elem464 elem465
+10 1
+.names y1 elem475
+1 1
+.names w2 elem471 elem472
+10 1
+.names y1 elem482
+1 1
+.names x2 elem478 elem479
+10 1
+.names y1 elem489
+1 1
+.names y2 elem485 elem486
+10 1
+.names y1 elem496
+1 1
+.names z2 elem492 elem493
+10 1
+.names y1 elem503
+1 1
+.names a3 elem499 elem500
+10 1
+.names y1 elem510
+1 1
+.names b3 elem506 elem507
+10 1
+.names y1 elem517
+1 1
+.names c3 elem513 elem514
+10 1
+.names y1 elem524
+1 1
+.names d3 elem520 elem521
+10 1
+.names y1 elem531
+1 1
+.names e3 elem527 elem528
+10 1
+.names y1 elem538
+1 1
+.names f3 elem534 elem535
+10 1
+.names y1 elem545
+1 1
+.names g3 elem541 elem542
+10 1
+.names x1 i3 elem552
+11 1
+.names h3 elem548 elem549
+10 1
+.names x1 j3 elem567
+11 1
+.names e d h21
+00 1
+.names k21 elem559
+0 1
+.names elem1486 elem1487 elem563
+11 1
+.names elem852 elem853 elem3
+1- 1
+-1 1
+.names elem854 elem855 elem5
+11 1
+.names elem4 elem5 elem6
+1- 1
+-1 1
+.names h0 i0 elem8
+00 1
+.names h0 l2 elem9
+01 1
+.names i0 l2 elem10
+00 1
+.names elem860 elem861 elem11
+1- 1
+-1 1
+.names x1 l3 elem597
+11 1
+.names u21 elem589
+0 1
+.names elem1518 elem1519 elem593
+11 1
+.names x1 m3 elem612
+11 1
+.names z21 elem604
+0 1
+.names x1 n3 elem627
+11 1
+.names e22 elem619
+0 1
+.names elem1550 elem1551 elem623
+11 1
+.names x1 o3 elem642
+11 1
+.names j22 elem634
+0 1
+.names elem1566 elem1567 elem638
+11 1
+.names x1 p3 elem657
+11 1
+.names o22 elem649
+0 1
+.names elem1582 elem1583 elem653
+11 1
+.names x1 q3 elem672
+11 1
+.names t22 elem664
+0 1
+.names elem1598 elem1599 elem668
+11 1
+.names x1 r3 elem687
+11 1
+.names y22 elem679
+0 1
+.names elem1614 elem1615 elem683
+11 1
+.names x1 s3 elem702
+11 1
+.names d23 elem694
+0 1
+.names elem1630 elem1631 elem698
+11 1
+.names x1 t3 elem717
+11 1
+.names i23 elem709
+0 1
+.names elem1646 elem1647 elem713
+11 1
+.names x1 u3 elem732
+11 1
+.names n23 elem724
+0 1
+.names elem1662 elem1663 elem728
+11 1
+.names x1 v3 elem747
+11 1
+.names s23 elem739
+0 1
+.names elem1678 elem1679 elem743
+11 1
+.names x1 w3 elem762
+11 1
+.names x23 elem754
+0 1
+.names elem1694 elem1695 elem758
+11 1
+.names x3 elem777
+0 1
+.names c24 elem769
+0 1
+.names elem1710 elem1711 elem773
+11 1
+.names n0 elem789
+1 1
+.names h24 elem781
+0 1
+.names elem1726 elem1727 elem785
+11 1
+.names elem1728 elem1729 elem786
+11 1
+.names elem1736 elem1737 t7
+11 1
+.names n0 elem796
+1 1
+.names z3 elem792 elem793
+10 1
+.names elem1746 elem1747 elem803
+11 1
+.names a4 elem799 elem800
+10 1
+.names elem1763 elem1764 elem810
+11 1
+.names b4 a4 l24
+11 1
+.names elem1784 elem1785 elem817
+11 1
+.names elem1767 elem1768 m24
+11 1
+.names elem1771 elem1772 n24
+1- 1
+-1 1
+.names elem1803 elem1804 elem824
+11 1
+.names a4 z3 o24
+11 1
+.names elem1199 elem1200 j17
+11 1
+.names elem1790 elem1791 p24
+1- 1
+-1 1
+.names elem1826 elem1827 elem831
+11 1
+.names elem1807 elem1808 q24
+11 1
+.names elem1813 elem1814 r24
+1- 1
+-1 1
+.names elem1847 elem1848 elem838
+11 1
+.names z3 y3 t24
+11 1
+.names elem1830 elem1831 u24
+11 1
+.names elem1834 elem1835 v24
+1- 1
+-1 1
+.names n0 elem845
+1 1
+.names elem1197 elem1198 i17
+11 1
+.names elem1811 elem1812 s24
+11 1
+.names elem1851 elem1852 w24
+11 1
+.names elem1855 elem1856 x24
+1- 1
+-1 1
+.names h4 elem848 elem849
+10 1
+.names r2 i2 elem21
+11 1
+.names a2 y1 o12
+10 1
+.names m0 x1 elem53
+00 1
+.names a2 y1 r12
+00 1
+.names n2 elem12
+1 1
+.names elem862 elem863 elem17
+11 1
+.names p2 o2 h25
+1- 1
+-1 1
+.names c0 z1 elem27
+11 1
+.names i2 q2 elem31
+11 1
+.names elem895 elem896 elem40
+11 1
+.names i3 elem36 elem37
+00 1
+.names k2 j2 l16
+00 1
+.names i3 r2 q16
+10 1
+.names k2 j2 n16
+1- 1
+-1 1
+.names elem1074 elem1075 elem245
+11 1
+.names i3 r2 m16
+00 1
+.names elem1119 elem1120 elem264
+11 1
+.names elem1063 elem1064 j16
+11 1
+.names elem260 elem261
+0 1
+.names elem241 elem242
+0 1
+.names j0 i0 v16
+00 1
+.names elem1181 elem1182 w16
+11 1
+.names h0 elem299 elem300
+10 1
+.names elem1177 elem1178 y16
+1- 1
+-1 1
+.names elem1175 elem1176 a25
+11 1
+.names g4 f4 r17
+1- 1
+-1 1
+.names elem1201 elem1202 k17
+11 1
+.names elem1224 elem1225 z17
+1- 1
+-1 1
+.names elem1226 elem1227 a18
+1- 1
+-1 1
+.names elem1228 elem1229 b18
+1- 1
+-1 1
+.names g4 f4 d18
+00 1
+.names j0 i0 j18
+1- 1
+-1 1
+.names elem1236 elem1237 k18
+1- 1
+-1 1
+.names h4 y16 i18
+10 1
+.names h0 elem333 elem334
+10 1
+.names y1 elem362
+1 1
+.names elem1282 elem1283 elem359
+11 1
+.names y1 elem372
+1 1
+.names elem1294 elem1295 n25
+1- 1
+-1 1
+.names elem1290 elem1291 o25
+1- 1
+-1 1
+.names x1 e e19
+10 1
+.names elem1302 elem1303 c19
+1- 1
+-1 1
+.names elem1312 elem1313 i19
+1- 1
+-1 1
+.names elem1353 elem1354 r19
+11 1
+.names n2 elem345 i25
+0- 1
+-0 1
+.names j3 elem554 elem555
+00 1
+.names s2 l21 k21
+1- 1
+-0 1
+.names elem1480 elem1481 l21
+11 1
+.names k3 elem569 elem570
+00 1
+.names t2 l21 p21
+1- 1
+-0 1
+.names l3 elem584 elem585
+00 1
+.names u2 l21 u21
+1- 1
+-0 1
+.names m3 elem599 elem600
+00 1
+.names v2 l21 z21
+1- 1
+-0 1
+.names elem1534 elem1535 elem608
+11 1
+.names n3 elem614 elem615
+00 1
+.names w2 l21 e22
+1- 1
+-0 1
+.names o3 elem629 elem630
+00 1
+.names x2 l21 j22
+1- 1
+-0 1
+.names p3 elem644 elem645
+00 1
+.names y2 l21 o22
+1- 1
+-0 1
+.names q3 elem659 elem660
+00 1
+.names z2 l21 t22
+1- 1
+-0 1
+.names r3 elem674 elem675
+00 1
+.names a3 l21 y22
+1- 1
+-0 1
+.names s3 elem689 elem690
+00 1
+.names b3 l21 d23
+1- 1
+-0 1
+.names t3 elem704 elem705
+00 1
+.names c3 l21 i23
+1- 1
+-0 1
+.names u3 elem719 elem720
+00 1
+.names d3 l21 n23
+1- 1
+-0 1
+.names v3 elem734 elem735
+00 1
+.names e3 l21 s23
+1- 1
+-0 1
+.names w3 elem749 elem750
+00 1
+.names f3 l21 x23
+1- 1
+-0 1
+.names x3 elem764 elem765
+00 1
+.names g3 l21 c24
+1- 1
+-0 1
+.names h3 l21 h24
+1- 1
+-0 1
+.names x1 o0 elem1
+10 1
+.names e2 a2 elem296
+01 1
+.names c4 elem292
+0 1
+.names elem1163 elem1164 elem287
+11 1
+.names elem282 elem283
+0 1
+.names o2 i25 elem346
+00 1
+.names n2 elem355
+0 1
+.names i2 o0 elem0
+00 1
+.names j0 k0 elem13
+00 1
+.names j0 l2 elem14
+01 1
+.names k0 l2 elem15
+00 1
+.names elem949 elem950 elem94
+1- 1
+-1 1
+.names elem864 elem865 elem16
+1- 1
+-1 1
+.names elem866 elem867 elem18
+11 1
+.names elem868 elem869 elem19
+11 1
+.names elem870 elem871 elem20
+1- 1
+-1 1
+.names q2 i2 elem22
+11 1
+.names elem21 elem22 elem23
+1- 1
+-1 1
+.names q2 r2 elem25
+00 1
+.names elem24 elem25 elem26
+1- 1
+-1 1
+.names z1 r2 elem28
+11 1
+.names c0 r2 elem29
+10 1
+.names elem26 i2 elem905
+00 1
+.names elem39 elem906
+0 1
+.names elem922 elem924
+1 1
+.names elem39 elem912
+0 1
+.names b0 elem1044
+1 1
+.names elem907 elem908 elem30
+1- 1
+-1 1
+.names i2 i3 elem32
+01 1
+.names q2 i3 elem33
+11 1
+.names elem886 elem887 elem34
+11 1
+.names elem888 elem889 elem35
+11 1
+.names elem893 elem894 elem36
+1- 1
+-1 1
+.names r2 elem36 elem38
+10 1
+.names elem37 elem38 elem39
+1- 1
+-1 1
+.names elem897 elem898 elem41
+11 1
+.names elem899 elem900 elem42
+11 1
+.names elem901 elem902 elem43
+11 1
+.names elem903 elem904 elem44
+11 1
+.names elem905 elem906 elem45
+11 1
+.names elem909 elem910 elem46
+11 1
+.names elem911 elem912 elem47
+11 1
+.names elem913 elem914 elem48
+11 1
+.names elem858 elem859 elem51
+11 1
+.names elem923 elem924 elem49
+1- 1
+-1 1
+.names elem50 elem51 elem52
+1- 1
+-1 1
+.names o12 x1 elem54
+00 1
+.names elem52 x1 elem55
+00 1
+.names m0 elem20 elem56
+00 1
+.names o12 elem20 elem57
+00 1
+.names elem52 elem20 elem58
+00 1
+.names m0 r12 elem59
+00 1
+.names o12 r12 elem60
+00 1
+.names elem52 r12 elem61
+00 1
+.names elem884 elem885 elem64
+11 1
+.names elem880 elem881 elem62
+1- 1
+-1 1
+.names elem925 elem926 elem65
+11 1
+.names elem927 elem928 elem66
+1- 1
+-1 1
+.names elem929 elem930 elem68
+11 1
+.names elem67 elem68 elem69
+1- 1
+-1 1
+.names j r0 elem71
+00 1
+.names r r0 elem72
+10 1
+.names elem931 elem932 elem73
+11 1
+.names elem933 elem934 elem74
+1- 1
+-1 1
+.names k s0 elem76
+00 1
+.names r s0 elem77
+10 1
+.names elem935 elem936 elem78
+11 1
+.names elem937 elem938 elem79
+1- 1
+-1 1
+.names l t0 elem81
+00 1
+.names r t0 elem82
+10 1
+.names elem939 elem940 elem83
+11 1
+.names elem941 elem942 elem84
+1- 1
+-1 1
+.names m u0 elem86
+00 1
+.names r u0 elem87
+10 1
+.names elem943 elem944 elem88
+11 1
+.names elem945 elem946 elem89
+1- 1
+-1 1
+.names n v0 elem91
+00 1
+.names r v0 elem92
+10 1
+.names elem947 elem948 elem93
+11 1
+.names o w0 elem96
+00 1
+.names r w0 elem97
+10 1
+.names elem951 elem952 elem98
+11 1
+.names elem953 elem954 elem99
+1- 1
+-1 1
+.names p x0 elem101
+00 1
+.names r x0 elem102
+10 1
+.names elem955 elem956 elem103
+11 1
+.names elem957 elem958 elem104
+1- 1
+-1 1
+.names q y0 elem106
+00 1
+.names r y0 elem107
+10 1
+.names elem959 elem960 elem108
+11 1
+.names elem961 elem962 elem109
+1- 1
+-1 1
+.names j z0 elem111
+00 1
+.names r z0 elem112
+00 1
+.names elem963 elem964 elem113
+11 1
+.names elem965 elem966 elem114
+1- 1
+-1 1
+.names k a1 elem116
+00 1
+.names r a1 elem117
+00 1
+.names elem967 elem968 elem118
+11 1
+.names elem969 elem970 elem119
+1- 1
+-1 1
+.names l b1 elem121
+00 1
+.names r b1 elem122
+00 1
+.names elem971 elem972 elem123
+11 1
+.names elem973 elem974 elem124
+1- 1
+-1 1
+.names m c1 elem126
+00 1
+.names r c1 elem127
+00 1
+.names elem975 elem976 elem128
+11 1
+.names elem977 elem978 elem129
+1- 1
+-1 1
+.names n d1 elem131
+00 1
+.names r d1 elem132
+00 1
+.names elem979 elem980 elem133
+11 1
+.names elem981 elem982 elem134
+1- 1
+-1 1
+.names o e1 elem136
+00 1
+.names r e1 elem137
+00 1
+.names elem983 elem984 elem138
+11 1
+.names elem985 elem986 elem139
+1- 1
+-1 1
+.names p f1 elem141
+00 1
+.names r f1 elem142
+00 1
+.names elem987 elem988 elem143
+11 1
+.names elem989 elem990 elem144
+1- 1
+-1 1
+.names q g1 elem146
+00 1
+.names r g1 elem147
+00 1
+.names elem991 elem992 elem148
+11 1
+.names elem993 elem994 elem149
+1- 1
+-1 1
+.names t h1 elem151
+00 1
+.names b0 h1 elem152
+10 1
+.names elem995 elem996 elem153
+11 1
+.names elem997 elem998 elem154
+1- 1
+-1 1
+.names u i1 elem156
+00 1
+.names b0 i1 elem157
+10 1
+.names elem999 elem1000 elem158
+11 1
+.names elem1001 elem1002 elem159
+1- 1
+-1 1
+.names v j1 elem161
+00 1
+.names b0 j1 elem162
+10 1
+.names elem1003 elem1004 elem163
+11 1
+.names elem1005 elem1006 elem164
+1- 1
+-1 1
+.names w k1 elem166
+00 1
+.names b0 k1 elem167
+10 1
+.names elem1007 elem1008 elem168
+11 1
+.names elem1009 elem1010 elem169
+1- 1
+-1 1
+.names x l1 elem171
+00 1
+.names b0 l1 elem172
+10 1
+.names elem1011 elem1012 elem173
+11 1
+.names elem1013 elem1014 elem174
+1- 1
+-1 1
+.names y m1 elem176
+00 1
+.names b0 m1 elem177
+10 1
+.names elem1015 elem1016 elem178
+11 1
+.names elem1017 elem1018 elem179
+1- 1
+-1 1
+.names z n1 elem181
+00 1
+.names b0 n1 elem182
+10 1
+.names elem1019 elem1020 elem183
+11 1
+.names elem1021 elem1022 elem184
+1- 1
+-1 1
+.names a0 o1 elem186
+00 1
+.names b0 o1 elem187
+10 1
+.names elem1023 elem1024 elem188
+11 1
+.names elem1025 elem1026 elem189
+1- 1
+-1 1
+.names t p1 elem191
+00 1
+.names b0 p1 elem192
+00 1
+.names elem1027 elem1028 elem193
+11 1
+.names elem1029 elem1030 elem194
+1- 1
+-1 1
+.names u q1 elem196
+00 1
+.names b0 q1 elem197
+00 1
+.names elem1031 elem1032 elem198
+11 1
+.names elem1033 elem1034 elem199
+1- 1
+-1 1
+.names v r1 elem201
+00 1
+.names b0 r1 elem202
+00 1
+.names elem1035 elem1036 elem203
+11 1
+.names elem1037 elem1038 elem204
+1- 1
+-1 1
+.names w s1 elem206
+00 1
+.names b0 s1 elem207
+00 1
+.names elem1039 elem1040 elem208
+11 1
+.names elem1041 elem1042 elem209
+1- 1
+-1 1
+.names x t1 elem211
+00 1
+.names b0 t1 elem212
+00 1
+.names elem1043 elem1044 elem213
+11 1
+.names elem1045 elem1046 elem214
+1- 1
+-1 1
+.names y u1 elem216
+00 1
+.names b0 u1 elem217
+00 1
+.names elem1047 elem1048 elem218
+11 1
+.names elem1049 elem1050 elem219
+1- 1
+-1 1
+.names z v1 elem221
+00 1
+.names b0 v1 elem222
+00 1
+.names elem1051 elem1052 elem223
+11 1
+.names elem1053 elem1054 elem224
+1- 1
+-1 1
+.names a0 w1 elem226
+00 1
+.names b0 w1 elem227
+00 1
+.names elem1055 elem1056 elem228
+11 1
+.names elem1057 elem1058 elem229
+1- 1
+-1 1
+.names elem1059 elem1060 elem231
+11 1
+.names elem230 elem231 elem232
+1- 1
+-1 1
+.names elem1061 elem1062 elem234
+11 1
+.names elem233 elem234 elem235
+1- 1
+-1 1
+.names d0 q2 elem237
+00 1
+.names q2 r2 elem238
+00 1
+.names d0 c0 elem239
+01 1
+.names r2 c0 elem240
+01 1
+.names elem1070 elem1071 elem241
+1- 1
+-1 1
+.names elem1072 elem1073 elem243
+11 1
+.names elem242 elem243 elem244
+1- 1
+-1 1
+.names elem1076 elem1077 elem246
+11 1
+.names elem1078 elem1079 elem247
+11 1
+.names elem1080 elem1081 elem248
+11 1
+.names elem1082 elem1083 elem249
+11 1
+.names elem1084 elem1085 elem250
+11 1
+.names elem1086 elem1087 elem251
+11 1
+.names elem1088 elem1089 elem252
+11 1
+.names elem1090 elem1091 elem253
+11 1
+.names x1 i2 elem255
+00 1
+.names elem1104 elem1105 elem256
+11 1
+.names elem1100 elem1101 elem254
+1- 1
+-1 1
+.names elem1106 elem1107 elem257
+11 1
+.names elem1108 elem1109 elem258
+11 1
+.names elem1110 elem1111 elem259
+11 1
+.names elem1115 elem1116 elem260
+1- 1
+-1 1
+.names elem1117 elem1118 elem262
+11 1
+.names elem261 elem262 elem263
+1- 1
+-1 1
+.names elem1121 elem1122 elem265
+11 1
+.names elem1123 elem1124 elem266
+11 1
+.names elem1125 elem1126 elem267
+11 1
+.names elem1127 elem1128 elem268
+11 1
+.names elem1129 elem1130 elem269
+11 1
+.names elem1131 elem1132 elem270
+11 1
+.names elem1133 elem1134 elem271
+11 1
+.names elem1135 elem1136 elem272
+11 1
+.names i16 elem274
+0 1
+.names elem1102 elem1103 elem275
+11 1
+.names elem1147 elem1148 elem276
+11 1
+.names elem1145 elem1146 elem273
+1- 1
+-1 1
+.names elem1149 elem1150 elem277
+1- 1
+-1 1
+.names elem1153 elem1154 elem279
+11 1
+.names elem1155 elem1156 elem280
+11 1
+.names elem1157 elem1158 elem281
+11 1
+.names elem1159 elem1160 elem282
+1- 1
+-1 1
+.names e4 i0 elem284
+01 1
+.names f4 j0 elem285
+10 1
+.names elem1161 elem1162 elem286
+1- 1
+-1 1
+.names elem1165 elem1166 elem288
+11 1
+.names elem1167 elem1168 elem289
+11 1
+.names elem1169 elem1170 elem290
+11 1
+.names elem1171 elem1172 elem291
+1- 1
+-1 1
+.names elem291 elem293
+0 1
+.names d4 h0 elem294
+00 1
+.names elem1173 elem1174 elem295
+1- 1
+-1 1
+.names f2 a2 elem297
+01 1
+.names y16 h4 elem298
+01 1
+.names elem1179 elem1180 elem299
+1- 1
+-1 1
+.names v16 elem299 elem301
+00 1
+.names w16 elem299 elem302
+00 1
+.names elem1183 elem1184 elem303
+1- 1
+-1 1
+.names elem1191 elem1192 elem305
+11 1
+.names elem1195 elem1196 elem306
+11 1
+.names elem1205 elem1206 elem307
+11 1
+.names elem1207 elem1208 elem308
+11 1
+.names elem1209 elem1210 elem309
+11 1
+.names elem1214 elem1215 elem310
+1- 1
+-1 1
+.names elem1232 elem1233 elem312
+11 1
+.names elem311 elem312 elem313
+1- 1
+-1 1
+.names b elem315
+0 1
+.names l0 d2 elem316
+00 1
+.names elem1234 elem1235 elem317
+1- 1
+-1 1
+.names g2 elem317 elem319
+00 1
+.names elem318 elem319 elem320
+1- 1
+-1 1
+.names elem1238 elem1239 elem322
+11 1
+.names elem321 elem322 elem323
+1- 1
+-1 1
+.names elem1244 elem1245 elem325
+11 1
+.names elem1246 elem1247 elem326
+11 1
+.names elem1248 elem1249 elem327
+1- 1
+-1 1
+.names elem1250 elem1251 elem329
+11 1
+.names elem328 elem329 elem330
+1- 1
+-1 1
+.names y16 h4 elem332
+01 1
+.names elem331 elem332 elem333
+1- 1
+-1 1
+.names v16 elem333 elem335
+00 1
+.names w16 elem333 elem336
+00 1
+.names elem1256 elem1257 elem337
+1- 1
+-1 1
+.names elem1254 elem1255 elem339
+11 1
+.names elem1258 elem1259 elem340
+11 1
+.names elem1260 elem1261 elem341
+1- 1
+-1 1
+.names elem1264 elem1265 elem343
+11 1
+.names elem1266 elem1267 elem344
+11 1
+.names elem1268 elem1269 elem345
+1- 1
+-1 1
+.names elem1270 elem1271 elem347
+11 1
+.names elem346 elem347 elem348
+1- 1
+-1 1
+.names elem1272 elem1273 elem350
+11 1
+.names elem349 elem350 elem351
+1- 1
+-1 1
+.names elem1276 elem1277 elem353
+11 1
+.names elem352 elem353 elem354
+1- 1
+-1 1
+.names elem354 elem356
+0 1
+.names elem1278 elem1279 elem357
+11 1
+.names elem1280 elem1281 elem358
+1- 1
+-1 1
+.names elem1284 elem1285 elem360
+11 1
+.names elem359 elem360 elem361
+1- 1
+-1 1
+.names j2 elem361 elem363
+00 1
+.names elem1286 elem1287 elem364
+11 1
+.names elem1288 elem1289 elem365
+1- 1
+-1 1
+.names x1 elem365 elem367
+00 1
+.names elem366 elem367 elem368
+1- 1
+-1 1
+.names elem1296 elem1297 elem370
+11 1
+.names elem369 elem370 elem371
+1- 1
+-1 1
+.names k2 elem371 elem373
+00 1
+.names elem1298 elem1299 elem374
+11 1
+.names elem1300 elem1301 elem375
+1- 1
+-1 1
+.names x1 elem375 elem377
+00 1
+.names elem376 elem377 elem378
+1- 1
+-1 1
+.names elem1310 elem1311 elem380
+11 1
+.names elem379 elem380 elem381
+1- 1
+-1 1
+.names elem1314 elem1315 elem383
+11 1
+.names elem382 elem383 elem384
+1- 1
+-1 1
+.names elem1318 elem1319 elem386
+11 1
+.names elem1320 elem1321 elem387
+11 1
+.names elem1322 elem1323 elem388
+11 1
+.names elem1324 elem1325 elem389
+1- 1
+-1 1
+.names elem1332 elem1333 elem391
+11 1
+.names elem390 elem391 elem392
+1- 1
+-1 1
+.names elem1328 elem1329 elem394
+11 1
+.names elem1330 elem1331 elem395
+11 1
+.names elem1334 elem1335 elem396
+11 1
+.names elem1336 elem1337 elem397
+11 1
+.names elem1338 elem1339 elem398
+11 1
+.names elem1343 elem1344 elem399
+1- 1
+-1 1
+.names elem1355 elem1356 elem401
+11 1
+.names elem400 elem401 elem402
+1- 1
+-1 1
+.names elem1349 elem1350 elem404
+11 1
+.names elem1351 elem1352 elem405
+11 1
+.names elem1357 elem1358 elem406
+11 1
+.names elem1359 elem1360 elem407
+11 1
+.names elem1361 elem1362 elem408
+11 1
+.names elem1366 elem1367 elem409
+1- 1
+-1 1
+.names o19 elem411
+0 1
+.names elem1376 elem1377 elem412
+11 1
+.names elem1378 elem1379 elem413
+1- 1
+-1 1
+.names elem1372 elem1373 elem415
+11 1
+.names elem1374 elem1375 elem416
+11 1
+.names elem1380 elem1381 elem417
+11 1
+.names elem1382 elem1383 elem418
+11 1
+.names elem1384 elem1385 elem419
+11 1
+.names elem1389 elem1390 elem420
+1- 1
+-1 1
+.names q2 x1 elem422
+01 1
+.names elem1391 elem1392 elem423
+11 1
+.names elem1393 elem1394 elem424
+1- 1
+-1 1
+.names x1 elem424 elem426
+10 1
+.names v19 elem424 elem427
+00 1
+.names elem1395 elem1396 elem428
+1- 1
+-1 1
+.names q2 elem430
+0 1
+.names elem348 i2 elem431
+00 1
+.names elem1403 elem1404 elem432
+1- 1
+-1 1
+.names elem1399 elem1400 elem434
+11 1
+.names elem1401 elem1402 elem435
+11 1
+.names elem1405 elem1406 elem436
+11 1
+.names elem1407 elem1408 elem437
+11 1
+.names elem1409 elem1410 elem438
+11 1
+.names elem1414 elem1415 elem439
+1- 1
+-1 1
+.names f s2 elem441
+00 1
+.names elem1416 elem1417 elem442
+11 1
+.names elem1532 elem1533 elem607
+1- 1
+-1 1
+.names elem1418 elem1419 elem443
+1- 1
+-1 1
+.names h elem443 elem445
+00 1
+.names elem444 elem445 elem446
+1- 1
+-1 1
+.names f t2 elem448
+00 1
+.names elem1420 elem1421 elem449
+11 1
+.names elem1542 elem1543 elem610
+11 1
+.names elem1422 elem1423 elem450
+1- 1
+-1 1
+.names h elem450 elem452
+00 1
+.names elem451 elem452 elem453
+1- 1
+-1 1
+.names f u2 elem455
+00 1
+.names elem1424 elem1425 elem456
+11 1
+.names elem1426 elem1427 elem457
+1- 1
+-1 1
+.names h elem457 elem459
+00 1
+.names elem458 elem459 elem460
+1- 1
+-1 1
+.names f v2 elem462
+00 1
+.names elem1428 elem1429 elem463
+11 1
+.names elem1732 elem1733 elem787
+11 1
+.names elem1430 elem1431 elem464
+1- 1
+-1 1
+.names h elem464 elem466
+00 1
+.names elem465 elem466 elem467
+1- 1
+-1 1
+.names f w2 elem469
+00 1
+.names elem1432 elem1433 elem470
+11 1
+.names elem1434 elem1435 elem471
+1- 1
+-1 1
+.names h elem471 elem473
+00 1
+.names elem472 elem473 elem474
+1- 1
+-1 1
+.names f x2 elem476
+00 1
+.names elem1436 elem1437 elem477
+11 1
+.names elem1438 elem1439 elem478
+1- 1
+-1 1
+.names h elem478 elem480
+00 1
+.names elem479 elem480 elem481
+1- 1
+-1 1
+.names f y2 elem483
+00 1
+.names elem1440 elem1441 elem484
+11 1
+.names elem1442 elem1443 elem485
+1- 1
+-1 1
+.names h elem485 elem487
+00 1
+.names elem486 elem487 elem488
+1- 1
+-1 1
+.names f z2 elem490
+00 1
+.names elem1444 elem1445 elem491
+11 1
+.names elem1446 elem1447 elem492
+1- 1
+-1 1
+.names h elem492 elem494
+00 1
+.names elem493 elem494 elem495
+1- 1
+-1 1
+.names f a3 elem497
+00 1
+.names elem1448 elem1449 elem498
+11 1
+.names elem1450 elem1451 elem499
+1- 1
+-1 1
+.names h elem499 elem501
+10 1
+.names elem500 elem501 elem502
+1- 1
+-1 1
+.names f b3 elem504
+00 1
+.names elem1452 elem1453 elem505
+11 1
+.names elem1454 elem1455 elem506
+1- 1
+-1 1
+.names h elem506 elem508
+10 1
+.names elem507 elem508 elem509
+1- 1
+-1 1
+.names f c3 elem511
+00 1
+.names elem1456 elem1457 elem512
+11 1
+.names elem1458 elem1459 elem513
+1- 1
+-1 1
+.names h elem513 elem515
+10 1
+.names elem514 elem515 elem516
+1- 1
+-1 1
+.names f d3 elem518
+00 1
+.names elem1460 elem1461 elem519
+11 1
+.names elem1462 elem1463 elem520
+1- 1
+-1 1
+.names h elem520 elem522
+10 1
+.names elem521 elem522 elem523
+1- 1
+-1 1
+.names f e3 elem525
+00 1
+.names elem1464 elem1465 elem526
+11 1
+.names elem1466 elem1467 elem527
+1- 1
+-1 1
+.names h elem527 elem529
+10 1
+.names elem528 elem529 elem530
+1- 1
+-1 1
+.names f f3 elem532
+00 1
+.names elem1468 elem1469 elem533
+11 1
+.names elem1470 elem1471 elem534
+1- 1
+-1 1
+.names h elem534 elem536
+10 1
+.names elem535 elem536 elem537
+1- 1
+-1 1
+.names f g3 elem539
+00 1
+.names elem1472 elem1473 elem540
+11 1
+.names elem1474 elem1475 elem541
+1- 1
+-1 1
+.names h elem541 elem543
+10 1
+.names elem542 elem543 elem544
+1- 1
+-1 1
+.names f h3 elem546
+00 1
+.names elem1476 elem1477 elem547
+11 1
+.names elem1478 elem1479 elem548
+1- 1
+-1 1
+.names h elem548 elem550
+10 1
+.names elem549 elem550 elem551
+1- 1
+-1 1
+.names elem1490 elem1491 elem553
+11 1
+.names elem552 elem553 elem554
+1- 1
+-1 1
+.names x1 elem554 elem556
+10 1
+.names n16 elem554 elem557
+00 1
+.names elem1492 elem1493 elem558
+1- 1
+-1 1
+.names e h1 elem560
+10 1
+.names elem1482 elem1483 elem561
+11 1
+.names elem1484 elem1485 elem562
+1- 1
+-1 1
+.names elem1488 elem1489 elem564
+11 1
+.names elem1494 elem1495 elem565
+11 1
+.names elem1496 elem1497 elem566
+1- 1
+-1 1
+.names elem1506 elem1507 elem568
+11 1
+.names elem567 elem568 elem569
+1- 1
+-1 1
+.names x1 elem569 elem571
+10 1
+.names n16 elem569 elem572
+00 1
+.names elem1508 elem1509 elem573
+1- 1
+-1 1
+.names e i1 elem575
+10 1
+.names elem1498 elem1499 elem576
+11 1
+.names elem1500 elem1501 elem577
+1- 1
+-1 1
+.names elem1504 elem1505 elem579
+11 1
+.names elem1510 elem1511 elem580
+11 1
+.names elem1512 elem1513 elem581
+1- 1
+-1 1
+.names elem1522 elem1523 elem583
+11 1
+.names elem582 elem583 elem584
+1- 1
+-1 1
+.names x1 elem584 elem586
+10 1
+.names n16 elem584 elem587
+00 1
+.names elem1524 elem1525 elem588
+1- 1
+-1 1
+.names e j1 elem590
+10 1
+.names elem1514 elem1515 elem591
+11 1
+.names elem1516 elem1517 elem592
+1- 1
+-1 1
+.names elem1520 elem1521 elem594
+11 1
+.names elem1526 elem1527 elem595
+11 1
+.names elem1536 elem1537 elem609
+11 1
+.names elem1528 elem1529 elem596
+1- 1
+-1 1
+.names elem1538 elem1539 elem598
+11 1
+.names elem597 elem598 elem599
+1- 1
+-1 1
+.names x1 elem599 elem601
+10 1
+.names n16 elem599 elem602
+00 1
+.names elem1540 elem1541 elem603
+1- 1
+-1 1
+.names e k1 elem605
+10 1
+.names elem1530 elem1531 elem606
+11 1
+.names elem1734 elem1735 elem788
+1- 1
+-1 1
+.names elem1544 elem1545 elem611
+1- 1
+-1 1
+.names elem1554 elem1555 elem613
+11 1
+.names elem612 elem613 elem614
+1- 1
+-1 1
+.names x1 elem614 elem616
+10 1
+.names n16 elem614 elem617
+00 1
+.names elem1556 elem1557 elem618
+1- 1
+-1 1
+.names e l1 elem620
+10 1
+.names elem1546 elem1547 elem621
+11 1
+.names elem1548 elem1549 elem622
+1- 1
+-1 1
+.names elem1552 elem1553 elem624
+11 1
+.names elem1558 elem1559 elem625
+11 1
+.names elem1560 elem1561 elem626
+1- 1
+-1 1
+.names elem1570 elem1571 elem628
+11 1
+.names elem627 elem628 elem629
+1- 1
+-1 1
+.names x1 elem629 elem631
+10 1
+.names n16 elem629 elem632
+00 1
+.names elem1572 elem1573 elem633
+1- 1
+-1 1
+.names e m1 elem635
+10 1
+.names elem1562 elem1563 elem636
+11 1
+.names elem1564 elem1565 elem637
+1- 1
+-1 1
+.names elem1568 elem1569 elem639
+11 1
+.names elem1574 elem1575 elem640
+11 1
+.names elem1576 elem1577 elem641
+1- 1
+-1 1
+.names elem1586 elem1587 elem643
+11 1
+.names elem642 elem643 elem644
+1- 1
+-1 1
+.names x1 elem644 elem646
+10 1
+.names n16 elem644 elem647
+00 1
+.names elem1588 elem1589 elem648
+1- 1
+-1 1
+.names e n1 elem650
+10 1
+.names elem1578 elem1579 elem651
+11 1
+.names elem1580 elem1581 elem652
+1- 1
+-1 1
+.names elem1584 elem1585 elem654
+11 1
+.names elem1590 elem1591 elem655
+11 1
+.names elem1592 elem1593 elem656
+1- 1
+-1 1
+.names elem1602 elem1603 elem658
+11 1
+.names elem657 elem658 elem659
+1- 1
+-1 1
+.names x1 elem659 elem661
+10 1
+.names n16 elem659 elem662
+00 1
+.names elem1604 elem1605 elem663
+1- 1
+-1 1
+.names e o1 elem665
+10 1
+.names elem1594 elem1595 elem666
+11 1
+.names elem1596 elem1597 elem667
+1- 1
+-1 1
+.names elem1600 elem1601 elem669
+11 1
+.names elem1606 elem1607 elem670
+11 1
+.names elem1608 elem1609 elem671
+1- 1
+-1 1
+.names elem1618 elem1619 elem673
+11 1
+.names elem672 elem673 elem674
+1- 1
+-1 1
+.names x1 elem674 elem676
+10 1
+.names n16 elem674 elem677
+00 1
+.names elem1620 elem1621 elem678
+1- 1
+-1 1
+.names e p1 elem680
+10 1
+.names elem1610 elem1611 elem681
+11 1
+.names elem1612 elem1613 elem682
+1- 1
+-1 1
+.names elem1616 elem1617 elem684
+11 1
+.names elem1622 elem1623 elem685
+11 1
+.names elem1624 elem1625 elem686
+1- 1
+-1 1
+.names elem1634 elem1635 elem688
+11 1
+.names elem687 elem688 elem689
+1- 1
+-1 1
+.names x1 elem689 elem691
+10 1
+.names n16 elem689 elem692
+00 1
+.names elem1636 elem1637 elem693
+1- 1
+-1 1
+.names e q1 elem695
+10 1
+.names elem1626 elem1627 elem696
+11 1
+.names elem1628 elem1629 elem697
+1- 1
+-1 1
+.names elem1632 elem1633 elem699
+11 1
+.names elem1638 elem1639 elem700
+11 1
+.names elem1640 elem1641 elem701
+1- 1
+-1 1
+.names elem1650 elem1651 elem703
+11 1
+.names elem702 elem703 elem704
+1- 1
+-1 1
+.names x1 elem704 elem706
+10 1
+.names n16 elem704 elem707
+00 1
+.names elem1652 elem1653 elem708
+1- 1
+-1 1
+.names e r1 elem710
+10 1
+.names elem1642 elem1643 elem711
+11 1
+.names elem1644 elem1645 elem712
+1- 1
+-1 1
+.names elem1648 elem1649 elem714
+11 1
+.names elem1654 elem1655 elem715
+11 1
+.names elem1656 elem1657 elem716
+1- 1
+-1 1
+.names elem1666 elem1667 elem718
+11 1
+.names elem717 elem718 elem719
+1- 1
+-1 1
+.names x1 elem719 elem721
+10 1
+.names n16 elem719 elem722
+00 1
+.names elem1668 elem1669 elem723
+1- 1
+-1 1
+.names e s1 elem725
+10 1
+.names elem1658 elem1659 elem726
+11 1
+.names elem1660 elem1661 elem727
+1- 1
+-1 1
+.names elem1664 elem1665 elem729
+11 1
+.names elem1670 elem1671 elem730
+11 1
+.names elem1672 elem1673 elem731
+1- 1
+-1 1
+.names elem1682 elem1683 elem733
+11 1
+.names elem732 elem733 elem734
+1- 1
+-1 1
+.names x1 elem734 elem736
+10 1
+.names n16 elem734 elem737
+00 1
+.names elem1684 elem1685 elem738
+1- 1
+-1 1
+.names e t1 elem740
+10 1
+.names elem1674 elem1675 elem741
+11 1
+.names elem1676 elem1677 elem742
+1- 1
+-1 1
+.names elem1680 elem1681 elem744
+11 1
+.names elem1686 elem1687 elem745
+11 1
+.names elem1688 elem1689 elem746
+1- 1
+-1 1
+.names elem1698 elem1699 elem748
+11 1
+.names elem747 elem748 elem749
+1- 1
+-1 1
+.names x1 elem749 elem751
+10 1
+.names n16 elem749 elem752
+00 1
+.names elem1700 elem1701 elem753
+1- 1
+-1 1
+.names e u1 elem755
+10 1
+.names elem1690 elem1691 elem756
+11 1
+.names elem1692 elem1693 elem757
+1- 1
+-1 1
+.names elem1696 elem1697 elem759
+11 1
+.names elem1702 elem1703 elem760
+11 1
+.names elem1704 elem1705 elem761
+1- 1
+-1 1
+.names elem1714 elem1715 elem763
+11 1
+.names elem762 elem763 elem764
+1- 1
+-1 1
+.names x1 elem764 elem766
+10 1
+.names n16 elem764 elem767
+00 1
+.names elem1716 elem1717 elem768
+1- 1
+-1 1
+.names e v1 elem770
+10 1
+.names elem1706 elem1707 elem771
+11 1
+.names elem1708 elem1709 elem772
+1- 1
+-1 1
+.names elem1712 elem1713 elem774
+11 1
+.names elem1718 elem1719 elem775
+11 1
+.names elem1720 elem1721 elem776
+1- 1
+-1 1
+.names x1 k2 elem778
+01 1
+.names x1 j2 elem779
+01 1
+.names elem1730 elem1731 elem780
+1- 1
+-1 1
+.names e w1 elem782
+10 1
+.names elem1722 elem1723 elem783
+11 1
+.names elem1724 elem1725 elem784
+1- 1
+-1 1
+.names l0 elem790
+1 1
+.names y3 z3 elem791
+11 1
+.names elem1738 elem1739 elem792
+1- 1
+-1 1
+.names y3 elem792 elem794
+10 1
+.names elem793 elem794 elem795
+1- 1
+-1 1
+.names l0 elem797
+1 1
+.names elem1740 elem1741 elem798
+11 1
+.names elem1742 elem1743 elem799
+1- 1
+-1 1
+.names elem1744 elem1745 elem801
+11 1
+.names elem800 elem801 elem802
+1- 1
+-1 1
+.names elem1748 elem1749 elem804
+11 1
+.names elem1750 elem1751 elem805
+11 1
+.names elem1752 elem1753 elem806
+11 1
+.names elem1754 elem1755 elem807
+11 1
+.names elem1756 elem1757 elem808
+11 1
+.names elem1761 elem1762 elem809
+1- 1
+-1 1
+.names elem1765 elem1766 elem811
+11 1
+.names elem1769 elem1770 elem812
+11 1
+.names elem1773 elem1774 elem813
+11 1
+.names elem1775 elem1776 elem814
+11 1
+.names elem1777 elem1778 elem815
+11 1
+.names elem1782 elem1783 elem816
+1- 1
+-1 1
+.names elem1786 elem1787 elem818
+11 1
+.names elem1788 elem1789 elem819
+11 1
+.names elem1792 elem1793 elem820
+11 1
+.names elem1794 elem1795 elem821
+11 1
+.names elem1796 elem1797 elem822
+11 1
+.names elem1801 elem1802 elem823
+1- 1
+-1 1
+.names elem1805 elem1806 elem825
+11 1
+.names elem1809 elem1810 elem826
+11 1
+.names elem1815 elem1816 elem827
+11 1
+.names elem1817 elem1818 elem828
+11 1
+.names elem1819 elem1820 elem829
+11 1
+.names elem1824 elem1825 elem830
+1- 1
+-1 1
+.names elem1828 elem1829 elem832
+11 1
+.names elem1832 elem1833 elem833
+11 1
+.names elem1836 elem1837 elem834
+11 1
+.names elem1838 elem1839 elem835
+11 1
+.names elem1840 elem1841 elem836
+11 1
+.names elem1845 elem1846 elem837
+1- 1
+-1 1
+.names elem1849 elem1850 elem839
+11 1
+.names elem1853 elem1854 elem840
+11 1
+.names elem1857 elem1858 elem841
+11 1
+.names elem1859 elem1860 elem842
+11 1
+.names elem1861 elem1862 elem843
+11 1
+.names elem1866 elem1867 elem844
+1- 1
+-1 1
+.names b elem846
+0 1
+.names g2 h2 elem847
+11 1
+.names elem1868 elem1869 elem848
+1- 1
+-1 1
+.names elem1870 elem1871 elem850
+11 1
+.names elem849 elem850 elem851
+1- 1
+-1 1
+.names elem26 elem30 elem913
+00 1
+.names elem39 elem904
+0 1
+.names elem0 elem1 elem852
+1- 1
+-1 1
+.names elem2 elem853
+1 1
+.names elem915 elem916 elem920
+1- 1
+-1 1
+.names j2 elem30 elem911
+10 1
+.names elem44 elem45 elem917
+1- 1
+-1 1
+.names elem63 elem64 elem927
+1- 1
+-1 1
+.names k2 elem30 elem909
+10 1
+.names elem40 elem41 elem915
+1- 1
+-1 1
+.names x1 l12 elem925
+00 1
+.names elem46 elem47 elem918
+1- 1
+-1 1
+.names elem27 elem28 elem907
+1- 1
+-1 1
+.names elem42 elem43 elem916
+1- 1
+-1 1
+.names elem29 elem908
+1 1
+.names elem919 elem922
+1 1
+.names elem49 elem926
+1 1
+.names elem39 elem914
+0 1
+.names j2 i2 elem903
+10 1
+.names elem917 elem918 elem921
+1- 1
+-1 1
+.names elem48 elem919
+1 1
+.names elem920 elem921 elem923
+1- 1
+-1 1
+.names elem39 elem910
+0 1
+.names elem286 elem1168
+0 1
+.names elem212 elem213 elem1046
+1- 1
+-1 1
+.names elem65 elem928
+1 1
+.names m24 c4 elem1769
+01 1
+.names elem593 elem594 elem1528
+1- 1
+-1 1
+.names elem595 elem1529
+1 1
+.names h17 elem1770
+0 1
+.names h21 y1 elem1648
+00 1
+.names elem286 elem1166
+0 1
+.names c y11 elem854
+00 1
+.names elem3 elem855
+0 1
+.names d0 e2 elem856
+10 1
+.names f2 elem857
+1 1
+.names d0 e2 elem858
+01 1
+.names f2 elem859
+0 1
+.names elem7 elem8 elem860
+1- 1
+-1 1
+.names elem9 elem10 elem861
+1- 1
+-1 1
+.names m2 elem11 elem862
+00 1
+.names h25 elem863
+0 1
+.names elem12 elem13 elem864
+1- 1
+-1 1
+.names elem14 elem15 elem865
+1- 1
+-1 1
+.names m2 elem16 elem866
+10 1
+.names h25 elem867
+0 1
+.names elem11 elem16 elem868
+00 1
+.names h25 elem869
+0 1
+.names elem17 elem18 elem870
+1- 1
+-1 1
+.names elem19 elem871
+1 1
+.names elem53 elem54 elem872
+1- 1
+-1 1
+.names elem55 elem56 elem873
+1- 1
+-1 1
+.names elem57 elem58 elem874
+1- 1
+-1 1
+.names elem59 elem60 elem875
+1- 1
+-1 1
+.names elem61 elem876
+1 1
+.names elem872 elem873 elem877
+1- 1
+-1 1
+.names elem874 elem875 elem878
+1- 1
+-1 1
+.names elem876 elem879
+1 1
+.names elem877 elem878 elem880
+1- 1
+-1 1
+.names k2 j2 elem882
+1- 1
+-1 1
+.names elem879 elem881
+1 1
+.names elem210 elem211 elem1045
+1- 1
+-1 1
+.names d4 i0 elem1167
+01 1
+.names a2 elem883
+1 1
+.names i12 j12 elem884
+00 1
+.names elem23 elem885
+0 1
+.names d0 i2 elem886
+11 1
+.names r2 elem887
+1 1
+.names d0 r2 elem888
+11 1
+.names i3 elem889
+1 1
+.names elem31 elem32 elem890
+1- 1
+-1 1
+.names elem33 elem34 elem891
+1- 1
+-1 1
+.names elem35 elem892
+1 1
+.names elem890 elem891 elem893
+1- 1
+-1 1
+.names elem892 elem894
+1 1
+.names k2 q2 elem895
+10 1
+.names elem39 elem896
+0 1
+.names j2 q2 elem897
+10 1
+.names elem39 elem898
+0 1
+.names elem26 q2 elem899
+00 1
+.names elem39 elem900
+0 1
+.names k2 i2 elem901
+10 1
+.names elem39 elem902
+0 1
+.names n0 h2 elem929
+01 1
+.names g2 elem930
+1 1
+.names i j elem931
+10 1
+.names r elem932
+0 1
+.names elem70 elem71 elem933
+1- 1
+-1 1
+.names elem72 elem73 elem934
+1- 1
+-1 1
+.names i k elem935
+10 1
+.names r elem936
+0 1
+.names elem75 elem76 elem937
+1- 1
+-1 1
+.names elem77 elem78 elem938
+1- 1
+-1 1
+.names i l elem939
+10 1
+.names r elem940
+0 1
+.names elem80 elem81 elem941
+1- 1
+-1 1
+.names elem82 elem83 elem942
+1- 1
+-1 1
+.names i m elem943
+10 1
+.names r elem944
+0 1
+.names elem85 elem86 elem945
+1- 1
+-1 1
+.names elem87 elem88 elem946
+1- 1
+-1 1
+.names i n elem947
+10 1
+.names r elem948
+0 1
+.names elem90 elem91 elem949
+1- 1
+-1 1
+.names elem92 elem93 elem950
+1- 1
+-1 1
+.names i o elem951
+10 1
+.names r elem952
+0 1
+.names elem95 elem96 elem953
+1- 1
+-1 1
+.names elem97 elem98 elem954
+1- 1
+-1 1
+.names i p elem955
+10 1
+.names r elem956
+0 1
+.names elem100 elem101 elem957
+1- 1
+-1 1
+.names elem102 elem103 elem958
+1- 1
+-1 1
+.names i q elem959
+10 1
+.names r elem960
+0 1
+.names elem105 elem106 elem961
+1- 1
+-1 1
+.names elem107 elem108 elem962
+1- 1
+-1 1
+.names i j elem963
+10 1
+.names r elem964
+1 1
+.names elem110 elem111 elem965
+1- 1
+-1 1
+.names elem112 elem113 elem966
+1- 1
+-1 1
+.names i k elem967
+10 1
+.names r elem968
+1 1
+.names elem115 elem116 elem969
+1- 1
+-1 1
+.names elem117 elem118 elem970
+1- 1
+-1 1
+.names i l elem971
+10 1
+.names r elem972
+1 1
+.names elem120 elem121 elem973
+1- 1
+-1 1
+.names elem122 elem123 elem974
+1- 1
+-1 1
+.names i m elem975
+10 1
+.names r elem976
+1 1
+.names elem125 elem126 elem977
+1- 1
+-1 1
+.names elem127 elem128 elem978
+1- 1
+-1 1
+.names i n elem979
+10 1
+.names r elem980
+1 1
+.names elem130 elem131 elem981
+1- 1
+-1 1
+.names elem132 elem133 elem982
+1- 1
+-1 1
+.names i o elem983
+10 1
+.names r elem984
+1 1
+.names elem135 elem136 elem985
+1- 1
+-1 1
+.names elem137 elem138 elem986
+1- 1
+-1 1
+.names i p elem987
+10 1
+.names r elem988
+1 1
+.names elem140 elem141 elem989
+1- 1
+-1 1
+.names elem142 elem143 elem990
+1- 1
+-1 1
+.names i q elem991
+10 1
+.names r elem992
+1 1
+.names elem145 elem146 elem993
+1- 1
+-1 1
+.names elem147 elem148 elem994
+1- 1
+-1 1
+.names s t elem995
+10 1
+.names b0 elem996
+0 1
+.names elem150 elem151 elem997
+1- 1
+-1 1
+.names elem152 elem153 elem998
+1- 1
+-1 1
+.names s u elem999
+10 1
+.names b0 elem1000
+0 1
+.names elem155 elem156 elem1001
+1- 1
+-1 1
+.names elem157 elem158 elem1002
+1- 1
+-1 1
+.names s v elem1003
+10 1
+.names b0 elem1004
+0 1
+.names elem160 elem161 elem1005
+1- 1
+-1 1
+.names elem162 elem163 elem1006
+1- 1
+-1 1
+.names s w elem1007
+10 1
+.names b0 elem1008
+0 1
+.names elem165 elem166 elem1009
+1- 1
+-1 1
+.names elem167 elem168 elem1010
+1- 1
+-1 1
+.names s x elem1011
+10 1
+.names b0 elem1012
+0 1
+.names elem170 elem171 elem1013
+1- 1
+-1 1
+.names elem172 elem173 elem1014
+1- 1
+-1 1
+.names s y elem1015
+10 1
+.names b0 elem1016
+0 1
+.names elem175 elem176 elem1017
+1- 1
+-1 1
+.names elem177 elem178 elem1018
+1- 1
+-1 1
+.names s z elem1019
+10 1
+.names b0 elem1020
+0 1
+.names elem180 elem181 elem1021
+1- 1
+-1 1
+.names elem182 elem183 elem1022
+1- 1
+-1 1
+.names s a0 elem1023
+10 1
+.names b0 elem1024
+0 1
+.names elem185 elem186 elem1025
+1- 1
+-1 1
+.names elem187 elem188 elem1026
+1- 1
+-1 1
+.names s t elem1027
+10 1
+.names b0 elem1028
+1 1
+.names elem190 elem191 elem1029
+1- 1
+-1 1
+.names elem192 elem193 elem1030
+1- 1
+-1 1
+.names s u elem1031
+10 1
+.names b0 elem1032
+1 1
+.names elem195 elem196 elem1033
+1- 1
+-1 1
+.names elem197 elem198 elem1034
+1- 1
+-1 1
+.names s v elem1035
+10 1
+.names b0 elem1036
+1 1
+.names elem200 elem201 elem1037
+1- 1
+-1 1
+.names elem202 elem203 elem1038
+1- 1
+-1 1
+.names s w elem1039
+10 1
+.names b0 elem1040
+1 1
+.names elem205 elem206 elem1041
+1- 1
+-1 1
+.names elem207 elem208 elem1042
+1- 1
+-1 1
+.names s x elem1043
+10 1
+.names y1 elem1408
+0 1
+.names s y elem1047
+10 1
+.names b0 elem1048
+1 1
+.names elem215 elem216 elem1049
+1- 1
+-1 1
+.names elem217 elem218 elem1050
+1- 1
+-1 1
+.names s z elem1051
+10 1
+.names b0 elem1052
+1 1
+.names elem220 elem221 elem1053
+1- 1
+-1 1
+.names elem222 elem223 elem1054
+1- 1
+-1 1
+.names s a0 elem1055
+10 1
+.names b0 elem1056
+1 1
+.names elem225 elem226 elem1057
+1- 1
+-1 1
+.names elem227 elem228 elem1058
+1- 1
+-1 1
+.names d c elem1059
+00 1
+.names c16 elem1060
+0 1
+.names i2 x1 elem1061
+10 1
+.names d16 elem1062
+0 1
+.names i2 y1 elem1063
+10 1
+.names x1 elem1064
+0 1
+.names r2 q2 elem1065
+0- 1
+-0 1
+.names j16 elem1066
+0 1
+.names elem236 elem237 elem1067
+1- 1
+-1 1
+.names elem238 elem239 elem1068
+1- 1
+-1 1
+.names elem240 elem1069
+1 1
+.names elem1067 elem1068 elem1070
+1- 1
+-1 1
+.names elem1069 elem1071
+1 1
+.names i3 i2 elem1072
+10 1
+.names l16 elem1073
+0 1
+.names elem20 q2 elem1074
+01 1
+.names elem244 elem1075
+0 1
+.names l16 q2 elem1076
+01 1
+.names elem244 elem1077
+0 1
+.names elem26 q2 elem1078
+01 1
+.names elem244 elem1079
+0 1
+.names elem20 q16 elem1080
+00 1
+.names elem244 elem1081
+0 1
+.names l16 q16 elem1082
+00 1
+.names elem244 elem1083
+0 1
+.names elem26 q16 elem1084
+00 1
+.names elem244 elem1085
+0 1
+.names elem20 n16 elem1086
+00 1
+.names elem244 elem1087
+0 1
+.names l16 n16 elem1088
+00 1
+.names elem244 elem1089
+0 1
+.names elem26 n16 elem1090
+00 1
+.names elem244 elem1091
+0 1
+.names elem245 elem246 elem1092
+1- 1
+-1 1
+.names elem247 elem248 elem1093
+1- 1
+-1 1
+.names elem249 elem250 elem1094
+1- 1
+-1 1
+.names elem251 elem252 elem1095
+1- 1
+-1 1
+.names elem253 elem1096
+1 1
+.names elem1092 elem1093 elem1097
+1- 1
+-1 1
+.names elem1094 elem1095 elem1098
+1- 1
+-1 1
+.names elem1096 elem1099
+1 1
+.names elem1097 elem1098 elem1100
+1- 1
+-1 1
+.names x1 f16 elem1102
+00 1
+.names elem1099 elem1101
+1 1
+.names h0 e4 elem1165
+00 1
+.names x1 j2 elem1286
+01 1
+.names elem254 elem1103
+0 1
+.names c0 x1 elem1104
+00 1
+.names r2 elem1105
+0 1
+.names x1 q2 elem1106
+00 1
+.names r2 elem1107
+0 1
+.names c0 x1 elem1108
+00 1
+.names d0 elem1109
+1 1
+.names x1 q2 elem1110
+00 1
+.names d0 elem1111
+1 1
+.names elem255 elem256 elem1112
+1- 1
+-1 1
+.names elem257 elem258 elem1113
+1- 1
+-1 1
+.names elem259 elem1114
+1 1
+.names elem1112 elem1113 elem1115
+1- 1
+-1 1
+.names elem1114 elem1116
+1 1
+.names elem361 elem1287
+1 1
+.names i3 i2 elem1117
+00 1
+.names l16 elem1118
+0 1
+.names elem20 q2 elem1119
+11 1
+.names elem263 elem1120
+0 1
+.names l16 q2 elem1121
+01 1
+.names elem263 elem1122
+0 1
+.names elem26 q2 elem1123
+01 1
+.names elem263 elem1124
+0 1
+.names elem20 m16 elem1125
+10 1
+.names elem263 elem1126
+0 1
+.names l16 m16 elem1127
+00 1
+.names elem263 elem1128
+0 1
+.names elem26 m16 elem1129
+00 1
+.names elem263 elem1130
+0 1
+.names elem20 n16 elem1131
+10 1
+.names elem263 elem1132
+0 1
+.names l16 n16 elem1133
+00 1
+.names elem263 elem1134
+0 1
+.names elem26 n16 elem1135
+00 1
+.names elem263 elem1136
+0 1
+.names elem264 elem265 elem1137
+1- 1
+-1 1
+.names elem266 elem267 elem1138
+1- 1
+-1 1
+.names elem268 elem269 elem1139
+1- 1
+-1 1
+.names elem270 elem271 elem1140
+1- 1
+-1 1
+.names elem272 elem1141
+1 1
+.names elem1137 elem1138 elem1142
+1- 1
+-1 1
+.names elem1139 elem1140 elem1143
+1- 1
+-1 1
+.names elem1141 elem1144
+1 1
+.names elem1142 elem1143 elem1145
+1- 1
+-1 1
+.names z1 y1 elem1147
+10 1
+.names elem1144 elem1146
+1 1
+.names elem273 elem1148
+0 1
+.names elem274 elem275 elem1149
+1- 1
+-1 1
+.names elem276 elem1150
+1 1
+.names j0 k0 elem1151
+01 1
+.names g4 elem1152
+1 1
+.names k0 f4 elem1153
+11 1
+.names g4 elem1154
+1 1
+.names j0 k0 elem1155
+00 1
+.names g4 elem1156
+0 1
+.names k0 f4 elem1157
+01 1
+.names g4 elem1158
+0 1
+.names elem278 elem279 elem1159
+1- 1
+-1 1
+.names elem280 elem281 elem1160
+1- 1
+-1 1
+.names elem283 elem284 elem1161
+1- 1
+-1 1
+.names elem285 elem1162
+1 1
+.names d4 e4 elem1163
+00 1
+.names elem286 elem1164
+0 1
+.names c12 elem432 elem1407
+00 1
+.names h0 i0 elem1169
+01 1
+.names elem286 elem1170
+0 1
+.names elem712 elem1649
+0 1
+.names elem287 elem288 elem1171
+1- 1
+-1 1
+.names elem289 elem290 elem1172
+1- 1
+-1 1
+.names elem292 elem293 elem1173
+1- 1
+-1 1
+.names elem294 elem1174
+1 1
+.names a4 b4 elem1175
+11 1
+.names elem295 elem1176
+0 1
+.names y3 z3 elem1177
+0- 1
+-0 1
+.names a25 elem1178
+0 1
+.names elem296 elem297 elem1179
+1- 1
+-1 1
+.names elem298 elem1180
+1 1
+.names d2 l0 elem1181
+11 1
+.names k0 elem1182
+0 1
+.names elem300 elem301 elem1183
+1- 1
+-1 1
+.names elem302 elem1184
+1 1
+.names y3 b2 elem1185
+11 1
+.names r17 elem1186
+0 1
+.names c17 b2 elem1187
+01 1
+.names h17 elem1188
+0 1
+.names b4 a4 elem1189
+11 1
+.names z3 elem1190
+1 1
+.names d17 b2 elem1191
+01 1
+.names h17 elem1192
+0 1
+.names e4 d4 elem1193
+01 1
+.names c4 elem1194
+1 1
+.names e17 b2 elem1195
+01 1
+.names h17 elem1196
+0 1
+.names a4 z3 elem1197
+11 1
+.names y3 elem1198
+1 1
+.names d4 c4 elem1199
+11 1
+.names b4 elem1200
+1 1
+.names g4 f4 elem1201
+00 1
+.names e4 elem1202
+0 1
+.names i17 j17 elem1203
+0- 1
+-0 1
+.names k17 elem1204
+0 1
+.names c17 g17 elem1205
+00 1
+.names h17 elem1206
+0 1
+.names d17 g17 elem1207
+00 1
+.names h17 elem1208
+0 1
+.names e17 g17 elem1209
+00 1
+.names h17 elem1210
+0 1
+.names elem304 elem305 elem1211
+1- 1
+-1 1
+.names elem306 elem307 elem1212
+1- 1
+-1 1
+.names elem308 elem309 elem1213
+1- 1
+-1 1
+.names elem1211 elem1212 elem1214
+1- 1
+-1 1
+.names elem1213 elem1215
+1 1
+.names l0 j17 elem1216
+1- 1
+-0 1
+.names k17 elem1217
+0 1
+.names c2 b2 elem1218
+1- 1
+-0 1
+.names n0 elem1219
+1 1
+.names a4 z3 elem1220
+0- 1
+-0 1
+.names y3 elem1221
+0 1
+.names u17 v17 elem1222
+00 1
+.names w17 elem1223
+0 1
+.names y3 b2 elem1224
+0- 1
+-0 1
+.names d18 elem1225
+0 1
+.names b4 a4 elem1226
+0- 1
+-0 1
+.names z3 elem1227
+0 1
+.names e4 d4 elem1228
+1- 1
+-0 1
+.names c4 elem1229
+0 1
+.names z17 a18 elem1230
+00 1
+.names b18 elem1231
+0 1
+.names l0 x17 elem1232
+00 1
+.names y17 elem1233
+0 1
+.names elem314 elem315 elem1234
+1- 1
+-1 1
+.names elem316 elem1235
+1 1
+.names d2 l0 elem1236
+0- 1
+-0 1
+.names k0 elem1237
+1 1
+.names h0 j18 elem1238
+00 1
+.names k18 elem1239
+0 1
+.names n0 f18 elem1240
+00 1
+.names elem323 elem1241
+0 1
+.names h0 a2 elem1242
+10 1
+.names i18 elem1243
+0 1
+.names v16 a2 elem1244
+00 1
+.names i18 elem1245
+0 1
+.names w16 a2 elem1246
+00 1
+.names i18 elem1247
+0 1
+.names elem324 elem325 elem1248
+1- 1
+-1 1
+.names elem326 elem1249
+1 1
+.names n0 e2 elem1250
+00 1
+.names elem327 elem1251
+0 1
+.names f2 e2 elem1252
+0- 1
+-1 1
+.names n0 elem1253
+1 1
+.names n0 elem323 elem1254
+00 1
+.names o18 elem1255
+0 1
+.names elem334 elem335 elem1256
+1- 1
+-1 1
+.names elem336 elem1257
+1 1
+.names n0 p18 elem1258
+00 1
+.names elem337 elem1259
+0 1
+.names elem338 elem339 elem1260
+1- 1
+-1 1
+.names elem340 elem1261
+1 1
+.names g0 l2 elem1262
+01 1
+.names m2 elem1263
+0 1
+.names o2 l2 elem1264
+11 1
+.names m2 elem1265
+0 1
+.names p2 l2 elem1266
+11 1
+.names m2 elem1267
+0 1
+.names elem342 elem343 elem1268
+1- 1
+-1 1
+.names elem344 elem1269
+1 1
+.names p2 j2 elem1270
+01 1
+.names i25 elem1271
+0 1
+.names x1 y1 elem1272
+00 1
+.names elem348 elem1273
+1 1
+.names j2 l2 elem1274
+11 1
+.names m2 elem1275
+0 1
+.names o2 l2 elem1276
+01 1
+.names m2 elem1277
+0 1
+.names o2 f0 elem1278
+00 1
+.names e0 elem1279
+0 1
+.names elem355 elem356 elem1280
+1- 1
+-1 1
+.names elem357 elem1281
+1 1
+.names o2 p2 elem1282
+10 1
+.names elem358 elem1283
+0 1
+.names g0 p2 elem1284
+10 1
+.names elem358 elem1285
+0 1
+.names elem362 elem363 elem1288
+1- 1
+-1 1
+.names elem364 elem1289
+1 1
+.names n2 m2 elem1290
+0- 1
+-1 1
+.names l2 elem1291
+0 1
+.names p2 o2 elem1292
+10 1
+.names o25 elem1293
+0 1
+.names g0 f0 elem1294
+0- 1
+-1 1
+.names e0 elem1295
+1 1
+.names n25 o2 elem1296
+00 1
+.names o25 elem1297
+0 1
+.names x1 k2 elem1298
+01 1
+.names elem371 elem1299
+1 1
+.names elem372 elem373 elem1300
+1- 1
+-1 1
+.names elem374 elem1301
+1 1
+.names e d elem1302
+1- 1
+-1 1
+.names c elem1303
+1 1
+.names l2 x1 elem1304
+01 1
+.names c19 elem1305
+0 1
+.names l2 y1 elem1306
+00 1
+.names b19 elem1307
+0 1
+.names d c elem1308
+1- 1
+-1 1
+.names e19 elem1309
+0 1
+.names a19 y1 elem1310
+00 1
+.names b19 elem1311
+0 1
+.names m2 x1 elem1312
+1- 1
+-0 1
+.names e elem1313
+1 1
+.names d c elem1314
+00 1
+.names i19 elem1315
+0 1
+.names l2 m2 elem1316
+01 1
+.names elem384 elem1317
+0 1
+.names l2 m2 elem1318
+10 1
+.names elem384 elem1319
+0 1
+.names l2 a19 elem1320
+10 1
+.names elem384 elem1321
+0 1
+.names m2 a19 elem1322
+10 1
+.names elem384 elem1323
+0 1
+.names elem385 elem386 elem1324
+1- 1
+-1 1
+.names elem387 elem388 elem1325
+1- 1
+-1 1
+.names l2 n2 elem1326
+01 1
+.names y1 elem1327
+0 1
+.names j19 n2 elem1328
+01 1
+.names y1 elem1329
+0 1
+.names a19 n2 elem1330
+01 1
+.names y1 elem1331
+0 1
+.names d c elem1332
+00 1
+.names c16 elem1333
+0 1
+.names l2 elem392 elem1334
+00 1
+.names y1 elem1335
+0 1
+.names j19 elem392 elem1336
+00 1
+.names y1 elem1337
+0 1
+.names a19 elem392 elem1338
+00 1
+.names y1 elem1339
+0 1
+.names elem393 elem394 elem1340
+1- 1
+-1 1
+.names elem395 elem396 elem1341
+1- 1
+-1 1
+.names elem397 elem398 elem1342
+1- 1
+-1 1
+.names elem1340 elem1341 elem1343
+1- 1
+-1 1
+.names elem1342 elem1344
+1 1
+.names l2 o2 elem1345
+01 1
+.names y1 elem1346
+0 1
+.names o2 n2 elem1347
+11 1
+.names m2 elem1348
+1 1
+.names o19 o2 elem1349
+01 1
+.names y1 elem1350
+0 1
+.names a19 o2 elem1351
+01 1
+.names y1 elem1352
+0 1
+.names n2 m2 elem1353
+11 1
+.names l2 elem1354
+1 1
+.names d c elem1355
+00 1
+.names c16 elem1356
+0 1
+.names l2 elem402 elem1357
+00 1
+.names y1 elem1358
+0 1
+.names o19 elem402 elem1359
+00 1
+.names y1 elem1360
+0 1
+.names a19 elem402 elem1361
+00 1
+.names y1 elem1362
+0 1
+.names elem403 elem404 elem1363
+1- 1
+-1 1
+.names elem405 elem406 elem1364
+1- 1
+-1 1
+.names elem407 elem408 elem1365
+1- 1
+-1 1
+.names elem1363 elem1364 elem1366
+1- 1
+-1 1
+.names elem1365 elem1367
+1 1
+.names n19 p2 elem1368
+01 1
+.names y1 elem1369
+0 1
+.names p2 o2 elem1370
+11 1
+.names n2 elem1371
+1 1
+.names s19 p2 elem1372
+01 1
+.names y1 elem1373
+0 1
+.names a19 p2 elem1374
+01 1
+.names y1 elem1375
+0 1
+.names d c elem1376
+00 1
+.names c16 elem1377
+0 1
+.names elem410 elem411 elem1378
+1- 1
+-1 1
+.names elem412 elem1379
+1 1
+.names n19 elem413 elem1380
+00 1
+.names y1 elem1381
+0 1
+.names s19 elem413 elem1382
+00 1
+.names y1 elem1383
+0 1
+.names a19 elem413 elem1384
+00 1
+.names y1 elem1385
+0 1
+.names elem414 elem415 elem1386
+1- 1
+-1 1
+.names elem416 elem417 elem1387
+1- 1
+-1 1
+.names elem418 elem419 elem1388
+1- 1
+-1 1
+.names elem1386 elem1387 elem1389
+1- 1
+-1 1
+.names elem1388 elem1390
+1 1
+.names i2 q2 elem1391
+00 1
+.names elem348 elem1392
+0 1
+.names elem421 elem422 elem1393
+1- 1
+-1 1
+.names elem423 elem1394
+1 1
+.names elem425 elem426 elem1395
+1- 1
+-1 1
+.names elem427 elem1396
+1 1
+.names x1 r2 elem1397
+11 1
+.names y1 elem1398
+0 1
+.names c12 r2 elem1399
+01 1
+.names y1 elem1400
+0 1
+.names v19 r2 elem1401
+01 1
+.names y1 elem1402
+0 1
+.names elem429 elem430 elem1403
+1- 1
+-1 1
+.names elem431 elem1404
+1 1
+.names x1 elem432 elem1405
+10 1
+.names y1 elem1406
+0 1
+.names v19 elem432 elem1409
+00 1
+.names y1 elem1410
+0 1
+.names elem433 elem434 elem1411
+1- 1
+-1 1
+.names elem435 elem436 elem1412
+1- 1
+-1 1
+.names elem437 elem438 elem1413
+1- 1
+-1 1
+.names elem1411 elem1412 elem1414
+1- 1
+-1 1
+.names elem1413 elem1415
+1 1
+.names f h elem1416
+10 1
+.names t2 elem1417
+0 1
+.names elem440 elem441 elem1418
+1- 1
+-1 1
+.names elem442 elem1419
+1 1
+.names f h elem1420
+10 1
+.names u2 elem1421
+0 1
+.names elem447 elem448 elem1422
+1- 1
+-1 1
+.names elem449 elem1423
+1 1
+.names f h elem1424
+10 1
+.names v2 elem1425
+0 1
+.names elem454 elem455 elem1426
+1- 1
+-1 1
+.names elem456 elem1427
+1 1
+.names f h elem1428
+10 1
+.names w2 elem1429
+0 1
+.names elem461 elem462 elem1430
+1- 1
+-1 1
+.names elem463 elem1431
+1 1
+.names f h elem1432
+10 1
+.names x2 elem1433
+0 1
+.names elem468 elem469 elem1434
+1- 1
+-1 1
+.names elem470 elem1435
+1 1
+.names f h elem1436
+10 1
+.names y2 elem1437
+0 1
+.names elem475 elem476 elem1438
+1- 1
+-1 1
+.names elem477 elem1439
+1 1
+.names f h elem1440
+10 1
+.names z2 elem1441
+0 1
+.names elem482 elem483 elem1442
+1- 1
+-1 1
+.names elem484 elem1443
+1 1
+.names f g elem1444
+10 1
+.names h elem1445
+0 1
+.names elem489 elem490 elem1446
+1- 1
+-1 1
+.names elem491 elem1447
+1 1
+.names f b3 elem1448
+10 1
+.names h elem1449
+1 1
+.names elem496 elem497 elem1450
+1- 1
+-1 1
+.names elem498 elem1451
+1 1
+.names f c3 elem1452
+10 1
+.names h elem1453
+1 1
+.names elem503 elem504 elem1454
+1- 1
+-1 1
+.names elem505 elem1455
+1 1
+.names f d3 elem1456
+10 1
+.names h elem1457
+1 1
+.names elem510 elem511 elem1458
+1- 1
+-1 1
+.names elem512 elem1459
+1 1
+.names f e3 elem1460
+10 1
+.names h elem1461
+1 1
+.names elem517 elem518 elem1462
+1- 1
+-1 1
+.names elem519 elem1463
+1 1
+.names f f3 elem1464
+10 1
+.names h elem1465
+1 1
+.names elem524 elem525 elem1466
+1- 1
+-1 1
+.names elem526 elem1467
+1 1
+.names f g3 elem1468
+10 1
+.names h elem1469
+1 1
+.names elem531 elem532 elem1470
+1- 1
+-1 1
+.names elem533 elem1471
+1 1
+.names f h3 elem1472
+10 1
+.names h elem1473
+1 1
+.names elem538 elem539 elem1474
+1- 1
+-1 1
+.names elem540 elem1475
+1 1
+.names f g elem1476
+10 1
+.names h elem1477
+1 1
+.names elem545 elem546 elem1478
+1- 1
+-1 1
+.names elem547 elem1479
+1 1
+.names e d elem1480
+00 1
+.names c elem1481
+1 1
+.names d e elem1482
+10 1
+.names r0 elem1483
+0 1
+.names elem559 elem560 elem1484
+1- 1
+-1 1
+.names elem561 elem1485
+1 1
+.names c y1 elem1486
+10 1
+.names elem562 elem1487
+0 1
+.names h21 y1 elem1488
+00 1
+.names elem562 elem1489
+0 1
+.names j2 k2 elem1490
+00 1
+.names i3 elem1491
+1 1
+.names elem555 elem556 elem1492
+1- 1
+-1 1
+.names elem557 elem1493
+1 1
+.names elem558 y1 elem1494
+00 1
+.names elem562 elem1495
+0 1
+.names elem563 elem564 elem1496
+1- 1
+-1 1
+.names elem565 elem1497
+1 1
+.names d e elem1498
+10 1
+.names s0 elem1499
+0 1
+.names elem574 elem575 elem1500
+1- 1
+-1 1
+.names elem576 elem1501
+1 1
+.names c y1 elem1502
+10 1
+.names elem577 elem1503
+0 1
+.names h21 y1 elem1504
+00 1
+.names elem577 elem1505
+0 1
+.names j2 k2 elem1506
+00 1
+.names j3 elem1507
+1 1
+.names elem570 elem571 elem1508
+1- 1
+-1 1
+.names elem572 elem1509
+1 1
+.names elem573 y1 elem1510
+00 1
+.names elem577 elem1511
+0 1
+.names elem578 elem579 elem1512
+1- 1
+-1 1
+.names elem580 elem1513
+1 1
+.names d e elem1514
+10 1
+.names t0 elem1515
+0 1
+.names elem589 elem590 elem1516
+1- 1
+-1 1
+.names elem591 elem1517
+1 1
+.names c y1 elem1518
+10 1
+.names elem592 elem1519
+0 1
+.names h21 y1 elem1520
+00 1
+.names elem592 elem1521
+0 1
+.names j2 k2 elem1522
+00 1
+.names k3 elem1523
+1 1
+.names elem585 elem586 elem1524
+1- 1
+-1 1
+.names elem587 elem1525
+1 1
+.names elem588 y1 elem1526
+00 1
+.names elem592 elem1527
+0 1
+.names d e elem1530
+10 1
+.names u0 elem1531
+0 1
+.names elem604 elem605 elem1532
+1- 1
+-1 1
+.names elem606 elem1533
+1 1
+.names c y1 elem1534
+10 1
+.names elem607 elem1535
+0 1
+.names h21 y1 elem1536
+00 1
+.names elem607 elem1537
+0 1
+.names j2 k2 elem1538
+00 1
+.names l3 elem1539
+1 1
+.names elem600 elem601 elem1540
+1- 1
+-1 1
+.names elem602 elem1541
+1 1
+.names elem603 y1 elem1542
+00 1
+.names elem607 elem1543
+0 1
+.names elem608 elem609 elem1544
+1- 1
+-1 1
+.names elem610 elem1545
+1 1
+.names d e elem1546
+10 1
+.names v0 elem1547
+0 1
+.names elem619 elem620 elem1548
+1- 1
+-1 1
+.names elem621 elem1549
+1 1
+.names c y1 elem1550
+10 1
+.names elem622 elem1551
+0 1
+.names h21 y1 elem1552
+00 1
+.names elem622 elem1553
+0 1
+.names j2 k2 elem1554
+00 1
+.names m3 elem1555
+1 1
+.names elem615 elem616 elem1556
+1- 1
+-1 1
+.names elem617 elem1557
+1 1
+.names elem618 y1 elem1558
+00 1
+.names elem622 elem1559
+0 1
+.names elem623 elem624 elem1560
+1- 1
+-1 1
+.names elem625 elem1561
+1 1
+.names d e elem1562
+10 1
+.names w0 elem1563
+0 1
+.names elem634 elem635 elem1564
+1- 1
+-1 1
+.names elem636 elem1565
+1 1
+.names c y1 elem1566
+10 1
+.names elem637 elem1567
+0 1
+.names h21 y1 elem1568
+00 1
+.names elem637 elem1569
+0 1
+.names j2 k2 elem1570
+00 1
+.names n3 elem1571
+1 1
+.names elem630 elem631 elem1572
+1- 1
+-1 1
+.names elem632 elem1573
+1 1
+.names elem633 y1 elem1574
+00 1
+.names elem637 elem1575
+0 1
+.names elem638 elem639 elem1576
+1- 1
+-1 1
+.names elem640 elem1577
+1 1
+.names d e elem1578
+10 1
+.names x0 elem1579
+0 1
+.names elem649 elem650 elem1580
+1- 1
+-1 1
+.names elem651 elem1581
+1 1
+.names c y1 elem1582
+10 1
+.names elem652 elem1583
+0 1
+.names h21 y1 elem1584
+00 1
+.names elem652 elem1585
+0 1
+.names j2 k2 elem1586
+00 1
+.names o3 elem1587
+1 1
+.names elem645 elem646 elem1588
+1- 1
+-1 1
+.names elem647 elem1589
+1 1
+.names elem648 y1 elem1590
+00 1
+.names elem652 elem1591
+0 1
+.names elem653 elem654 elem1592
+1- 1
+-1 1
+.names elem655 elem1593
+1 1
+.names d e elem1594
+10 1
+.names y0 elem1595
+0 1
+.names elem664 elem665 elem1596
+1- 1
+-1 1
+.names elem666 elem1597
+1 1
+.names c y1 elem1598
+10 1
+.names elem667 elem1599
+0 1
+.names h21 y1 elem1600
+00 1
+.names elem667 elem1601
+0 1
+.names j2 k2 elem1602
+00 1
+.names p3 elem1603
+1 1
+.names elem660 elem661 elem1604
+1- 1
+-1 1
+.names elem662 elem1605
+1 1
+.names elem663 y1 elem1606
+00 1
+.names elem667 elem1607
+0 1
+.names elem668 elem669 elem1608
+1- 1
+-1 1
+.names elem670 elem1609
+1 1
+.names d e elem1610
+10 1
+.names z0 elem1611
+0 1
+.names elem679 elem680 elem1612
+1- 1
+-1 1
+.names elem681 elem1613
+1 1
+.names c y1 elem1614
+10 1
+.names elem682 elem1615
+0 1
+.names h21 y1 elem1616
+00 1
+.names elem682 elem1617
+0 1
+.names j2 k2 elem1618
+00 1
+.names q3 elem1619
+1 1
+.names elem675 elem676 elem1620
+1- 1
+-1 1
+.names elem677 elem1621
+1 1
+.names elem678 y1 elem1622
+00 1
+.names elem682 elem1623
+0 1
+.names elem683 elem684 elem1624
+1- 1
+-1 1
+.names elem685 elem1625
+1 1
+.names d e elem1626
+10 1
+.names a1 elem1627
+0 1
+.names elem694 elem695 elem1628
+1- 1
+-1 1
+.names elem696 elem1629
+1 1
+.names c y1 elem1630
+10 1
+.names elem697 elem1631
+0 1
+.names h21 y1 elem1632
+00 1
+.names elem697 elem1633
+0 1
+.names j2 k2 elem1634
+00 1
+.names r3 elem1635
+1 1
+.names elem690 elem691 elem1636
+1- 1
+-1 1
+.names elem692 elem1637
+1 1
+.names elem693 y1 elem1638
+00 1
+.names elem697 elem1639
+0 1
+.names elem698 elem699 elem1640
+1- 1
+-1 1
+.names elem700 elem1641
+1 1
+.names d e elem1642
+10 1
+.names b1 elem1643
+0 1
+.names elem709 elem710 elem1644
+1- 1
+-1 1
+.names elem711 elem1645
+1 1
+.names c y1 elem1646
+10 1
+.names elem712 elem1647
+0 1
+.names j2 k2 elem1650
+00 1
+.names s3 elem1651
+1 1
+.names elem705 elem706 elem1652
+1- 1
+-1 1
+.names elem707 elem1653
+1 1
+.names elem708 y1 elem1654
+00 1
+.names elem712 elem1655
+0 1
+.names elem713 elem714 elem1656
+1- 1
+-1 1
+.names elem715 elem1657
+1 1
+.names d e elem1658
+10 1
+.names c1 elem1659
+0 1
+.names elem724 elem725 elem1660
+1- 1
+-1 1
+.names elem726 elem1661
+1 1
+.names c y1 elem1662
+10 1
+.names elem727 elem1663
+0 1
+.names h21 y1 elem1664
+00 1
+.names elem727 elem1665
+0 1
+.names j2 k2 elem1666
+00 1
+.names t3 elem1667
+1 1
+.names elem720 elem721 elem1668
+1- 1
+-1 1
+.names elem722 elem1669
+1 1
+.names elem723 y1 elem1670
+00 1
+.names elem727 elem1671
+0 1
+.names elem728 elem729 elem1672
+1- 1
+-1 1
+.names elem730 elem1673
+1 1
+.names d e elem1674
+10 1
+.names d1 elem1675
+0 1
+.names elem739 elem740 elem1676
+1- 1
+-1 1
+.names elem741 elem1677
+1 1
+.names c y1 elem1678
+10 1
+.names elem742 elem1679
+0 1
+.names h21 y1 elem1680
+00 1
+.names elem742 elem1681
+0 1
+.names j2 k2 elem1682
+00 1
+.names u3 elem1683
+1 1
+.names elem735 elem736 elem1684
+1- 1
+-1 1
+.names elem737 elem1685
+1 1
+.names elem738 y1 elem1686
+00 1
+.names elem742 elem1687
+0 1
+.names elem743 elem744 elem1688
+1- 1
+-1 1
+.names elem745 elem1689
+1 1
+.names d e elem1690
+10 1
+.names e1 elem1691
+0 1
+.names elem754 elem755 elem1692
+1- 1
+-1 1
+.names elem756 elem1693
+1 1
+.names c y1 elem1694
+10 1
+.names elem757 elem1695
+0 1
+.names h21 y1 elem1696
+00 1
+.names elem757 elem1697
+0 1
+.names j2 k2 elem1698
+00 1
+.names v3 elem1699
+1 1
+.names elem750 elem751 elem1700
+1- 1
+-1 1
+.names elem752 elem1701
+1 1
+.names elem753 y1 elem1702
+00 1
+.names elem757 elem1703
+0 1
+.names elem758 elem759 elem1704
+1- 1
+-1 1
+.names elem760 elem1705
+1 1
+.names d e elem1706
+10 1
+.names f1 elem1707
+0 1
+.names elem769 elem770 elem1708
+1- 1
+-1 1
+.names elem771 elem1709
+1 1
+.names c y1 elem1710
+10 1
+.names elem772 elem1711
+0 1
+.names h21 y1 elem1712
+00 1
+.names elem772 elem1713
+0 1
+.names j2 k2 elem1714
+00 1
+.names w3 elem1715
+1 1
+.names elem765 elem766 elem1716
+1- 1
+-1 1
+.names elem767 elem1717
+1 1
+.names elem768 y1 elem1718
+00 1
+.names elem772 elem1719
+0 1
+.names elem773 elem774 elem1720
+1- 1
+-1 1
+.names elem775 elem1721
+1 1
+.names d e elem1722
+10 1
+.names g1 elem1723
+0 1
+.names elem781 elem782 elem1724
+1- 1
+-1 1
+.names elem783 elem1725
+1 1
+.names c y1 elem1726
+10 1
+.names elem784 elem1727
+0 1
+.names h21 y1 elem1728
+00 1
+.names elem784 elem1729
+0 1
+.names elem777 elem778 elem1730
+1- 1
+-1 1
+.names elem779 elem1731
+1 1
+.names elem780 y1 elem1732
+00 1
+.names elem784 elem1733
+0 1
+.names elem785 elem786 elem1734
+1- 1
+-1 1
+.names elem787 elem1735
+1 1
+.names y3 n0 elem1736
+00 1
+.names l0 elem1737
+0 1
+.names elem789 elem790 elem1738
+1- 1
+-1 1
+.names elem791 elem1739
+1 1
+.names y3 z3 elem1740
+11 1
+.names a4 elem1741
+1 1
+.names elem796 elem797 elem1742
+1- 1
+-1 1
+.names elem798 elem1743
+1 1
+.names z3 y3 elem1744
+11 1
+.names elem799 elem1745
+0 1
+.names z3 b4 elem1746
+01 1
+.names h17 elem1747
+0 1
+.names y3 b4 elem1748
+01 1
+.names h17 elem1749
+0 1
+.names l24 b4 elem1750
+01 1
+.names h17 elem1751
+0 1
+.names z3 w17 elem1752
+00 1
+.names h17 elem1753
+0 1
+.names y3 w17 elem1754
+00 1
+.names h17 elem1755
+0 1
+.names l24 w17 elem1756
+00 1
+.names h17 elem1757
+0 1
+.names elem803 elem804 elem1758
+1- 1
+-1 1
+.names elem805 elem806 elem1759
+1- 1
+-1 1
+.names elem807 elem808 elem1760
+1- 1
+-1 1
+.names elem1758 elem1759 elem1761
+1- 1
+-1 1
+.names elem1760 elem1762
+1 1
+.names z3 c4 elem1763
+01 1
+.names h17 elem1764
+0 1
+.names y3 c4 elem1765
+01 1
+.names h17 elem1766
+0 1
+.names c4 b4 elem1767
+11 1
+.names a4 elem1768
+1 1
+.names z3 y3 elem1771
+0- 1
+-0 1
+.names l24 elem1772
+0 1
+.names z3 n24 elem1773
+00 1
+.names h17 elem1774
+0 1
+.names y3 n24 elem1775
+00 1
+.names h17 elem1776
+0 1
+.names m24 n24 elem1777
+00 1
+.names h17 elem1778
+0 1
+.names elem810 elem811 elem1779
+1- 1
+-1 1
+.names elem812 elem813 elem1780
+1- 1
+-1 1
+.names elem814 elem815 elem1781
+1- 1
+-1 1
+.names elem1779 elem1780 elem1782
+1- 1
+-1 1
+.names elem1781 elem1783
+1 1
+.names y3 d4 elem1784
+01 1
+.names h17 elem1785
+0 1
+.names o24 d4 elem1786
+01 1
+.names h17 elem1787
+0 1
+.names j17 d4 elem1788
+01 1
+.names h17 elem1789
+0 1
+.names z3 y3 elem1790
+0- 1
+-0 1
+.names m24 elem1791
+0 1
+.names y3 p24 elem1792
+00 1
+.names h17 elem1793
+0 1
+.names o24 p24 elem1794
+00 1
+.names h17 elem1795
+0 1
+.names j17 p24 elem1796
+00 1
+.names h17 elem1797
+0 1
+.names elem817 elem818 elem1798
+1- 1
+-1 1
+.names elem819 elem820 elem1799
+1- 1
+-1 1
+.names elem821 elem822 elem1800
+1- 1
+-1 1
+.names elem1798 elem1799 elem1801
+1- 1
+-1 1
+.names elem1800 elem1802
+1 1
+.names y3 e4 elem1803
+01 1
+.names h17 elem1804
+0 1
+.names d17 e4 elem1805
+01 1
+.names h17 elem1806
+0 1
+.names e4 d4 elem1807
+10 1
+.names c4 elem1808
+1 1
+.names q24 e4 elem1809
+01 1
+.names h17 elem1810
+0 1
+.names d4 c4 elem1811
+01 1
+.names b4 elem1812
+1 1
+.names y3 o24 elem1813
+0- 1
+-0 1
+.names s24 elem1814
+0 1
+.names y3 r24 elem1815
+00 1
+.names h17 elem1816
+0 1
+.names d17 r24 elem1817
+00 1
+.names h17 elem1818
+0 1
+.names q24 r24 elem1819
+00 1
+.names h17 elem1820
+0 1
+.names elem824 elem825 elem1821
+1- 1
+-1 1
+.names elem826 elem827 elem1822
+1- 1
+-1 1
+.names elem828 elem829 elem1823
+1- 1
+-1 1
+.names elem1821 elem1822 elem1824
+1- 1
+-1 1
+.names elem1823 elem1825
+1 1
+.names t24 f4 elem1826
+01 1
+.names h17 elem1827
+0 1
+.names m24 f4 elem1828
+01 1
+.names h17 elem1829
+0 1
+.names f4 e4 elem1830
+11 1
+.names d4 elem1831
+0 1
+.names u24 f4 elem1832
+01 1
+.names h17 elem1833
+0 1
+.names y3 d17 elem1834
+0- 1
+-0 1
+.names q24 elem1835
+0 1
+.names t24 v24 elem1836
+00 1
+.names h17 elem1837
+0 1
+.names m24 v24 elem1838
+00 1
+.names h17 elem1839
+0 1
+.names u24 v24 elem1840
+00 1
+.names h17 elem1841
+0 1
+.names elem831 elem832 elem1842
+1- 1
+-1 1
+.names elem833 elem834 elem1843
+1- 1
+-1 1
+.names elem835 elem836 elem1844
+1- 1
+-1 1
+.names elem1842 elem1843 elem1845
+1- 1
+-1 1
+.names elem1844 elem1846
+1 1
+.names i17 g4 elem1847
+01 1
+.names h17 elem1848
+0 1
+.names s24 g4 elem1849
+01 1
+.names h17 elem1850
+0 1
+.names g4 f4 elem1851
+11 1
+.names e4 elem1852
+1 1
+.names w24 g4 elem1853
+01 1
+.names h17 elem1854
+0 1
+.names t24 m24 elem1855
+0- 1
+-0 1
+.names u24 elem1856
+0 1
+.names i17 x24 elem1857
+00 1
+.names h17 elem1858
+0 1
+.names s24 x24 elem1859
+00 1
+.names h17 elem1860
+0 1
+.names w24 x24 elem1861
+00 1
+.names h17 elem1862
+0 1
+.names elem838 elem839 elem1863
+1- 1
+-1 1
+.names elem840 elem841 elem1864
+1- 1
+-1 1
+.names elem842 elem843 elem1865
+1- 1
+-1 1
+.names elem1863 elem1864 elem1866
+1- 1
+-1 1
+.names elem1865 elem1867
+1 1
+.names elem845 elem846 elem1868
+1- 1
+-1 1
+.names elem847 elem1869
+1 1
+.names d2 l0 elem1870
+11 1
+.names elem848 elem1871
+0 1
+.names elem6 j4
+1 1
+.names elem66 k4
+1 1
+.names elem69 l4
+1 1
+.names elem232 s5
+1 1
+.names elem235 t5
+1 1
+.names elem277 u5
+1 1
+.names elem310 w5
+1 1
+.names elem313 x5
+1 1
+.names elem320 y5
+1 1
+.names elem330 z5
+1 1
+.names elem341 a6
+1 1
+.names elem351 d6
+1 1
+.names elem368 e6
+1 1
+.names elem378 f6
+1 1
+.names elem381 g6
+1 1
+.names elem389 h6
+1 1
+.names elem399 i6
+1 1
+.names elem409 j6
+1 1
+.names elem420 k6
+1 1
+.names elem428 l6
+1 1
+.names elem439 m6
+1 1
+.names elem446 n6
+1 1
+.names elem453 o6
+1 1
+.names elem460 p6
+1 1
+.names elem467 q6
+1 1
+.names elem474 r6
+1 1
+.names elem481 s6
+1 1
+.names elem488 t6
+1 1
+.names elem495 u6
+1 1
+.names elem502 v6
+1 1
+.names elem509 w6
+1 1
+.names elem516 x6
+1 1
+.names elem523 y6
+1 1
+.names elem530 z6
+1 1
+.names elem537 a7
+1 1
+.names elem544 b7
+1 1
+.names elem551 c7
+1 1
+.names elem566 d7
+1 1
+.names elem581 e7
+1 1
+.names elem596 f7
+1 1
+.names elem611 g7
+1 1
+.names elem626 h7
+1 1
+.names elem641 i7
+1 1
+.names elem656 j7
+1 1
+.names elem671 k7
+1 1
+.names elem686 l7
+1 1
+.names elem701 m7
+1 1
+.names elem716 n7
+1 1
+.names elem731 o7
+1 1
+.names elem746 p7
+1 1
+.names elem761 q7
+1 1
+.names elem776 r7
+1 1
+.names elem788 s7
+1 1
+.names elem795 u7
+1 1
+.names elem802 v7
+1 1
+.names elem809 w7
+1 1
+.names elem816 x7
+1 1
+.names elem823 y7
+1 1
+.names elem830 z7
+1 1
+.names elem837 a8
+1 1
+.names elem844 b8
+1 1
+.names elem851 c8
+1 1
+.end

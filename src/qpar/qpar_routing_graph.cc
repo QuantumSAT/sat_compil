@@ -155,7 +155,7 @@ void RoutingGraph::createRoutingGraph() {
       _nodes.size(),
       _edges.size());
 
-  sanityCheck();
+  //sanityCheck();
 }
 
 

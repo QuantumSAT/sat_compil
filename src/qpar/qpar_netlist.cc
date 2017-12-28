@@ -109,7 +109,7 @@ void ParNetlist::buildParNetlist() {
     ParElement* element = new ParElement(syn_gate);
     gate_to_par_element.insert(std::make_pair(syn_gate, element));
     _elements.insert(element);
-    qlog.speak("debug", "insert %lu", _elements.size());
+    //qlog.speak("debug", "insert %lu", _elements.size());
   }
 
   typedef std::vector<SYN::Pin*>::iterator PIN_ITER;
@@ -155,7 +155,7 @@ void ParNetlist::buildParNetlist() {
     else
       _wires.insert(wire);
   }
-  qlog.speak("debug", "size %lu", _elements.size());
+  //qlog.speak("debug", "size %lu", _elements.size());
 
 
 
@@ -165,9 +165,9 @@ void ParNetlist::buildParNetlist() {
       (unsigned)_elements.size()
       );
 
-  WIRE_ITER wi_iter = wire_begin();
-  for (; wi_iter != wire_end(); ++wi_iter)
-    (*wi_iter)->printSelf();
+  //WIRE_ITER wi_iter = wire_begin();
+  //for (; wi_iter != wire_end(); ++wi_iter)
+  //  (*wi_iter)->printSelf();
 
 
 }
@@ -179,7 +179,7 @@ _pin(NULL),
 _sink(NULL),
 _movable(true)
 {
-  qlog.speak("debug", "new gate %u", _element_index_counter);
+  //qlog.speak("debug", "new gate %u", _element_index_counter);
   _element_index = _element_index_counter;
   ++_element_index_counter;
 }
@@ -190,7 +190,7 @@ _pin(pin),
 _sink(NULL),
 _movable(true)
 {
-  qlog.speak("debug", "new pin %u", _element_index_counter);
+  //qlog.speak("debug", "new pin %u", _element_index_counter);
   _element_index = _element_index_counter;
   ++_element_index_counter;
 }
@@ -620,6 +620,30 @@ void ParWire::printSelf() const {
   qlog.speak("WIRE", "Name:%s, Targets: %s",
       getName().c_str(),
       ss.str().c_str());
+}
+
+void ParWire::checkRoutingNodeUsage() {
+
+
+  std::unordered_map<RoutingNode*, unsigned> routing_node_usage;
+  std::unordered_set<RoutingNode*> routing_nodes;
+  for (size_t i = 0; i < _targets.size(); ++i) {
+    ParWireTarget* target = _targets[i];
+    RoutePath* route = target->getRoutePath();
+    if (!route) continue;
+    for (size_t i = 0; i < route->size() ++i) {
+      RoutingNode* node = route->at(i);
+      if (routing_node_usage.count(node))
+        ++routing_node_usage[node];
+      else
+        routing_node_usage[node] = 1;
+      routing_nodes.insert(node);
+    }
+  }
+
+  QASSERT(routing_nodes == _routing_nodes);
+  QASSERT(routing_node_usage == _routing_node_usage);
+
 }
 
 

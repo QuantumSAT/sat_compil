@@ -1,0 +1,12 @@
+.model route1 
+.inputs a b c d
+.outputs h i
+.names a b o1
+11 1
+.names c d o2
+11 1
+.names o1 o2 h 
+11 1
+.names o1 o2 i 
+11 1
+.end

@@ -265,6 +265,43 @@ void QRoute::routeTarget(ParWireTarget* target, ParRouter* router) {
 
 }
 
+void QRoute::checkLoad() {
+
+  WIRE_ITER w_iter = _netlist->wire_begin();
+  for (; w_iter != _netlist->wire_end(); ++w_iter) {
+    ParWire* wire = *w_iter;
+    wire->checkRoutingNodeUsage();
+  }
+
+
+  std::unordered_map<RoutingNode*, unsigned> node_usage;
+
+  WIRE_ITER w_iter = _netlist->wire_begin();
+  for (; w_iter != _netlist->wire_end(); ++w_iter) {
+    ParWire* wire = *w_iter;
+    std::unordered_set<RoutingNode*>& routing_nodes = getUsedRoutingNodes();
+    std::unordered_set<RoutingNode*>::iterator n_iter = routing_nodes.begin();
+    for (; n_iter != routing_nodes.end(); ++n_iter) {
+      RoutingNode* node = *n_iter;
+      if (node_usage.count(node))
+        ++node_usage[node];
+      else
+        node_usage[node] = 1;
+    }
+  }
+
+
+  NODES::iterator node_iter = _rr_graph->node_begin();
+  for (; node_iter != _rr_graph->node_end(); ++node_iter) {
+    RoutingNode* node = *node_iter;
+    if (node_usage.count(node))
+      QASSERT(node->getLoad() == node_usage[node]);
+    else
+      QASSERT(node->getLoad() == 0);
+  }
+
+}
+
 void QRoute::updateRoute(ParWireTarget* target, double& slack, ParRouter* router) {
   std::list<RoutingNode*> nodes;
   std::list<RoutingEdge*> edges;
