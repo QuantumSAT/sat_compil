@@ -17,31 +17,37 @@
  *   License along with QSat.  If not, see <http://www.gnu.org/licenses/>.  *
  ****************************************************************************/
 
-#include "generate/gen_tcl.hh"
+#ifndef SYSTEM_GROUND_HH
+#define SYSTME_GROUND_HH
+
 #include "generate/system_gen.hh"
-#include "qpar/qpar_system.hh"
 #include "utils/qlog.hh"
 
-std::string QCOMMAND_generate::help() const {
-  const std::string msg = "generate";
-  return msg;
-}
 
-int QCOMMAND_generate::execute(int argc, const char** argv, std::string& result, ClientData clientData) {
+double calculateEnergy(const QubitConfigs& h, const InteractionConfigs& J, const QubitState& state) {
 
-  result = "OK";
-
-  if (!checkOptions(argc, argv)) {
-    printHelp();
-    return TCL_OK;
+  double energy = 0.0;
+  QubitConfigs::const_iterator q_iter = h.begin();
+  for (; q_iter != h.end(); ++q_iter) {
+    QASSERT(state.count(q_iter->first));
+    energy += q_iter->second.value * state.at(q_iter->first);
   }
 
-  ParNetlist* netlist = ParSystem::getParSystem()->getParNetlist();
-  DeviceGen gen(netlist);
-  gen.doGenerate();
-  gen.dumpDwaveConfiguration("dwave.config");
-  qlog.speak("Generate", "Ground Energy is %4.4f", gen.getGroundEnergy());
+  InteractionConfigs::const_iterator i_iter = J.begin();
+  for (; i_iter != J.end(); ++i_iter) {
+    QASSERT(state.count(i_iter->first.first));
+    QASSERT(state.count(i_iter->first.second));
 
-  return TCL_OK;
+    energy += i_iter->second.value * state.at(i_iter->first.first) * state.at(i_iter->first.second);
+  }
 
+  return energy;
 }
+
+
+
+
+#endif
+
+
+

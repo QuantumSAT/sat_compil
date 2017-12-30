@@ -564,6 +564,10 @@ public:
     return _grid.checkStatusSame();
   }
 
+  /*! \brief assign pin to qubit for model wires
+   */
+  void assignPin(SYN::Pin* pin);
+
   /*! \brief write the placmeent result back to ParNetlist
    */
   void updatePlacement();
@@ -590,9 +594,15 @@ public:
    */
   SYN::Pin* getPin() const { return _pin; }
 
+  bool isQubitUsed(COORD x) const { return _used_loc.count(x); }
+
 
   WIRE_ITER_V begin() { return _wires.begin(); }
   WIRE_ITER_V end() { return _wires.end(); }
+
+  std::unordered_map<SYN::Pin*, COORD>& getPinAssign() {
+    return _pin_to_loc;
+  }
 
 private:
   SYN::Gate* _gate; //!< gate form synthesis model
@@ -612,7 +622,8 @@ private:
 
   COORD _y;  //!< post placement result
 
-
+  std::unordered_map<SYN::Pin*, COORD> _pin_to_loc; //!< pre assign pin for model wires
+  std::unordered_set<COORD> _used_loc;
 
 
 };

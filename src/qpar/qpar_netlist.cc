@@ -149,8 +149,13 @@ void ParNetlist::buildParNetlist() {
     _all_targets.insert(_all_targets.end(), targets.begin(), targets.end());
     if (wire->getElementNumber() <= 1) {
       _model_wires.insert(wire);
+      if (wire->getElementNumber() == 0) continue;
+
       ParElement* ele_uniq = wire->getUniqElement();
-      if (ele_uniq) ele_uniq->disconnectWire(wire);
+      ele_uniq->disconnectWire(wire);
+      SYN::Pin* u_pin = wire->getUniqElementPin();
+      QASSERT(u_pin);
+      ele_uniq->assignPin(u_pin);
     }
     else
       _wires.insert(wire);
@@ -222,6 +227,23 @@ std::string ParElement::getName() const {
   else if (_pin)
     return _pin->getName() + ".(model pin)";
   QASSERT(0);
+}
+
+
+void ParElement::assignPin(SYN::Pin* pin) {
+  std::set<COORD> locs;
+  for (COORD i = 0; i < 4; ++i)
+    locs.insert(i);
+
+  std::unordered_map<SYN::Pin*, COORD>::iterator pin_iter = _pin_to_loc.begin();
+  for (; pin_iter != _pin_to_loc.end(); ++pin_iter) {
+    QASSERT(locs.count(pin_iter->second));
+    locs.erase(pin_iter->second);
+  }
+
+  QASSERT(locs.size());
+  _pin_to_loc.insert(std::make_pair(pin, *(locs.begin())));
+  _used_loc.insert(*(locs.begin()));
 }
 
 unsigned int ParWire::_wire_index_counter = 0;

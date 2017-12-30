@@ -28,6 +28,7 @@
 
 #include <algorithm>
 #include <fstream>
+#include <sstream>
 
 
 FastRoutingGraph::FastRoutingGraph(RoutingGraph* graph) :
@@ -115,7 +116,11 @@ void QRoute::run() {
           N, (unsigned)_longest_wire_length, ((double)overflow/(double)_rr_graph->getNodeNum()), (unsigned)overflow);
 
     }
-
+    if (getenv("QPAR_PRINT_ROUTE")) {
+      std::stringstream ss;
+      ss << "iter_" << N <<".route";
+      printAllRoute(ss.str());
+    }
   }
   qlog.speak("ROUTE", " +----------+----------------+----------+-------------+-----------------+-------------+");
 
@@ -203,6 +208,10 @@ void QRoute::initializeWireSlack() {
 void QRoute::routeAllTarget(std::vector<ParWireTarget*>& targets, unsigned iter) {
   ParRouter* router = (iter == 1) ? _first_router : _router;
 
+  TargetSlackCmp cmp;
+  std::sort(targets.begin(), targets.end(), cmp);
+
+
   std::vector<ParWireTarget*>::iterator tgt_iter = targets.begin();
   for (; tgt_iter != targets.end(); ++tgt_iter) {
     ParWireTarget* tgt = *tgt_iter;
@@ -216,7 +225,7 @@ void QRoute::routeAllTarget(std::vector<ParWireTarget*>& targets, unsigned iter)
   }
 
   updateWireSlack();
-  RoutingNode::setCongestionCost(RoutingNode::getCongestionCost() + 200);
+  RoutingNode::setCongestionCost(RoutingNode::getCongestionCost() + 6);
 }
 
 void QRoute::updateWireSlack() {

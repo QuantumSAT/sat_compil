@@ -290,6 +290,18 @@ public:
     _history_cost = val;
   }
 
+  /*! \brief check if the node is passing-by
+   */
+  bool getPass() const { return _isPass; }
+
+  /*! \brief set the node to passing by node
+   */
+  void setPass() { _isPass = true; }
+
+  bool isEnabled() const { return _isEnable; }
+
+  void setEnabled(bool val) { _isEnable = val; }
+
 private:
 
   /*! \brief default constructor
@@ -307,6 +319,7 @@ private:
   RoutingCell*       _rr_cell;        //!< the routing cell that owns this node
   EDGES              _edges;          //!< edges that connect to this node
   bool               _isLogicalQubit;  //!< indicates if the qubit is combined with two physical qubits
+  bool               _isPass;         //!< inidcates if the qubit is passing node
 
   unsigned           _load;           //!< number of load
   unsigned           _capacity;       //!< capacity of each routing node
@@ -314,6 +327,8 @@ private:
 
   static double   _congestion_cost;   //!< congestion factor used in NBR algorithm
   double          _history_cost;      //!< history cost used in NBR algorithm
+
+  bool            _isEnable;          //!< if the routing node can be used to route
 
 
 };

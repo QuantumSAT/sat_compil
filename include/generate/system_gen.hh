@@ -54,6 +54,8 @@ typedef std::unordered_map<COORD,ConfigElement> QubitConfigs;
 typedef std::unordered_map<std::pair<COORD, COORD>, ConfigElement,
         boost::hash<std::pair<COORD, COORD> > > InteractionConfigs;
 
+typedef std::unordered_map<COORD, int> QubitState;
+
 
 class DeviceGen;
 class InteractionGen;
@@ -85,7 +87,21 @@ public:
    */
   void configInteraction(COORD local1, COORD local2, double val);
 
+  /*! \brief get qubit configs
+   */
+  QubitConfigs& getQubitConfigs() { return _qubit_configs; }
 
+  /*! \brief get interaciton configs
+   */
+  InteractionConfigs& getInteractionConfigs() { return _inter_configs; }
+
+   /*! \brief get ground state energy for cell
+   */
+  double getGroundEnergy() const;
+
+  void printConfig() const;
+
+  void printGroundState() const;
 private:
 
   ParGrid* _grid;  //!< placement and routing grid
@@ -96,6 +112,8 @@ private:
 
   QubitConfigs _qubit_configs; //!< qubit configs
   InteractionConfigs _inter_configs; //!< interaction configs
+
+  QubitState _ground_state; //!< one of the ground state
 
 };
 
@@ -110,6 +128,24 @@ public:
    */
   void generateConfig(DeviceGen* device);
 
+
+  /*! \brief get qubit configs
+   */
+  QubitConfigs& getQubitConfigs() { return _qubit_configs; }
+
+  /*! \brief get interaciton configs
+   */
+  InteractionConfigs& getInteractionConfigs() { return _inter_configs; }
+
+
+  /*! \brief get ground energy
+   */
+  double getGroundEnergy() const;
+
+
+  void printConfig() const;
+
+  void printGroundState() const;
 
 private:
   ParWire* _wire; //!< route of wire
@@ -159,6 +195,13 @@ public:
   /*! \brief add interaction config
    */
   void addInteractionConfig(COORD qubit1, COORD qubit2, double val);
+
+  /*! \brief get device ground energy
+   */
+  double getGroundEnergy() const;
+
+  /*! \brief check if the device achieve the ground state
+   */
 
 private:
   ParNetlist* _par_netlist; //!< placement and routing netlist

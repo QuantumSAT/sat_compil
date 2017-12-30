@@ -18,6 +18,7 @@
  ****************************************************************************/
 
 #include "generate/system_gen.hh"
+#include "generate/system_ground.hh"
 
 #include "syn/netlist.h"
 
@@ -34,6 +35,14 @@
 
 CellGen::CellGen(ParGrid* grid) : 
 _grid(grid) {
+  ParElement* ele = grid->getCurrentElement();
+  if (ele) {
+    std::unordered_map<SYN::Pin*, COORD>& pin_loc = ele->getPinAssign();
+    std::unordered_map<SYN::Pin*, COORD>::iterator pin_iter = pin_loc.begin();
+    for (; pin_iter != pin_loc.end(); ++pin_iter) {
+      _pin_to_loc.insert(std::make_pair(pin_iter->first, pin_iter->second));
+    }
+  }
 }
 
 DeviceGen::~DeviceGen() {
@@ -47,6 +56,11 @@ DeviceGen::~DeviceGen() {
 
   _v_interactions.clear();
 
+}
+
+double CellGen::getGroundEnergy() const {
+  double energy = calculateEnergy(_qubit_configs, _inter_configs, _ground_state);
+  return energy;
 }
 
 void CellGen::assignPin(SYN::Pin* pin, COORD loc) {
@@ -120,6 +134,28 @@ void CellGen::configInteraction(COORD local1, COORD local2, double val) {
 
 }
 
+void CellGen::printConfig() const {
+
+  QubitConfigs::const_iterator q_iter = _qubit_configs.begin();
+  for (; q_iter != _qubit_configs.end(); ++q_iter) {
+    qlog.speak("Cellgen", "Qubit: index %ld, value %3.4f",q_iter->first, q_iter->second.value);
+  }
+
+  InteractionConfigs::const_iterator i_iter = _inter_configs.begin();
+  for (; i_iter != _inter_configs.end(); ++i_iter) {
+    qlog.speak("CellGen", "Coupler: index %ld, index %ld, value %3.4f", i_iter->first.first, i_iter->first.second, i_iter->second.value);
+  }
+
+}
+
+void CellGen::printGroundState() const {
+  QubitState::const_iterator q_iter = _ground_state.begin();
+  for (; q_iter != _ground_state.end(); ++q_iter) 
+    qlog.speak("CellGen Ground State", "index %ld value %d",
+        q_iter->first, q_iter->second);
+
+}
+
 void CellGen::assignPin(SYN::Pin* pin) {
 
   std::set<COORD> locs;
@@ -140,6 +176,8 @@ void CellGen::assignPin(SYN::Pin* pin) {
 
 void CellGen::generateConfig(DeviceGen* device) {
   ParElement* element = _grid->getCurrentElement();
+  COORD x_coord = element->getX();
+  COORD y_coord = element->getY();
 
   QASSERT(element);
   SYN::Gate* gate = element->getSynGate();
@@ -169,6 +207,18 @@ void CellGen::generateConfig(DeviceGen* device) {
             configInteraction(pos1, pos2, 0.5);
             configInteraction(pos1, pos3, -1.0);
             configInteraction(pos2, pos3, -1.0);
+           
+            pos1 = HW_Loc::toGlobalIndex(x_coord, y_coord, pos1);
+            pos2 = HW_Loc::toGlobalIndex(x_coord, y_coord, pos2);
+            pos3 = HW_Loc::toGlobalIndex(x_coord, y_coord, pos3);
+            _ground_state.insert(std::make_pair(pos1, 1));
+            _ground_state.insert(std::make_pair(pos1 + 4, 1));
+            _ground_state.insert(std::make_pair(pos2, 1));
+            _ground_state.insert(std::make_pair(pos2 + 4, 1));
+            _ground_state.insert(std::make_pair(pos3, 1));
+            _ground_state.insert(std::make_pair(pos3 + 4, 1));
+
+
           } else if (in1_phase == SYN::Gate::POS_UNATE && in2_phase == SYN::Gate::NEG_UNATE) {
             configSpin(pos1, 0.5);
             configSpin(pos2, -0.5);
@@ -176,6 +226,17 @@ void CellGen::generateConfig(DeviceGen* device) {
             configInteraction(pos1, pos2, -0.5);
             configInteraction(pos1, pos3, -1.0);
             configInteraction(pos2, pos3, 1.0);
+
+            pos1 = HW_Loc::toGlobalIndex(x_coord, y_coord, pos1);
+            pos2 = HW_Loc::toGlobalIndex(x_coord, y_coord, pos2);
+            pos3 = HW_Loc::toGlobalIndex(x_coord, y_coord, pos3);
+            _ground_state.insert(std::make_pair(pos1, 1));
+            _ground_state.insert(std::make_pair(pos1 + 4, 1));
+            _ground_state.insert(std::make_pair(pos2, -1));
+            _ground_state.insert(std::make_pair(pos2 + 4, -1));
+            _ground_state.insert(std::make_pair(pos3, 1));
+            _ground_state.insert(std::make_pair(pos3 + 4, 1));
+
           } else if (in1_phase == SYN::Gate::NEG_UNATE && in2_phase == SYN::Gate::POS_UNATE) {
             configSpin(pos1, -0.5);
             configSpin(pos2, 0.5);
@@ -183,6 +244,17 @@ void CellGen::generateConfig(DeviceGen* device) {
             configInteraction(pos1, pos2, -0.5);
             configInteraction(pos1, pos3, 1.0);
             configInteraction(pos2, pos3, -1.0);
+
+            pos1 = HW_Loc::toGlobalIndex(x_coord, y_coord, pos1);
+            pos2 = HW_Loc::toGlobalIndex(x_coord, y_coord, pos2);
+            pos3 = HW_Loc::toGlobalIndex(x_coord, y_coord, pos3);
+            _ground_state.insert(std::make_pair(pos1, -1));
+            _ground_state.insert(std::make_pair(pos1 + 4, -1));
+            _ground_state.insert(std::make_pair(pos2, 1));
+            _ground_state.insert(std::make_pair(pos2 + 4, 1));
+            _ground_state.insert(std::make_pair(pos3, 1));
+            _ground_state.insert(std::make_pair(pos3 + 4, 1));
+
           } else if (in1_phase == SYN::Gate::NEG_UNATE && in2_phase == SYN::Gate::NEG_UNATE) {
             configSpin(pos1, -0.5);
             configSpin(pos2, -0.5);
@@ -190,6 +262,17 @@ void CellGen::generateConfig(DeviceGen* device) {
             configInteraction(pos1, pos2, 0.5);
             configInteraction(pos1, pos3, 1.0);
             configInteraction(pos2, pos3, 1.0);
+
+            pos1 = HW_Loc::toGlobalIndex(x_coord, y_coord, pos1);
+            pos2 = HW_Loc::toGlobalIndex(x_coord, y_coord, pos2);
+            pos3 = HW_Loc::toGlobalIndex(x_coord, y_coord, pos3);
+            _ground_state.insert(std::make_pair(pos1, -1));
+            _ground_state.insert(std::make_pair(pos1 + 4, -1));
+            _ground_state.insert(std::make_pair(pos2, -1));
+            _ground_state.insert(std::make_pair(pos2 + 4, -1));
+            _ground_state.insert(std::make_pair(pos3, 1));
+            _ground_state.insert(std::make_pair(pos3 + 4, 1));
+
           } else {
             assert(0);
           }
@@ -215,6 +298,18 @@ void CellGen::generateConfig(DeviceGen* device) {
             configInteraction(pos1, pos2, 0.5);
             configInteraction(pos1, pos3, -1.0);
             configInteraction(pos2, pos3, -1.0);
+
+            pos1 = HW_Loc::toGlobalIndex(x_coord, y_coord, pos1);
+            pos2 = HW_Loc::toGlobalIndex(x_coord, y_coord, pos2);
+            pos3 = HW_Loc::toGlobalIndex(x_coord, y_coord, pos3);
+            _ground_state.insert(std::make_pair(pos1, 1));
+            _ground_state.insert(std::make_pair(pos1 + 4, 1));
+            _ground_state.insert(std::make_pair(pos2, 1));
+            _ground_state.insert(std::make_pair(pos2 + 4, 1));
+            _ground_state.insert(std::make_pair(pos3, 1));
+            _ground_state.insert(std::make_pair(pos3 + 4, 1));
+
+
           } else if (in1_phase == SYN::Gate::POS_UNATE && in2_phase == SYN::Gate::NEG_UNATE) {
             configSpin(pos1, -0.5);
             configSpin(pos2, 0.5);
@@ -222,6 +317,17 @@ void CellGen::generateConfig(DeviceGen* device) {
             configInteraction(pos1, pos2, -0.5);
             configInteraction(pos1, pos3, -1.0);
             configInteraction(pos2, pos3, 1.0);
+
+            pos1 = HW_Loc::toGlobalIndex(x_coord, y_coord, pos1);
+            pos2 = HW_Loc::toGlobalIndex(x_coord, y_coord, pos2);
+            pos3 = HW_Loc::toGlobalIndex(x_coord, y_coord, pos3);
+            _ground_state.insert(std::make_pair(pos1, 1));
+            _ground_state.insert(std::make_pair(pos1 + 4, 1));
+            _ground_state.insert(std::make_pair(pos2, -1));
+            _ground_state.insert(std::make_pair(pos2 + 4, -1));
+            _ground_state.insert(std::make_pair(pos3, 1));
+            _ground_state.insert(std::make_pair(pos3 + 4, 1));
+
           } else if (in1_phase == SYN::Gate::NEG_UNATE && in2_phase == SYN::Gate::POS_UNATE) {
             configSpin(pos1, 0.5);
             configSpin(pos2, -0.5);
@@ -229,6 +335,17 @@ void CellGen::generateConfig(DeviceGen* device) {
             configInteraction(pos1, pos2, -0.5);
             configInteraction(pos1, pos3, 1.0);
             configInteraction(pos2, pos3, -1.0);
+
+            pos1 = HW_Loc::toGlobalIndex(x_coord, y_coord, pos1);
+            pos2 = HW_Loc::toGlobalIndex(x_coord, y_coord, pos2);
+            pos3 = HW_Loc::toGlobalIndex(x_coord, y_coord, pos3);
+            _ground_state.insert(std::make_pair(pos1, -1));
+            _ground_state.insert(std::make_pair(pos1 + 4, -1));
+            _ground_state.insert(std::make_pair(pos2, 1));
+            _ground_state.insert(std::make_pair(pos2 + 4, 1));
+            _ground_state.insert(std::make_pair(pos3, 1));
+            _ground_state.insert(std::make_pair(pos3 + 4, 1));
+
           } else if (in1_phase == SYN::Gate::NEG_UNATE && in2_phase == SYN::Gate::NEG_UNATE) {
             configSpin(pos1, 0.5);
             configSpin(pos2, 0.5);
@@ -236,6 +353,17 @@ void CellGen::generateConfig(DeviceGen* device) {
             configInteraction(pos1, pos2, 0.5);
             configInteraction(pos1, pos3, 1.0);
             configInteraction(pos2, pos3, 1.0);
+
+            pos1 = HW_Loc::toGlobalIndex(x_coord, y_coord, pos1);
+            pos2 = HW_Loc::toGlobalIndex(x_coord, y_coord, pos2);
+            pos3 = HW_Loc::toGlobalIndex(x_coord, y_coord, pos3);
+            _ground_state.insert(std::make_pair(pos1, -1));
+            _ground_state.insert(std::make_pair(pos1 + 4, -1));
+            _ground_state.insert(std::make_pair(pos2, -1));
+            _ground_state.insert(std::make_pair(pos2 + 4, -1));
+            _ground_state.insert(std::make_pair(pos3, 1));
+            _ground_state.insert(std::make_pair(pos3 + 4, 1));
+
           } else {
             assert(0);
           }
@@ -252,6 +380,13 @@ void CellGen::generateConfig(DeviceGen* device) {
       COORD pos1 = _incell_chains[i].first;
       COORD pos2 = _incell_chains[i].second;
       configInteraction(pos1, pos2, -2.0);
+
+      pos1 = HW_Loc::toGlobalIndex(x_coord, y_coord, pos1);
+      pos2 = HW_Loc::toGlobalIndex(x_coord, y_coord, pos2);
+      QASSERT(_ground_state.count(pos1));
+      int state = _ground_state.at(pos1);
+      _ground_state.insert(std::make_pair(pos2, state));
+      _ground_state.insert(std::make_pair(pos2 + 4, state));
     }
 
   } else if (syn_pin) {
@@ -267,7 +402,14 @@ void CellGen::generateConfig(DeviceGen* device) {
     inter.loc = inter_1;
     inter.value = -1.0;
     _inter_configs.insert(std::make_pair(std::make_pair(loc_phy1_1.getGlobalIndex(), loc_phy1_2.getGlobalIndex()), inter));
+    
+    ConfigElement qubit;
+    qubit.loc = loc_phy1_1;
+    qubit.value = -2.0;
+    _qubit_configs.insert(std::make_pair(loc_phy1_1.getGlobalIndex(), qubit));
 
+    _ground_state.insert(std::make_pair(loc_phy1_1.getGlobalIndex(), 1));
+    _ground_state.insert(std::make_pair(loc_phy1_2.getGlobalIndex(), 1));
   }
 
   QubitConfigs::iterator q_iter = _qubit_configs.begin();
@@ -302,7 +444,8 @@ void DeviceGen::dumpDwaveConfiguration(std::string filename) {
 
 void DeviceGen::addQubitConfig(COORD x, double val) {
   if (_qubits.count(x)) {
-    QASSERT(_qubits.at(x).value == val);
+    double value = _qubits.at(x).value;
+    QASSERT(value == val);
   } else {
     ConfigElement con;
     COORD x_index = HW_Loc::globalIndexToX(x);
@@ -314,6 +457,19 @@ void DeviceGen::addQubitConfig(COORD x, double val) {
     _qubits.insert(std::make_pair(x, con));
   }
 
+}
+
+double DeviceGen::getGroundEnergy() const {
+
+  double energy = 0.0;
+  LocToCellGen::const_iterator c_iter = _loc_to_cellgen.begin();
+  for (; c_iter != _loc_to_cellgen.end(); ++c_iter)
+    energy += c_iter->second->getGroundEnergy();
+
+  for (size_t i = 0; i < _v_interactions.size(); ++i) 
+    energy += _v_interactions[i]->getGroundEnergy();
+
+  return energy;
 }
 
 void DeviceGen::addInteractionConfig(COORD qubit1, COORD qubit2, double val) {
@@ -349,6 +505,7 @@ void DeviceGen::doGenerate() {
   }
 
   qlog.speak("Generate", "Collect routing information to reoslve qubit assignment");
+  std::unordered_set<RoutingNode*> not_pass_by;
   std::vector<ParWireTarget*>& targets = _par_netlist->getTargets();
   for (size_t i = 0; i < targets.size(); ++i) {
     ParWireTarget* target = targets[i];
@@ -373,6 +530,9 @@ void DeviceGen::doGenerate() {
     RoutingNode* src_qubit = src_edge->getOtherNode(src);
     RoutingNode* tgt_qubit = tgt_edge->getOtherNode(tgt);
 
+    not_pass_by.insert(src_qubit);
+    not_pass_by.insert(tgt_qubit);
+
     COORD x_index_src = src_qubit->getQubit()->getLoc().getLocX();
     COORD y_index_src = src_qubit->getQubit()->getLoc().getLocY();
 
@@ -385,17 +545,27 @@ void DeviceGen::doGenerate() {
     src_cellgen->assignPin(src_pin, src_qubit->getQubit()->getLoc().getLocalIndex());
     tgt_cellgen->assignPin(tgt_pin, tgt_qubit->getQubit()->getLoc().getLocalIndex());
   }
+  for (size_t i = 0; i < targets.size(); ++i) {
 
-  qlog.speak("Generate", "Generate chains");
-  WIRE_ITER w_iter = _par_netlist->wire_begin();
-  for (; w_iter != _par_netlist->wire_end(); ++w_iter) {
-    ParWire* wire = *w_iter;
-    InteractionGen* interac = new InteractionGen(wire);
-    _v_interactions.push_back(interac);
-    interac->generateConfig(this);
+    ParWireTarget* target = targets[i];
+    if (target->getDontRoute()) continue;
+    RoutePath* route = target->getRoutePath();
+
+    for (size_t i = 0; i < route->size(); ++i) {
+      RoutingNode* r_node = route->at(i);
+      if (not_pass_by.count(r_node)) continue;
+
+      if (r_node->isLogic()) {
+        qlog.speak("JSU_DEBUG", "Found a passing-by node");
+        r_node->setPass();
+        r_node->sanityCheck();
+      }
+    }
   }
 
-  w_iter = _par_netlist->model_wire_begin();
+
+  /*
+  WIRE_ITER w_iter = _par_netlist->model_wire_begin();
   for (; w_iter != _par_netlist->model_wire_end(); ++w_iter) {
     ParWire* wire = *w_iter;
     if (wire->getElementNumber() == 0) continue;
@@ -409,7 +579,17 @@ void DeviceGen::doGenerate() {
     CellGen*  cellgen = _loc_to_cellgen.at(std::make_pair(x_index, y_index));
     cellgen->assignPin(u_pin);
   }
+  */
  
+  qlog.speak("Generate", "Generate chains");
+  WIRE_ITER w_iter = _par_netlist->wire_begin();
+  for (; w_iter != _par_netlist->wire_end(); ++w_iter) {
+    ParWire* wire = *w_iter;
+    InteractionGen* interac = new InteractionGen(wire);
+    _v_interactions.push_back(interac);
+    interac->generateConfig(this);
+  }
+
   qlog.speak("Generate", "Generate cell configuration");
   LocToCellGen::iterator cell_iter = _loc_to_cellgen.begin();
   for (; cell_iter != _loc_to_cellgen.end(); ++cell_iter) {
@@ -423,6 +603,34 @@ void DeviceGen::doGenerate() {
 
 }
 
+
+void InteractionGen::printConfig() const {
+
+  QubitConfigs::const_iterator q_iter = _qubit_configs.begin();
+  for (; q_iter != _qubit_configs.end(); ++q_iter) {
+    qlog.speak("InteractionGen", "Qubit: index %ld, value %3.4f",q_iter->first, q_iter->second.value);
+  }
+
+  InteractionConfigs::const_iterator i_iter = _inter_configs.begin();
+  for (; i_iter != _inter_configs.end(); ++i_iter) {
+    qlog.speak("InteractionGen", "Coupler: index %ld, index %ld, value %3.4f", i_iter->first.first, i_iter->first.second, i_iter->second.value);
+  }
+
+}
+
+
+double InteractionGen::getGroundEnergy() const {
+  QubitState state;
+  InteractionConfigs::const_iterator i_iter = _inter_configs.begin();
+  for (; i_iter != _inter_configs.end(); ++i_iter) {
+    COORD index1 = i_iter->first.first;
+    COORD index2 = i_iter->first.second;
+    state.insert(std::make_pair(index1, -1));
+    state.insert(std::make_pair(index2, -1));
+  }
+
+  return calculateEnergy(_qubit_configs, _inter_configs, state);
+}
 void InteractionGen::generateConfig(DeviceGen* device) {
 
   std::unordered_set<RoutingNode*> nodes = _wire->getUsedRoutingNodes();
@@ -430,7 +638,7 @@ void InteractionGen::generateConfig(DeviceGen* device) {
   for (; n_iter != nodes.end(); ++n_iter) {
     RoutingNode* node = *n_iter;
     if (node->isPin()) continue;
-    if (node->isLogic()) continue;
+    if (node->isLogic() && !node->getPass()) continue;
 
     if (node->isInteraction()) {
       HW_Interaction* hw_inter = node->getInteraction();
@@ -445,7 +653,7 @@ void InteractionGen::generateConfig(DeviceGen* device) {
                                    hw_inter->getLoc().getInteractionIndex().second,
                                    -1.0);
       
-    } else if (node->isQubit()) {
+    } else if (node->isQubit() && !node->isLogic()) {
       HW_Qubit* qubit = node->getQubit();
 
       ConfigElement qu;
@@ -454,6 +662,33 @@ void InteractionGen::generateConfig(DeviceGen* device) {
 
       _qubit_configs.insert(std::make_pair(qubit->getLoc().getGlobalIndex(), qu));
       device->addQubitConfig(qubit->getLoc().getGlobalIndex(), 0.0);
+
+    } else if (node->getPass()) {
+      HW_Qubit* qubit = node->getQubit();
+      ConfigElement qu;
+      qu.loc = qubit->getLoc();
+      qu.value = 0.0;
+
+      HW_Loc loc2(qu.loc.getLocX(), qu.loc.getLocY(), qu.loc.getLocalIndex() + 4);
+      ConfigElement qu2;
+      qu2.loc = loc2;
+      qu2.value = 0.0;
+
+      HW_Loc inter_loc(qu.loc.getGlobalIndex(), qu2.loc.getGlobalIndex());
+      ConfigElement intera;
+      intera.loc = inter_loc;
+      intera.value = -1.0;
+
+      _qubit_configs.insert(std::make_pair(qubit->getLoc().getGlobalIndex(), qu));
+      device->addQubitConfig(qubit->getLoc().getGlobalIndex(), 0.0);
+
+      _inter_configs.insert(std::make_pair(std::make_pair(inter_loc.getInteractionIndex().first, inter_loc.getInteractionIndex().second), intera));
+      device->addInteractionConfig(inter_loc.getInteractionIndex().first,
+                                   inter_loc.getInteractionIndex().second,
+                                   -1.0);
+
+      _qubit_configs.insert(std::make_pair(loc2.getGlobalIndex(), qu2));
+      device->addQubitConfig(loc2.getGlobalIndex(), 0.0);
 
     } else {
       QASSERT(0);

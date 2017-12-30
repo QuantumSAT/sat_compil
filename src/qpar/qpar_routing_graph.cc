@@ -175,9 +175,11 @@ RoutingNode::RoutingNode() :
   _interaction(NULL),
   _pin(NULL),
   _isLogicalQubit(false),
+  _isPass(false),
   _load(0),
   _history_cost(0.0),
   _is_currently_used(false),
+  _isEnable(true),
   _capacity(1)
 {
   _node_index = _index_counter;
@@ -189,9 +191,11 @@ RoutingNode::RoutingNode(HW_Qubit* qubit, bool logical) :
   _interaction(NULL),
   _pin(NULL),
   _isLogicalQubit(logical),
+  _isPass(false),
   _load(0),
   _history_cost(0.0),
   _is_currently_used(false),
+  _isEnable(true),
   _capacity(1)
 {
   _node_index = _index_counter;
@@ -203,9 +207,11 @@ RoutingNode::RoutingNode(HW_Interaction* iter) :
   _interaction(iter),
   _pin(NULL),
   _isLogicalQubit(false),
+  _isPass(false),
   _load(0),
   _history_cost(0.0),
   _is_currently_used(false),
+  _isEnable(true),
   _capacity(1)
 {
   _node_index = _index_counter;
@@ -219,7 +225,9 @@ RoutingNode::RoutingNode(SYN::Pin* pin) :
   _history_cost(0.0),
   _is_currently_used(false),
   _isLogicalQubit(false),
+  _isPass(false),
   _load(0),
+  _isEnable(true),
   _capacity(1)
 {
   _node_index = _index_counter;
@@ -329,6 +337,8 @@ void RoutingCell::initCellRoutingGraph() {
         _index_to_node.insert(std::make_pair(i, node));
         _graph->_nodes.insert(node);
         _nodes.push_back(node);
+        if (par_ele->isQubitUsed(i))
+          node->setEnabled(false);
       }
 
 

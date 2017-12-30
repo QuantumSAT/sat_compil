@@ -18,6 +18,7 @@
  ****************************************************************************/
 
 #include "qpar/qpar_router.hh"
+#include "qpar/qpar_routing_graph.hh"
 #include "qpar/qpar_netlist.hh"
 #include "qpar/qpar_routing_cost.hh"
 
@@ -85,6 +86,8 @@ void ParRouter::expandNeighbors(QPriorityQueue* pqueue, qvertex current_vertex, 
     qvertex target_vertex = _graph.get_other_vertex(cur_edge, current_vertex);
 
     RoutingNode* e_target_vertex = _graph.get_e_vertex(target_vertex);
+    if (!e_target_vertex->isEnabled())  continue;
+
     double cost = _cost.compute_cost(e_target_vertex, target, slack, real_length);
 
     double new_real_length = real_length + 1; //proceed one node
