@@ -4,6 +4,7 @@
 *.csv
 *.dwave
 Makefile
+syn_bak
 
 
 benchmark/run_test.py
