@@ -36,8 +36,9 @@ The implementation is based on two papers:
 2) [Fast embedding of constrained satisfaction problem to quantum annealer with minimizing chain lengt](http://ieeexplore.ieee.org/document/8060449/)
 
 # Example Configuration
-![](https://github.com/QuantumSAT/sat_compil/example/and.pgp)
-
+![](https://github.com/QuantumSAT/sat_compil/example/and-gate.PNG)
+![](https://github.com/QuantumSAT/sat_compil/example/and-gate2.PNG)
+![](https://github.com/QuantumSAT/sat_compil/example/routed.PNG)
 
   
 
