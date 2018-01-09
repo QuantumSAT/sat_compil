@@ -7,22 +7,22 @@ This is a C++ software that compiles SAT problem on to D-Wave quantum annealer. 
 
 # Installation & Usage
 ## Pre-requisite library:
-Boost library 1.53.0 &&
-Tcl/Tk 8.4 &&
-Python &&
-[ABC synthesis tool](http://people.eecs.berkeley.edu/~alanmi/abc/)
+    Boost library 1.53.0
+    Tcl/Tk 8.4
+    Python
+    [ABC synthesis tool](http://people.eecs.berkeley.edu/~alanmi/abc/)
 ## Install
-1) git clone to your own space
-2) cd <path>/sat_compil
-3) ./build/makes
-4) make
-5) source qsat_env.sh or mannually set QSAT_HOME to <path>/sat_compil and add <path>/sat_compil/bin to PATH env
+    1) git clone to your own space
+    2) cd <path>/sat_compil
+    3) ./build/makes
+    4) make
+    5) source qsat_env.sh or mannually set QSAT_HOME to <path>/sat_compil and add <path>/sat_compil/bin to PATH env
 ## Run Regression
-1) cd $QSAT_HOME/regression/reg_infra/
-2) ./move_and_copy.py
-3) ./create_tcl.py
-4) ./run_test.py <log file name> <thread num>
-5) regression result is stored at $QSAT_HOME/regression/testcases
+    1) cd $QSAT_HOME/regression/reg_infra/
+    2) ./move_and_copy.py
+    3) ./create_tcl.py
+    4) ./run_test.py <log file name> <thread num>
+    5) regression result is stored at $QSAT_HOME/regression/testcases
 ## File Type
 1) [Blif File](http://www.cs.columbia.edu/~cs6861/sis/blif/index.html), we use blif file to represent the input netlist. A Boolean satisfiability problem can be seen as a netlist with single output. In our internal netlist data structure, we use the output wire name to name the driver gate, and wire is named by the driver pin name.
 2) Placement File: *.place, indicating the placement of each gate.
